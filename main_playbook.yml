@@ -1,0 +1,4 @@
+---
+- hosts: RudderServer
+  roles:
+    - ansible-deploy-rudder

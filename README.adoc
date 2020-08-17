@@ -1,0 +1,48 @@
+# Deploy Rudder Server via Ansible 
+
+Ansible is a tool that automate software deployment and different system configurations tasks by writing playbooks in YAML format. In this context of Infrastructure as a code process, we would like to deploy Rudder Server and set up its main configuration parameters via Ansible playbooks and modules.
+
+Synposis
+~~~~~~~~
+
+* The following documentation present a role to deploy Rudder Server which make:  
+
+1. Installing Rudder Server in its 6.1 release.
+2. Configuring Rudder settings via APIs Calls (Using a developed 'ruddersettings' module).
+3. Configuring Rudder settings via Ansible modules for configuration file editing.
+
+== Prerequisites
+* In order to use the following scripts you're supposed to have Ansible installed on your machine which is the Ansible manager node.
+
+* In addition, as required for Ansible, in order to run playbooks on remote nodes, ssh keys configuration must be set up between the manager node and the target machine. 
+
+== Usage 
+
+=== Introduction
+
+* After preparing the required environment, you need to clone this repository on your Ansible manager machine.
+
+* We will explain the utility of each of the following element in the repository. 
+        
+        . *inventory*: Contains Ansible target machine IP address which will basically supposed to be your Rudder Server machine.
+
+        . *main_playbook.yml*: A playbook for executing the 'ansible-deploy-rudder' role to install Rudder Server latest release 6.1 and configure a few settings, either on Debian, RedHat or Suse distribution. 
+
+        . *library*: This directory contains a module named 'rudder_settings' which will be used in one of Rudder configuration tasks, this module allows setting up some parameters using Rudder APIs calls.
+
+        . *tasks*: This directory includes tasks for installing and configuring Rudder.
+
+        . *defaults*: Contains variables used in Rudder installation tasks.
+
+        . *meta* Contains metadata used to deploy the role in Ansible Galaxy.
+
+=== Use case 
+
+* First thing you may want to do is to go into `ansible-deploy-rudder` directory and change the inventory content to ansible target machine IP address which is supposed to be your Rudder Server.
+* Then execute the `main_playbook.yml` using the following command:
+
+----
+ansible-playbook -i inventory main_playbook.yml
+----
+
+There's a few default configuration values defined in `tasks/configure.yml` file, which you can modify as well depending on your needs.
