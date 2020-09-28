@@ -22,13 +22,13 @@ options:
 
   rudder_url:
     description:
-      - Providing Rudder server IP address.
-    required: true
+      - Providing Rudder server IP address. Defaults to localhost of the target node if not set, with certificate validation disabled, unless explicitly enabled by setting validate_certs.
+    required: false
     type: str
 
   rudder_token:
     description:
-      - Providing Rudder server token.
+      - Providing Rudder server token. Defaults to the content of /var/rudder/run/api-token if not set.
     required: false
     type: str
 
@@ -46,8 +46,8 @@ options:
 
   validate_certs:
     description:
-      - Choosing either to ignore or not Rudder certificate validation.
-    required: true
+      - Choosing either to ignore or not Rudder certificate validation. Defaults to true.
+    required: false
     type: boolean
 
 '''
@@ -55,9 +55,14 @@ options:
 ''' EXAMPLE = '''
 
 '''
-- name: Modify Rudder Settings
+- name: Simple Modify Rudder Settings
   rudder_settings:
-      rudder_url: "https://localhost/rudder"
+      name: "modified_file_ttl"
+      value: "23"
+
+- name: Complex Modify Rudder Settings
+  rudder_settings:
+      rudder_url: "https://my.rudder.server/rudder"
       rudder_token: "<rudder_server_token>"
       name: "modified_file_ttl"
       value: "22"
@@ -75,6 +80,7 @@ class RudderSettingsInterface(object):
         self._module = module
         # {{{ Authentication header
         self.headers = {"Content-Type": "application/json"}
+        self.validate_certs = True
         if module.params.get('rudder_token', None):
             self.headers = {"X-API-Token": module.params['rudder_token']}
         else:
@@ -82,8 +88,13 @@ class RudderSettingsInterface(object):
                 token = f.read()
             self.headers = {"X-API-Token": token}
         # }}}
-        self.rudder_url = module.params.get("rudder_url")
-        self.validate_certs = module.params.get("validate_certs")
+        if module.params.get('rudder_url', None):
+            self.rudder_url = module.params.get("rudder_url")
+        else:
+            self.rudder_url = "https://localhost/rudder"
+            self.validate_certs = False
+        if module.params.get('validate_certs',None):
+            self.validate_certs = module.params.get("validate_certs")
 
     def _send_request(self, url, data=None, headers=None, method="GET"):
         if data is not None:
