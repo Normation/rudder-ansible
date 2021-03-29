@@ -70,12 +70,14 @@ options:
 '''
 
 import json
-from ansible.module_utils.urls import fetch_url, basic_auth_header
-__metaclass__ = type
 from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.urls import (
+  fetch_url, 
+  basic_auth_header
+)
+__metaclass__ = type
 
 class RudderSettingsInterface(object):
-
     def __init__(self, module):
         self._module = module
         # {{{ Authentication header
@@ -102,40 +104,87 @@ class RudderSettingsInterface(object):
         if not headers:
             headers = []
 
-        full_url = "{rudder_url}{path}".format(rudder_url=self.rudder_url, path=url)
-        resp, info = fetch_url(self._module, full_url, data=data, headers=headers, method=method)
+        full_url = "{rudder_url}{path}".format(
+          rudder_url=self.rudder_url, 
+          path=url
+          )
+        resp, info = fetch_url(
+          self._module, 
+          full_url, 
+          data=data, 
+          headers=headers, 
+          method=method
+          )
 
         status_code = info["status"]
         if status_code == 404:
             return None
         elif status_code == 401:
-            self._module.fail_json(failed=True, msg="Unauthorized to perform action '%s' on '%s'" % (method, full_url))
+            self._module.fail_json(
+              failed=True, 
+              msg="Unauthorized to perform action '{}' on '{}'".format(
+                method, 
+                full_url
+                )
+              )
         elif status_code == 403:
-            self._module.fail_json(failed=True, msg="Permission Denied")
+            self._module.fail_json(
+              failed=True, 
+              msg="Permission Denied"
+              )
         elif status_code == 200:
             return self._module.from_json(resp.read())
         else:
-            self._module.fail_json(failed=True, msg="Rudder API answered with HTTP %d details: %s " % (status_code, info['msg']))
+            self._module.fail_json(
+              failed=True, 
+              msg="Rudder API answered with HTTP {} details: {} ".format(
+                status_code, 
+                info['msg']
+                )
+              )
 
     def get_SettingValue(self, name):
         url = "/api/latest/settings/{name}".format(name=name)
-        response = self._send_request(url, headers=self.headers, method="GET")
+        response = self._send_request(
+          url, 
+          headers=self.headers, 
+          method="GET"
+          )
         VALUE = response.get("data")
         return VALUE.get("settings").get(name)
 
     def set_SettingValue(self, name, value):
-        url ="/api/latest/settings/{name}?value={value}".format(name=name, value=value)
-        response = self._send_request(url, headers=self.headers, method="POST")
-        return response
+        url ="/api/latest/settings/{name}?value={value}".format(
+          name=name, 
+          value=value
+          )
+        
+        return self._send_request(
+          url, 
+          headers=self.headers, 
+          method="POST"
+          )
 
 def main():
 
     module_args = dict(
-        name=dict(type='str', required=True),
+        name=dict(
+          type='str', 
+          required=True
+          ),
         value=dict(required=True),
-        rudder_url=dict(type='str', required=True),
-        rudder_token=dict(type='str', required=False),
-        validate_certs=dict(type='bool', default=False),
+        rudder_url=dict(
+          type='str', 
+          required=True
+          ),
+        rudder_token=dict(
+          type='str', 
+          required=False
+          ),
+        validate_certs=dict(
+          type='bool', 
+          default=False
+          ),
 
     )
     module = AnsibleModule(
@@ -162,10 +211,20 @@ def main():
     if str(VALUE) != value:
         rudder_iface.set_SettingValue(name,value)
         changed = True
-        module.exit_json(failed=False, changed=changed, message="changed succefully")
+        module.exit_json(
+          failed=False, 
+          changed=changed, 
+          message="changed succefully"
+          )
     else:
-	rudder_iface.get_SettingValue(name)
-        module.exit_json(failed=False, changed=True, ok=True, message="Already exist")
+        rudder_iface.get_SettingValue(name)
+        module.exit_json(
+          failed=False, 
+          changed=True, 
+          ok=True, 
+          message="Already exist"
+          )
 
 if __name__ == '__main__':
     main()
+
