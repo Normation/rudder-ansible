@@ -1,4 +1,5 @@
 ---
-- hosts: RudderServer
+- name: Rudder setup
+  hosts: RudderServer
   roles:
     - ansible-deploy-rudder

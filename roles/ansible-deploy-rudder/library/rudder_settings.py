@@ -188,7 +188,6 @@ def main():
           type='bool', 
           default=False
           ),
-
     )
     module = AnsibleModule(
         argument_spec={
