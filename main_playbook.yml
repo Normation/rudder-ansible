@@ -1,5 +1,6 @@
 ---
 - name: Rudder setup
+  # Uncomment the line below if you want to use a custom inventory file.
   # hosts: RudderServer
   hosts: localhost
   connection: local
