@@ -39,6 +39,9 @@ Synposis
 === Use case 
 
 * First thing you may want to do is to go into `ansible-deploy-rudder` directory and change the inventory content to ansible target machine IP address which is supposed to be your Rudder Server.
+
+* Specify the desired version of Rudder in *roles/ansible-deploy-rudder/defaults/main.yml* with `rudder_version: 6.1`.
+
 * Then execute the `main_playbook.yml` using the following command:
 
 ----
