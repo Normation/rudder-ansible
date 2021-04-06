@@ -1,5 +1,5 @@
 ---
-# defaults file for ansible-role-installrudder
+# defaults file for 'ansible-deploy-rudder'
 rudder_apt_key: "{{ rudder_key_url+'/apt/rudder_apt_key.pub' }}"
 
 rudder_apt_repo: "{{ 'deb http://'+rudder_repo+'/apt/'+rudder_version|string+'/ '+ansible_distribution_release+' main' }}"

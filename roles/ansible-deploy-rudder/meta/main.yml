@@ -1,6 +1,5 @@
 ---
 galaxy_info:
-
   author: Rudder
   description: Ansible role to install Rudder Server
   company: Rudder
