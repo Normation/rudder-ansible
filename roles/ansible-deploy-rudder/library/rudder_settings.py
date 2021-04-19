@@ -192,11 +192,26 @@ def main():
     )
     module = AnsibleModule(
         argument_spec={
-        'rudder_url': {'type': 'str', 'required': True},
-        'rudder_token': {'type': 'str', 'required': False},
-        'name': {'type': 'str', 'required': True},
-        'value': {'type': 'str', 'required': True},
-        'validate_certs': {'type': 'bool', 'default': False},
+        'rudder_url': {
+          'type': 'str', 
+          'required': True
+          },
+        'rudder_token': {
+          'type': 'str', 
+          'required': False
+          },
+        'name': {
+          'type': 'str', 
+          'required': True
+          },
+        'value': {
+          'type': 'str', 
+          'required': True
+          },
+        'validate_certs': {
+          'type': 'bool', 
+          'default': False
+          },
         },
         supports_check_mode=False,
     )
