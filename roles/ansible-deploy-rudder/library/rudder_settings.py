@@ -103,7 +103,10 @@ class RudderSettingsInterface(object):
 
     def _send_request(self, url, data=None, headers=None, method="GET"):
         if data is not None:
-            data = json.dumps(data, sort_keys=True)
+            data = json.dumps(
+              data, 
+              sort_keys=True
+              )
         if not headers:
             headers = []
 
@@ -227,7 +230,10 @@ def main():
     ''' module.exit_json(failed=False, changed=True, message=VALUE) '''
 
     if str(VALUE) != value:
-        rudder_iface.set_SettingValue(name,value)
+        rudder_iface.set_SettingValue(
+          name,
+          value
+          )
         changed = True
         module.exit_json(
           failed=False, 
