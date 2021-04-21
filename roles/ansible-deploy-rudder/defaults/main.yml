@@ -12,6 +12,6 @@ rudder_rpm_repo: "{{ 'http://'+rudder_repo+'/rpm/'+rudder_version|string+'/RHEL_
 
 rudder_zypper_repo: "{{ 'http://'+rudder_repo+'/rpm/'+rudder_version|string+'/SLES_15/' }}"
 
-rudder_version: 6.1
+rudder_version: 6.2
 
 rudder_repo: repository.rudder.io
