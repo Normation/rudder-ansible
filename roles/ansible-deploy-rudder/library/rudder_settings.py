@@ -108,6 +108,7 @@ class RudderSettingsInterface(object):
                 data,
                 sort_keys=True
             )
+            
         if not headers:
             headers = []
 
@@ -115,6 +116,7 @@ class RudderSettingsInterface(object):
             rudder_url=self.rudder_url,
             path=url
         )
+        
         resp, info = fetch_url(
             self._module,
             full_url,
@@ -245,12 +247,11 @@ def main():
     else:
         rudder_iface.get_SettingValue(name)
         module.exit_json(
-            failed=False,
+            failed=False, 
             changed=True,
             ok=True,
             message="Already exist"
         )
-
 
 if __name__ == '__main__':
     main()
