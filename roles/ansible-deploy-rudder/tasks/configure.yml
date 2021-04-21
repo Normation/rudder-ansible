@@ -78,33 +78,33 @@
        value: "50"
 
 # Create Rudder user
- 
+# More informations here: 
+# -> https://docs.rudder.io/reference/6.2/administration/users.html
+
    - name: Create rudder user name in '/opt/rudder/etc/rudder-users.xml' file
      xml:
        path: /opt/rudder/etc/rudder-users.xml
        xpath: /authentication
        attribute: hash
-       value: "<hash_type_value>"
+       value: "<hash_type_value>" # See: https://docs.rudder.io/reference/6.2/administration/users.html#_passwords
+       # Example:
+       # value: "bcrypt"
 
-# Create Rudder user
- 
    - name: Create rudder user name in '/opt/rudder/etc/rudder-users.xml' file
      xml:
        path: /opt/rudder/etc/rudder-users.xml
        xpath: /authentication/user
        attribute: name
        value: "<rudder_username_value>"
+       # Example:
+       # value: "admin"
 
-# Create Rudder user
- 
    - name: Create rudder user name in '/opt/rudder/etc/rudder-users.xml' file
      xml:
        path: /opt/rudder/etc/rudder-users.xml
        xpath: /authentication/user
        attribute: password
-       value: "<password_hash_value>"
-
-# Create Rudder user
+       value: "<password_hash_value>" # See: https://docs.rudder.io/reference/6.2/administration/users.html#_passwords
  
    - name: Create rudder user name in '/opt/rudder/etc/rudder-users.xml' file
      xml:
@@ -112,3 +112,5 @@
        xpath: /authentication/user
        attribute: role
        value: "<role_value>"
+       # Example:
+       # value: "administrator"
