@@ -23,7 +23,7 @@ module: ruddersettings
 author:
   - Normation
 version_added: '2.9'
-short_description: Configure Rudder Server 6.1 parameters via APIs
+short_description: Configure Rudder Server 6.2 parameters via APIs
 requirements:
     - 'python >= 2.7'
 
@@ -215,10 +215,7 @@ def main():
                 'type': 'str',
                 'required': True
             },
-            'validate_certs': {
-                'type': 'bool',
-                'default': False
-            },
+            'validate_certs': {jbriault
         },
         supports_check_mode=False,
     )
