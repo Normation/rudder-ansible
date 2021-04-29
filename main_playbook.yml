@@ -1,4 +1,5 @@
 ---
 - hosts: RudderServer
+  connection: local
   roles:
     - ansible-deploy-rudder

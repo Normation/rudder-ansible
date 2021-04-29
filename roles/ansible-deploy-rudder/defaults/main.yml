@@ -1,5 +1,5 @@
 ---
-# defaults file for ansible-role-installrudder
+# defaults file for ansible-role-rudder
 rudder_apt_key: "{{ rudder_key_url+'/apt/rudder_apt_key.pub' }}"
 
 rudder_apt_repo: "{{ 'deb http://'+rudder_repo+'/apt/'+rudder_version|string+'/ '+ansible_distribution_release+' main' }}"
@@ -12,6 +12,6 @@ rudder_rpm_repo: "{{ 'http://'+rudder_repo+'/rpm/'+rudder_version|string+'/RHEL_
 
 rudder_zypper_repo: "{{ 'http://'+rudder_repo+'/rpm/'+rudder_version|string+'/SLES_15/' }}"
 
-rudder_version: 6.1
+rudder_version: 6.2
 
 rudder_repo: repository.rudder.io

@@ -78,37 +78,7 @@
        value: "50"
 
 # Create Rudder user
- 
    - name: Create rudder user name in '/opt/rudder/etc/rudder-users.xml' file
-     xml:
-       path: /opt/rudder/etc/rudder-users.xml
-       xpath: /authentication
-       attribute: hash
-       value: "<hash_type_value>"
-
-# Create Rudder user
- 
-   - name: Create rudder user name in '/opt/rudder/etc/rudder-users.xml' file
-     xml:
-       path: /opt/rudder/etc/rudder-users.xml
-       xpath: /authentication/user
-       attribute: name
-       value: "<rudder_username_value>"
-
-# Create Rudder user
- 
-   - name: Create rudder user name in '/opt/rudder/etc/rudder-users.xml' file
-     xml:
-       path: /opt/rudder/etc/rudder-users.xml
-       xpath: /authentication/user
-       attribute: password
-       value: "<password_hash_value>"
-
-# Create Rudder user
- 
-   - name: Create rudder user name in '/opt/rudder/etc/rudder-users.xml' file
-     xml:
-       path: /opt/rudder/etc/rudder-users.xml
-       xpath: /authentication/user
-       attribute: role
-       value: "<role_value>"
+     template:
+      src: rudder-users.xml.j2
+      dest: /opt/rudder/etc/rudder-users.xml
