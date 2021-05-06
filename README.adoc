@@ -28,7 +28,7 @@ Synposis
 
         . *main_playbook.yml*: A playbook for executing the 'ansible-deploy-rudder' role to install Rudder Server latest release 6.1 and configure a few settings, either on Debian, RedHat or Suse distribution. 
 
-        . *library*: This directory contains a module named 'rudder_settings' which will be used in one of Rudder configuration tasks, this module allows setting up some parameters using Rudder APIs calls.
+        . *library*: This directory contains a module named 'rudder_server_settings' which will be used in one of Rudder configuration tasks, this module allows setting up some parameters using Rudder APIs calls.
 
         . *tasks*: This directory includes tasks for installing and configuring Rudder.
 
@@ -61,3 +61,21 @@ Synposis
 
 
 There's a few default configuration values defined in `tasks/configure.yml` file, which you can modify as well depending on your needs.
+
+== Developer
+
+=== Environment setup
+
+==== Prerequisites via apt
+Due to dependencies (for example *ansible* -> *paramiko* -> *pynacl* -> *libffi*):
+
+        sudo apt update
+        sudo apt install build-essential libssl-dev libffi-dev python-dev
+
+==== Common environment setup
+        . Clone this repository: `git clone https://github.com/Normation/rudder-ansible.git`
+        . Change directory into the repository root dir: `cd rudder-ansible`
+        . Create a virtual environment: `python3 -m venv venv` (or for Python2: `virtualenv venv`. Note this requires you to install the virtualenv package: `pip install virtualenv`)
+        . Activate the virtual environment: `. venv/bin/activate`
+        . Install development requirements: `pip install -r test-requirements.txt`
+        . Exit the virtual environment when you are done: `deactivate`
