@@ -2,14 +2,14 @@
 
 Ansible is a tool that automate software deployment and different system configurations tasks by writing playbooks in YAML format. In this context of Infrastructure as a code process, we would like to deploy Rudder Server and set up its main configuration parameters via Ansible playbooks and modules.
 
-Synposis
-~~~~~~~~
+=== Synposis
 
 * The following documentation present a role to deploy Rudder Server which make:  
 
 1. Installing Rudder Server in its 6.1 release.
-2. Configuring Rudder settings via APIs Calls (Using a developed 'ruddersettings' module).
+2. Configuring Rudder settings via APIs Calls (Using a developed 'rudder_server_settings' module).
 3. Configuring Rudder settings via Ansible modules for configuration file editing.
+4. Configuring Rudder nodes settings via APIs Calls (Using a developed 'rudder_node_settings' module).
 
 == Prerequisites
 * In order to use the following scripts you're supposed to have Ansible installed on your machine which is the Ansible manager node.
@@ -28,15 +28,132 @@ Synposis
 
         . *main_playbook.yml*: A playbook for executing the 'ansible-deploy-rudder' role to install Rudder Server latest release 6.1 and configure a few settings, either on Debian, RedHat or Suse distribution. 
 
-        . *library*: This directory contains a module named 'rudder_server_settings' which will be used in one of Rudder configuration tasks, this module allows setting up some parameters using Rudder APIs calls.
+        . *roles/ansible-deploy-rudder/library*: This directory contains a module named 'rudder_server_settings' which will be used in one of Rudder configuration tasks, this module allows setting up some parameters using Rudder APIs calls.
 
-        . *tasks*: This directory includes tasks for installing and configuring Rudder.
+        . *roles/ansible-deploy-rudder/tasks*: This directory includes tasks for installing and configuring Rudder.
 
-        . *vars*: This directory includes all variables necessary for the installation of Rudder (account creation, etc.)
+        . *roles/ansible-deploy-rudder/vars*: This directory includes all variables necessary for the installation of Rudder (account creation, etc.)
 
-        . *defaults*: Contains variables used in Rudder installation tasks.
+        . *roles/ansible-deploy-rudder/defaults*: Contains variables used in Rudder installation tasks.
 
-        . *meta* Contains metadata used to deploy the role in Ansible Galaxy.
+        . *roles/ansible-deploy-rudder/templates*: Contains Jinja2 templates (.j2).
+
+        . *roles/ansible-deploy-rudder/meta* Contains metadata used to deploy the role in Ansible Galaxy.
+
+=== Modules
+
+This section aims to give and explain the different parameters possible in each module.
+
+==== Module: 'rudder_server_settings'
+
+This module is used to set up Rudder via API calls.
+
+.Table 'rudder_server_settings' module options
+[cols="1,1,1,3"] 
+|===
+|Name | Type |Required|Description
+
+|rudder_url
+|*false*
+|str
+|Providing Rudder server IP address. Defaults to localhost of the target node if not set, with certificate validation disabled, unless explicitly enabled by setting validate_certs.
+
+|rudder_token
+|*false*
+|str
+|Providing Rudder server token. Defaults to the content of /var/rudder/run/api-token if not set.
+
+|name
+|*true*
+|str
+|The name of the parameter to set.
+
+|value
+|*true*
+|str
+|The value defined to modify a given parameter name.
+
+|validate_certs
+|*false*
+|boolean
+|Choosing either to ignore or not Rudder certificate validation. Defaults to *true*.
+|===
+
+Example of use:
+
+----
+     rudder_server_settings:
+       rudder_url: "https://localhost/rudder"
+       name: "enable_self_validation"
+       value: "false"
+       validate_certs: False
+----
+
+==== Module: 'rudder_node_settings'
+
+This module allows you to configure the settings of the nodes in Rudder.
+
+.Table 'rudder_server_settings' module options
+[cols="1,1,1,3"] 
+|===
+|Name | Type |Required|Description
+
+|rudder_url
+|*false*
+|str
+|Providing Rudder server IP address. Defaults to localhost of the target node if not set, with certificate validation disabled, unless explicitly enabled by setting validate_certs.
+
+|rudder_token
+|*false*
+|str
+|Providing Rudder server token. Defaults to the content of /var/rudder/run/api-token if not set.
+
+|validate_certs
+|*false*
+|boolean
+|Choosing either to ignore or not Rudder certificate validation. Defaults to true.
+
+|node_id
+|*true*
+|str
+|Define the identifier of the node to be configured
+
+|policy_mode
+|*false*
+|str
+|Set the policy mode to (default, enforce or audit)
+
+|state
+|*false*
+|str
+|Set the node life cycle state to (enabled, ignored, empty-policies, initializing or preparing-eol)
+
+|properties
+|*false*
+|dict
+|Define a properties (with "name:" and "value:")
+
+|agent_key
+|*false*
+|dict
+|Define information about agent key or certificate (update PEM with ("value:<PEM>") and status with "status:<certified|undefined>")
+|===
+
+Example of use:
+
+----
+    rudder_node_settings:
+        rudder_url: "https://localhost/rudder"
+        node_id: root
+        policy_mode: enforce
+        state: enabled
+        validate_certs: False
+        properties:
+          name: env_type
+          value: prod
+        agent_key:
+          status: undefined
+----
 
 === Use case 
 
@@ -46,19 +163,18 @@ Synposis
 
 * Specify the desired credentials for the first connection to Rudder in *roles/ansible-deploy-rudder/vars/main.yml*. Here is an example of an account:
 
-
+----
         rudder_username: admin
         rudder_password_hash_type: bcrypt
         rudder_password_hash: $2b$12$uU.LawnF2lLlD4mAZviRKeNEb2Z58asv2d5QoEwl7N71Frrt0laJC
         rudder_user_role: administrator
-
-
+----
 
 * Then execute the `main_playbook.yml` using the following command:
 
-
+----
         ansible-playbook -i inventory main_playbook.yml
-
+----
 
 There's a few default configuration values defined in `tasks/configure.yml` file, which you can modify as well depending on your needs.
 
