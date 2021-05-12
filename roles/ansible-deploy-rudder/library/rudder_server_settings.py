@@ -19,7 +19,7 @@ import json
 
 DOCUMENTATION = '''
 ---
-module: ruddersettings
+module: rudder_server_settings
 author:
   - Normation
 version_added: '2.9'
@@ -61,16 +61,14 @@ options:
 
 '''
 
-''' EXAMPLE = '''
-
-'''
+EXAMPLES = r'''
 - name: Simple Modify Rudder Settings
-  rudder_settings:
+  rudder_server_settings:
       name: "modified_file_ttl"
       value: "23"
 
 - name: Complex Modify Rudder Settings
-  rudder_settings:
+  rudder_server_settings:
       rudder_url: "https://my.rudder.server/rudder"
       rudder_token: "<rudder_server_token>"
       name: "modified_file_ttl"
@@ -85,7 +83,9 @@ class RudderSettingsInterface(object):
     def __init__(self, module):
         self._module = module
         # {{{ Authentication header
-        self.headers = {"Content-Type": "application/json"}
+        self.headers = {
+            "Content-Type": "application/json"
+            }
         self.validate_certs = True
         if module.params.get('rudder_token', None):
             self.headers = {"X-API-Token": module.params['rudder_token']}
@@ -182,7 +182,9 @@ def main():
             type='str',
             required=True
         ),
-        value=dict(required=True),
+        value=dict(
+            required=True
+            ),
         rudder_url=dict(
             type='str',
             required=True
@@ -195,8 +197,8 @@ def main():
             type='bool',
             default=False
         ),
-
     )
+    
     module = AnsibleModule(
         argument_spec={
             'rudder_url': {
@@ -215,7 +217,10 @@ def main():
                 'type': 'str',
                 'required': True
             },
-            'validate_certs': {jbriault
+            'validate_certs': {
+                'type': 'bool',
+                'default': False
+            },
         },
         supports_check_mode=False,
     )
