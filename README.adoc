@@ -33,7 +33,7 @@ Ansible is a tool that automate software deployment and different system configu
         . *roles/ansible-deploy-rudder/tasks*: This directory includes tasks for installing and configuring Rudder.
 
         . *roles/ansible-deploy-rudder/vars*: This directory includes all variables necessary for the installation of Rudder (account creation, etc.)
-
+        
         . *roles/ansible-deploy-rudder/defaults*: Contains variables used in Rudder installation tasks.
 
         . *roles/ansible-deploy-rudder/templates*: Contains Jinja2 templates (.j2).
@@ -175,6 +175,12 @@ Example of use:
 ----
         ansible-playbook -i inventory main_playbook.yml
 ----
+
+* Then execute the `main_playbook.yml` using the following command:
+
+
+        ansible-playbook -i inventory main_playbook.yml
+
 
 There's a few default configuration values defined in `tasks/configure.yml` file, which you can modify as well depending on your needs.
 
