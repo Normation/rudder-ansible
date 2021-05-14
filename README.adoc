@@ -176,12 +176,6 @@ Example of use:
         ansible-playbook -i inventory main_playbook.yml
 ----
 
-* Then execute the `main_playbook.yml` using the following command:
-
-
-        ansible-playbook -i inventory main_playbook.yml
-
-
 There's a few default configuration values defined in `tasks/configure.yml` file, which you can modify as well depending on your needs.
 
 == Developer
