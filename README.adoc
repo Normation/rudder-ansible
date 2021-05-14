@@ -136,7 +136,7 @@ This module allows you to configure the settings of the nodes in Rudder.
 |agent_key
 |*false*
 |dict
-|Define information about agent key or certificate (update PEM with ("value:<PEM>") and status with "status:<certified|undefined>")
+|Define information about agent key or certificate (update PEM with "value:<PEM>" and status with "status:<certified|undefined>")
 |===
 
 Example of use:
