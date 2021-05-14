@@ -164,10 +164,10 @@ Example of use:
 * Specify the desired credentials for the first connection to Rudder in *roles/ansible-deploy-rudder/vars/main.yml*. Here is an example of an account:
 
 ----
-        rudder_username: admin
-        rudder_password_hash_type: bcrypt
-        rudder_password_hash: $2b$12$uU.LawnF2lLlD4mAZviRKeNEb2Z58asv2d5QoEwl7N71Frrt0laJC
-        rudder_user_role: administrator
+rudder_username: admin
+rudder_password_hash_type: bcrypt
+rudder_password_hash: $2b$12$uU.LawnF2lLlD4mAZviRKeNEb2Z58asv2d5QoEwl7N71Frrt0laJC
+rudder_user_role: administrator
 ----
 
 * Then execute the `main_playbook.yml` using the following command:
