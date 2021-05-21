@@ -88,11 +88,17 @@ class RudderSettingsInterface(object):
             }
         self.validate_certs = True
         if module.params.get('rudder_token', None):
-            self.headers = {"X-API-Token": module.params['rudder_token']}
+            self.headers = {
+                "X-API-Token": module.params['rudder_token'],
+                "Content-Type": "application/json"
+            }
         else:
             with open('/var/rudder/run/api-token') as f:
                 token = f.read()
-            self.headers = {"X-API-Token": token}
+            self.headers = {
+                "X-API-Token": token,
+                "Content-Type": "application/json"
+            }
         # }}}
         if module.params.get('rudder_url', None):
             self.rudder_url = module.params.get("rudder_url")
