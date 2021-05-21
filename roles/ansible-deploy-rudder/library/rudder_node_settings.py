@@ -139,7 +139,8 @@ class RudderNodeSettingsInterface(object):
             with open('/var/rudder/run/api-token') as f:
                 token = f.read()
             self.headers = {
-                "X-API-Token": token
+                "X-API-Token": token,
+                "Content-Type": "application/json"
             }
         if module.params.get('rudder_url', None):
             self.rudder_url = module.params['rudder_url']
