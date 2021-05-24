@@ -12,8 +12,6 @@ from __future__ import (
 from ansible.module_utils.basic import AnsibleModule
 import json
 
-# import logging
-
 # Check if 'requests' is installed
 # Use : 'pip3 install requests' if not
 try:
@@ -65,7 +63,7 @@ options:
     required: false
     type: str
 
-  validate_certs:
+   validate_certs:
     description:
       - Choosing either to ignore or not Rudder certificate validation. Defaults to true.
     required: false
@@ -136,7 +134,7 @@ class RudderNodeSettingsInterface(object):
             self.headers = {
                 "X-API-Token": module.params['rudder_token'],
                 "Content-Type": "application/json"
-            }
+                }
             # logging.info(self.headers)  # for debug (remove this)
         else:
             with open('/var/rudder/run/api-token') as f:
@@ -204,14 +202,14 @@ class RudderNodeSettingsInterface(object):
                 url=full_url,
                 headers=self.headers,
                 data=s_data,
-                verify=False
+                verify=self.validate_certs
             )
             
         elif method == "GET":
             resp = requests.get(
                 url=full_url,
                 headers=self.headers,
-                verify=False
+                verify=self.validate_certs
             )
         else:
             self._module.fail_json(
