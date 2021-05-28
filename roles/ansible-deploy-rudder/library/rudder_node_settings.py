@@ -47,7 +47,7 @@ module: rudder_node_settings
 author:
   - Normation
 version_added: '2.9'
-short_description: Configure Rudder Nodes 6.2 parameters via APIs
+short_description: Configure Rudder Nodes parameters via APIs
 requirements:
     - 'python >= 2.7'
 
