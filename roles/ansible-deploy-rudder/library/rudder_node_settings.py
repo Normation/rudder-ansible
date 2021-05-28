@@ -24,16 +24,16 @@ else:
 
 __metaclass__ = type
 
-import logging
+# import logging
 
 # {{{ for debug (remove this)
-logging.basicConfig(
-    filename="/tmp/rudder-ansible.log",  # tail -f -n0 /var/log/rudder/ansible/ansible_debug.log
-    format='[%(asctime)s %(levelname)s %(module)s - %(funcName)s: %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S]',
-    # encoding='utf-8',
-    level=logging.DEBUG
-)
+# logging.basicConfig(
+#     filename="/tmp/rudder-ansible.log",  # tail -f -n0 /var/log/rudder/ansible/ansible_debug.log
+#     format='[%(asctime)s %(levelname)s %(module)s - %(funcName)s: %(message)s',
+#     datefmt='%Y-%m-%d %H:%M:%S]',
+#     # encoding='utf-8',
+#     level=logging.DEBUG
+# )
 # }}}
 
 # Disable SSL certificat warning messages
