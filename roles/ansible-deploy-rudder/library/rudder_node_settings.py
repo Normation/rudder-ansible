@@ -24,14 +24,16 @@ else:
 
 __metaclass__ = type
 
+import logging
+
 # {{{ for debug (remove this)
-# logging.basicConfig(
-#     filename="/var/log/rudder/ansible/ansible_debug.log",  # tail -f -n0 /var/log/rudder/ansible/ansible_debug.log
-#     format='[%(asctime)s %(levelname)s %(module)s - %(funcName)s: %(message)s',
-#     datefmt='%Y-%m-%d %H:%M:%S]',
-#     encoding='utf-8',
-#     level=logging.DEBUG
-# )
+logging.basicConfig(
+    filename="/tmp/rudder-ansible.log",  # tail -f -n0 /var/log/rudder/ansible/ansible_debug.log
+    format='[%(asctime)s %(levelname)s %(module)s - %(funcName)s: %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S]',
+    # encoding='utf-8',
+    level=logging.DEBUG
+)
 # }}}
 
 # Disable SSL certificat warning messages
@@ -72,7 +74,7 @@ options:
   node_id:
     description:
       - Define the identifier of the node to be configured
-    required: true
+    required: false
     type: str
 
   policy_mode:
@@ -99,6 +101,18 @@ options:
     required: false
     type: dict
     
+  include:
+    description:
+      - Level of information to include from the node inventory.
+    required: false
+    type: str
+    
+  query:
+    description:
+      - The criterion you want to find for your nodes.
+    required: false
+    type: dict
+    
 '''
 
 EXAMPLES = r'''
@@ -120,6 +134,26 @@ EXAMPLES = r'''
           name: "env_type"
           value: "production"
         validate_certs: False
+        
+  - name: Complex Modify Rudder Node Settings with query
+    rudder_node_settings:
+        rudder_url: "https://my.rudder.server/rudder"
+        rudder_token: "<rudder_server_token>"
+        pending: accepted
+        policy_mode: audit
+        state: enabled
+        properties:
+          name: "env_type"
+          value: "production"
+                include: "minimal"
+        query:
+          select: "nodeAndPolicyServer"
+          composition: "and"
+          where:
+            object_type: "node"
+            attribute: "nodeHostname"
+            comparator: "regex"
+            value: "rudder-ansible-node.*"
 '''
 
 class RudderNodeSettingsInterface(object):
@@ -171,8 +205,18 @@ class RudderNodeSettingsInterface(object):
             self.agent_key_value = module.params['agent_key']['value']
             self.agent_key_status = module.params['agent_key']['status']
             
+        if module.params.get('include', None):
+            self.include = module.params['include']
+            
+        if module.params.get('query', None):
+            self.query_select = module.params['query']['select']
+            self.query_composition = module.params['query']['composition']
+            self.where_object_type = module.params['query']['where']['object_type']
+            self.where_attribute = module.params['query']['where']['attribute']
+            self.where_comparator = module.params['query']['where']['comparator']
+            self.where_value = module.params['query']['where']['value']
 
-    def _send_request(self, path: str, data=None, serialize_json=None, headers=None, method="GET") -> str:
+    def _send_request(self, path: str, data=None, serialize_json=None, headers=None, method="GET", verify=False, params=None) -> str:
         """Send HTTP request
 
         Args:
@@ -181,6 +225,8 @@ class RudderNodeSettingsInterface(object):
             serialize_json (bool): Specify if you want to serialize obj into a JSON formatted string.
             headers (str, optional): Specify HTTP headers. Defaults to None.
             method (str, optional): Specify HTTP method (GET or POST only). Defaults to "GET".
+            verify (bool, optional): Specify if you want to check SSL certificate
+            params (str, optional): Specify all params 
 
         Returns:
             str: return request content as an object.
@@ -201,15 +247,17 @@ class RudderNodeSettingsInterface(object):
             resp = requests.post(
                 url=full_url,
                 headers=self.headers,
+                params=params,
                 data=s_data,
-                verify=self.validate_certs
+                verify=verify
             )
             
         elif method == "GET":
             resp = requests.get(
                 url=full_url,
+                params=params,
                 headers=self.headers,
-                verify=self.validate_certs
+                verify=verify
             )
         else:
             self._module.fail_json(
@@ -334,14 +382,15 @@ class RudderNodeSettingsInterface(object):
                 headers=self.headers,
                 serialize_json=True,
                 method="POST"
-            )
+            )      
+            
         else:
             module.fail_json(
                 failed=True,
                 msg=f"Unsupported cfg type: '{cfg_type}'"
             )
 
-    def set_NodePendingValue(self, node_id: str) -> str:
+    def set_NodePendingValue(self, node_id: str):
         """Function to define pending status for a specific node via the API
 
         Args:
@@ -365,6 +414,51 @@ class RudderNodeSettingsInterface(object):
             serialize_json=False,
             method="POST"
             )
+        
+    def get_QueryNodesValue(self):
+        """Get all nodes (with query)
+
+        Returns:
+            str: All nodes who match with query
+        """
+        
+        url = "/api/latest/nodes"
+        
+        query_json_struct = {
+            "select": self.query_select,
+            "composition": self.query_composition
+        }
+        
+        where_json_struct = {
+            "objectType": self.where_object_type, 
+            "attribute": self.where_attribute,
+            "comparator": self.where_comparator, 
+            "value": self.where_value
+        }
+        
+        params = {
+            "where": json.dumps(where_json_struct),
+            "query": json.dumps(query_json_struct),
+            "include": self.include
+        }
+        
+        response = self._send_request(
+            path=url,
+            headers=self.headers,
+            serialize_json=False,
+            params=params,
+            method="GET"
+        ) 
+        
+        # Init list
+        list_id = []
+        
+        for value in response['data']['nodes']:
+            list_id.append(value['id'])
+        
+        # logging.debug(list_id) # for debug
+
+        return list_id
 
 def main():
     # Definition of the arguments and options 
@@ -381,7 +475,7 @@ def main():
             ),
             node_id=dict(
                 type="str",
-                required=True,
+                required=False,
             ),
             properties=dict(
                 type="dict",
@@ -449,14 +543,54 @@ def main():
                 ],
                 required=False,
             ),
+            include=dict(
+                type="str",
+                required=False,
+            ),
+            query=dict(
+                type="dict",
+                required=False,
+                select=dict(
+                    type="str",
+                    required=False,
+                ),
+                composition=dict(
+                    type="str",
+                    required=False,
+                ),
+                where=dict(
+                    type="dict",
+                    required=False,
+                    object_type=dict(
+                        type="str",
+                        required=False,
+                    ),
+                    attribute=dict(
+                        type="str",
+                        required=False,
+                    ),
+                    comparator=dict(
+                        type="str",
+                        choices=[
+                            "and",
+                            "or",
+                        ],
+                        required=False,
+                    ),
+                    value=dict(
+                        type="str",
+                        required=False,
+                    ),
+                ),
+            ),
         ),
         supports_check_mode=False
     )
 
-    rudder_url = module.params['rudder_url']
-    rudder_token = module.params['rudder_token']
+    # rudder_url = module.params['rudder_url']
+    # rudder_token = module.params['rudder_token']
     rudder_node_id = module.params['node_id']
-    rudder_validate_certs = module.params['validate_certs']
+    # rudder_validate_certs = module.params['validate_certs']
     rudder_properties = module.params['properties']
     rudder_policy_mode = module.params['policy_mode']
     rudder_state = module.params['state']
@@ -469,68 +603,79 @@ def main():
         module.fail_json(
             msg="The Python 'requests' module is required!"
         )
+        
+    # Init list
+    all_rudder_node_id = []    
+        
+    if rudder_node_id is not None:
+        all_rudder_node_id.append(rudder_node_id)
+    else:
+        for item in rudder_node_iface.get_QueryNodesValue():
+            all_rudder_node_id.append(item)
 
-    if rudder_policy_mode is not None and rudder_policy_mode != "keep":
-        # logging.debug(f"Send policy mode: '{rudder_policy_mode}' for {rudder_node_id}!")
-        try:
-            rudder_node_iface.set_NodeSettingValue(
-                node_id=rudder_node_id,
-                cfg_type="policy_mode"
-            )
-        except:
-            module.fail_json(
-                msg=f"Error during 'policy_mode' configuration for node ID: {rudder_node_id}"
-            )
-    if rudder_state is not None:
-        # logging.debug(f"Send node lifecycle state: '{rudder_state}' for {rudder_node_id}!")
-        try:
-            rudder_node_iface.set_NodeSettingValue(
-                node_id=rudder_node_id,
-                cfg_type="state"
-            )
-        except:
-            module.fail_json(
-                msg=f"Error during the configuration of the state (lifecycle) for node ID: {rudder_node_id}"
-            )
-    if rudder_pending is not None:
-        # logging.debug(f"Send pending status: '{rudder_pending}' for {rudder_node_id}!")
-        try:
-            rudder_node_iface.set_NodePendingValue(
-                node_id=rudder_node_id
-                ) 
-        except:
-            module.fail_json(
-                msg=f"Error during node status configuration for: {rudder_node_id}"
-            )
 
-    if rudder_properties is not None:
-        try:
-            rudder_node_iface.set_NodeSettingValue(
-                node_id=rudder_node_id, 
+    for node_id in all_rudder_node_id:
+        if rudder_policy_mode is not None and rudder_policy_mode != "keep":
+            # logging.debug(f"Send policy mode: '{rudder_policy_mode}' for {rudder_node_id}!")
+            try:
+                rudder_node_iface.set_NodeSettingValue(
+                    node_id=node_id,
+                    cfg_type="policy_mode"
+                )
+            except:
+                module.fail_json(
+                    msg=f"Error during 'policy_mode' configuration for node ID: {node_id}"
+                )
+        if rudder_state is not None:
+            # logging.debug(f"Send node lifecycle state: '{rudder_state}' for {rudder_node_id}!")
+            try:
+                rudder_node_iface.set_NodeSettingValue(
+                    node_id=node_id,
+                    cfg_type="state"
+                )
+            except:
+                module.fail_json(
+                    msg=f"Error during the configuration of the state (lifecycle) for node ID: {node_id}"
+                )
+        if rudder_pending is not None:
+            # logging.debug(f"Send pending status: '{rudder_pending}' for {rudder_node_id}!")
+            try:
+                rudder_node_iface.set_NodePendingValue(
+                    node_id=node_id
+                    ) 
+            except:
+                module.fail_json(
+                    msg=f"Error during node status configuration for: {node_id}"
+                )
+
+        if rudder_properties is not None:
+            try:
+                rudder_node_iface.set_NodeSettingValue(
+                node_id=node_id, 
                 cfg_type="properties"
                 )
-        except:
-            module.fail_json(
-                msg=f"Error during definition of nodes properties for: {rudder_node_id}"
-            )      
-            
-    if rudder_agent_key is not None:
-        try:
-            if module.params['agent_key']['value'] is None:
-                rudder_node_iface.set_NodeSettingValue(
-                    node_id=rudder_node_id, 
-                    cfg_type="agent_key_without_value"
-                    )    
-            else:
-                rudder_node_iface.set_NodeSettingValue(
-                    node_id=rudder_node_id, 
-                    cfg_type="agent_key_with_value"
-                    )     
-        except:
-            module.fail_json(
-                msg=f"Error during agentKey configuration for: {rudder_node_id}"
-            )               
-      
+            except:
+                module.fail_json(
+                    msg=f"Error during definition of nodes properties for: {node_id}"
+                )      
+                
+        if rudder_agent_key is not None:
+            try:
+                if module.params['agent_key']['value'] is None:
+                    rudder_node_iface.set_NodeSettingValue(
+                        node_id=node_id, 
+                        cfg_type="agent_key_without_value"
+                        )    
+                else:
+                    rudder_node_iface.set_NodeSettingValue(
+                        node_id=node_id, 
+                        cfg_type="agent_key_with_value"
+                        )     
+            except:
+                module.fail_json(
+                    msg=f"Error during agentKey configuration for: {node_id}"
+                )               
+        
 
     module.exit_json( 
         failed=False,
