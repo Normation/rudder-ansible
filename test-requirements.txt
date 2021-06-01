@@ -1,2 +1,3 @@
 ansible
 python-lxml
+requests
