@@ -1,0 +1,19 @@
+namespace: normation
+name: rudder
+version: 1.0.0
+readme: README.md
+
+authors:
+- Julien Briault <julien.briault[at]rudder.io>
+
+license:
+- GPL-3.0-or-later
+license_file: ''
+
+
+tags: []
+dependencies: {}
+repository: http://example.com/repository
+documentation: http://docs.example.com
+homepage: http://example.com
+issues: http://example.com/issue/tracker

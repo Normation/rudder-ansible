@@ -1,0 +1,86 @@
+---
+# tasks for configuring Rudder
+# link for parameters' APIs documentation: https://docs.rudder.io/api/
+   - name: Configure Rudder Settings for modified_file_ttl
+     rudder_server_settings:
+       rudder_url: "https://localhost/rudder"
+       name: "modified_file_ttl"
+       value: "22"
+       validate_certs: False
+
+   - name: Configure Rudder Settings for global_policy_mode
+     rudder_server_settings:
+       rudder_url: "https://localhost/rudder"
+       name: "global_policy_mode"
+       value: "audit"
+       validate_certs: False
+
+   - name: Configure Rudder Settings for rsyslog_reporting_protocol
+     rudder_server_settings:
+       rudder_url: "https://localhost/rudder"
+       name: "rsyslog_reporting_protocol"
+       value: "UDP"
+       validate_certs: False
+
+   - name: Configure Rudder Settings for rsyslog_reporting_protocol
+     rudder_server_settings:
+       rudder_url: "https://localhost/rudder"
+       name: "rsyslog_reporting_protocol"
+       value: "UDP"
+       validate_certs: False
+
+   - name: Configure Rudder Settings for display_recent_changes_graphs
+     rudder_server_settings:
+       rudder_url: "https://localhost/rudder"
+       name: "display_recent_changes_graphs"
+       value: "true"
+       validate_certs: False
+
+   - name: Configure Rudder Settings for log_all_reports
+     rudder_server_settings:
+       rudder_url: "https://localhost/rudder"
+       name: "log_all_reports"
+       value: "false"
+       validate_certs: False
+
+   - name: Configure Rudder Settings for enable_self_validation
+     rudder_server_settings:
+       rudder_url: "https://localhost/rudder"
+       name: "enable_self_validation"
+       value: "false"
+       validate_certs: False
+
+# modify Rudder settings for '/opt/rudder/jetty/etc/jetty.xml' file
+   - name: Modify Rudder settings for '/opt/rudder/jetty/etc/jetty.xml' file
+     xml:
+       path: /opt/rudder/jetty/etc/jetty.xml
+       xpath: /Configure/New/Set[5]/Property
+       attribute: default
+       value: "8192"
+   
+# modify Rudder settings for '/etc/default/rudder-jetty' file
+   - name: Set JAVA_XMX parameter to 1024 if its not the case
+     ini_file: 
+       path: /etc/default/rudder-jetty
+       section: 
+       option: JAVA_XMX
+       value: "1024" 
+
+# modify Rudder settings for '/opt/rudder/etc/rudder-web.properties' file
+   - name: Set 'waiting.inventory.queue.size' parameter
+     ini_file:
+       path: /opt/rudder/etc/rudder-web.properties
+       section:
+       option: waiting.inventory.queue.size
+       value: "50"
+
+# Create Rudder user
+   - name: Create rudder user name in '/opt/rudder/etc/rudder-users.xml' file
+     template:
+      src: rudder-users.xml.j2
+      dest: /opt/rudder/etc/rudder-users.xml
+
+# Define relay server address 
+    - name: Specify Rudder relay server address
+	      ansible.builtin.shell: | 
+            rudder server node-to-relay {{ relay_server_address }}

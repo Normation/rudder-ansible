@@ -1,0 +1,37 @@
+---
+galaxy_info:
+
+  author: Rudder
+  description: Ansible role to install Rudder Agent
+  company: Rudder
+  license: GPLv3
+  min_ansible_version: 2.9
+  
+  galaxy_tags:
+  - rudder
+  - automation
+  - compliance
+  - audit
+
+  platforms: 
+    - name: Ubuntu
+      versions:
+        - bionic
+        - focal
+
+    - name: Debian
+      versions:
+        - stretch 
+        - buster
+
+    - name: SLES
+      versions:
+         - 12
+         - 15
+
+    - name: EL
+      versions:
+        - 7
+        - 8
+
+dependencies: []
