@@ -2,12 +2,12 @@
 
 === Synposis
 
-* The following documentation present a role to deploy Rudder Server which make:  
+* The following documentation present a role to deploy Rudder Server which can:  
 
-1. Installing Rudder Root Server.
-2. Configuring Rudder settings via APIs Calls (Using a developed 'rudder_server_settings' module).
-3. Configuring Rudder settings via Ansible modules for configuration file editing.
-4. Configuring Rudder nodes settings via APIs Calls (Using a developed 'rudder_node_settings' module).
+1. Install Rudder Root Server.
+2. Configure Rudder settings via API Calls (Using a developed 'rudder_server_settings' module).
+3. Configure Rudder settings via Ansible modules for configuration file editing.
+4. Configure Rudder nodes settings via API Calls (Using a developed 'rudder_node_settings' module).
 
 == Prerequisites
 * In order to use the following scripts you're supposed to have Ansible installed on your machine which is the Ansible manager node.

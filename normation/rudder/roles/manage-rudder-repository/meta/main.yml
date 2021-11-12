@@ -1,9 +1,9 @@
 ---
 galaxy_info:
 
-  author: Rudder
+  author: Normation SAS
   description: Ansible role to manage your rudder repository (for subscriptors)
-  company: Rudder
+  company: Normation SAS
   license: GPLv3
   min_ansible_version: 2.9
   

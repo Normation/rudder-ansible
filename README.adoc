@@ -1,7 +1,7 @@
 :doc_dir: normation/rudder/docs
 
 = Rudder Ansible Collection
-Julien Briault <julien.briault@rudder.io>
+Normation SAS <rudder@rudder.io>
 
 == Synopsis
 This Ansible collection allows to manage and interact with one or more Rudder instances.
@@ -17,4 +17,4 @@ This collection allows you to:
             * _deploy-rudder-relay_ allows you to deploy a relay server and configure it.
             * _manage-rudder-repository_ allows the management of private Rudder repos.
 
-For more information on each of these parts, you can follow the user documentation **here**.
+For more information on each of these parts, you can follow the user documentation link:normation/rudder/docs/USAGE.adoc[here].

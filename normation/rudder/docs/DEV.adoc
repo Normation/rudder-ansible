@@ -8,6 +8,6 @@
 :dev_doc_dir: dev
 
 = Developer's documentation
-Julien Briault <julien.briault@rudder.io>
+Normation SAS <rudder@rudder.io>
 
 include::{dev_doc_dir}/RELEASE.adoc[]

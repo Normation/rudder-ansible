@@ -16,7 +16,7 @@ description:
     - "Plugin to recover Rudder nodes in Ansible."
 options:
 author:
-    - Julien Briault
+    - Normation SAS
 '''
 
 class InventoryModule(BaseInventoryPlugin):

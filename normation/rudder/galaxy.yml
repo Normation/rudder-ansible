@@ -4,16 +4,15 @@ version: 1.0.0
 readme: README.md
 
 authors:
-- Julien Briault <julien.briault[at]rudder.io>
+- Normation SAS <rudder@rudder.io>
 
 license:
 - GPL-3.0-or-later
 license_file: ''
 
-
 tags: []
 dependencies: {}
-repository: http://example.com/repository
-documentation: http://docs.example.com
-homepage: http://example.com
-issues: http://example.com/issue/tracker
+repository: https://github.com/normation/rudder-ansible
+documentation: https://docs.rudder.io
+homepage: https://rudder.io
+issues: https://issues.rudder.io

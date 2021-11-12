@@ -8,7 +8,7 @@
 :usage_doc_dir: usage/roles
 
 = User's documentation
-Julien Briault <julien.briault@rudder.io>
+Normation SAS <rudder@rudder.io>
 
 == Role example
 To call one of the roles available in this collection, you obviously need 2 files. 

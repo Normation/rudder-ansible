@@ -3,7 +3,7 @@
 # you should have received credentials allowing you to retrieve them. 
 # You must specify them below.
 
-rudder_publisher_url: https://publisher.normation.com/plugins
+rudder_publisher_url: https://download.rudder.io
 rudder_publiser_username: "YOUR USERNAME"
 rudder_publisher_password: "YOUR PASSWORD"
 
@@ -11,4 +11,4 @@ rudder_publisher_password: "YOUR PASSWORD"
 # By default, it will not be specified.
 rudder_publiser_proxy_url: ""
 rudder_publisher_proxy_user: ""
-rudder_publisher_proxy_password: ""
+rudder_publisher_proxy_password: ""Rudder
