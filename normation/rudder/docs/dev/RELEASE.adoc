@@ -1,0 +1,28 @@
+== Release
+This documentation refers to the creation of a release. 
+
+=== Build
+To create a release, you must first specify the version number of your release to generate.
+To do this, you must modify the `VERSION` file. You must enter the desired version number.
+
+Specify the desired version number as follows:
+----
+echo "1.0.0" > normation/rudder/VERSION
+----
+
+Once this is done, you can start the build of the release.
+To launch the build:
+
+----
+make release # or
+make build-plugin
+----
+
+The built plugin can be found in `normation/rudder/build`.
+
+=== Clean all
+To clean up all generated releases, you can use the command :
+----
+make clean-builds
+----
+This command will delete all previously generated builds.

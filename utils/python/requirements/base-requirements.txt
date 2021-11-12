@@ -1,0 +1,6 @@
+ansible==3.0.0
+ansible-lint==5.0.12
+isort==5.7.0
+pylint==2.7.2
+bandit==1.7.0
+black==21.4b2

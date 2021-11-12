@@ -1,0 +1,3 @@
+---
+# Specify the IP address of your rudder server (root) to join
+rudder_root_server: "IPADDRESS"

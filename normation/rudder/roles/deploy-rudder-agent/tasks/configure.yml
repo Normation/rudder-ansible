@@ -1,0 +1,5 @@
+    - name: Specify Rudder root server and send your first inventory
+	      ansible.builtin.shell: | 
+            rudder agent policy-server {{ rudder_root_server }}
+            rudder agent inventory
+            rudder agent run

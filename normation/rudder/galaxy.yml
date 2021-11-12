@@ -1,0 +1,18 @@
+namespace: normation
+name: rudder
+version: 1.0.0
+readme: README.md
+
+authors:
+- Normation SAS <rudder@rudder.io>
+
+license:
+- GPL-3.0-or-later
+license_file: ''
+
+tags: []
+dependencies: {}
+repository: https://github.com/normation/rudder-ansible
+documentation: https://docs.rudder.io
+homepage: https://rudder.io
+issues: https://issues.rudder.io
