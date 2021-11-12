@@ -1,0 +1,14 @@
+---
+# If you have subscribed to certain plugins, 
+# you should have received credentials allowing you to retrieve them. 
+# You must specify them below.
+
+rudder_publisher_url: https://download.rudder.io
+rudder_publiser_username: "YOUR USERNAME"
+rudder_publisher_password: "YOUR PASSWORD"
+
+# To access the plugin repo, you can use a proxy (if your network has one).
+# By default, it will not be specified.
+rudder_publiser_proxy_url: ""
+rudder_publisher_proxy_user: ""
+rudder_publisher_proxy_password: ""Rudder
