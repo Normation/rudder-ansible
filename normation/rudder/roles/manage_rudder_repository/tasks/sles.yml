@@ -1,0 +1,16 @@
+    - name: Adding Rudder Repo Key
+      rpm_key:
+        key: "{{ rudder_rpm_key_url }}"
+        state: present
+      become: true
+
+    - name: Adding Rudder Repo
+      zypper_repository:
+        name: Rudder
+        description: Rudder
+        state: present
+        repo: "{{ repository_url }}/rpm/{{ rudder_version|string }}/SLES_{{ ansible_distribution_major_version }}/"
+        enabled: yes
+        disable_gpg_check: false
+        runrefresh: "{{ update_cache }}"
+      become: true

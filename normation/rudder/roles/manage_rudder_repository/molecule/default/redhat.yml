@@ -1,0 +1,20 @@
+---
+- name: Rpm repo key must be included
+  ansible.builtin.rpm_key:
+    state: present
+    key: "{{ rpm_key_url }}"
+  register: repo_key
+  failed_when: (repo_key is changed) or (repo_key is failed)
+
+- name: Repository must be correct
+  ansible.builtin.yum_repository:
+    name: Rudder
+    description: Rudder
+    state: present
+    baseurl: "https://repository.rudder.io/rpm/6.2/RHEL_{{ ansible_distribution_major_version }}/"
+    enabled: yes
+    gpgcheck: true
+    gpgkey: "{{ rpm_key_url }}"
+    sslverify: yes
+  register: repo_config
+  failed_when: (repo_config is changed) or (repo_config is failed)

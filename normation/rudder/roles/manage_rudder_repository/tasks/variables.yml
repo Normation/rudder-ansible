@@ -1,0 +1,24 @@
+---
+- name: Repository to use (when no creds defined)
+  set_fact:
+    repository_name: "{{ repository_name | default(rudder_public_repo) }}"
+  when: repo_username is not defined
+
+- name: Repository to use (when creds defined)
+  set_fact:
+    repository_name: "{{ repository_name | default(rudder_private_repo) }}"
+  when: repo_username is defined
+
+- name: Define repository url with creds
+  set_fact:
+    repository_url: "https://{{ repo_username }}:{{ repo_password }}@{{ repository_name }}"
+  when: repo_username is defined
+
+- name: Define repository url without creds
+  set_fact:
+    repository_url: "https://{{ repository_name }}"
+  when: repo_username is not defined
+
+- name: Print repository
+  debug:
+    msg: "Rudder repository url: {{ repository_url }}"

@@ -1,0 +1,11 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include manage_rudder_repository"
+      include_role:
+        name: "manage_rudder_repository"
+      vars:
+        repo_username: my_user
+        repo_password: my_password
+        update_cache: no

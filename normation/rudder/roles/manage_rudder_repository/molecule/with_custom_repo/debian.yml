@@ -1,0 +1,16 @@
+---
+- name: Apt repo key must be imported
+  ansible.builtin.apt_key:
+    state: present
+    url: "{{ apt_key_url }}"
+  register: repo_key
+  failed_when: (repo_key is changed) or (repo_key is failed)
+
+- name: Repository must be correct
+  ansible.builtin.apt_repository:
+    state: present
+    repo: "deb https://my_private_repo/apt/6.2 {{ ansible_distribution_release }} main"
+    update_cache: no
+    validate_certs: yes
+  register: repo_config
+  failed_when: (repo_config is changed) or (repo_config is failed)

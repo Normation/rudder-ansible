@@ -1,19 +1,20 @@
 ---
 galaxy_info:
-
   author: Normation SAS
   description: Ansible role to manage your rudder repository (for subscriptors)
   company: Normation SAS
   license: GPLv3
   min_ansible_version: 2.9
-  
+  role_name: manage_rudder_repository
+  namespace: rudder_ansible
+
   galaxy_tags:
   - rudder
   - automation
   - compliance
   - audit
 
-  platforms: 
+  platforms:
     - name: Ubuntu
       versions:
         - bionic
@@ -21,7 +22,7 @@ galaxy_info:
 
     - name: Debian
       versions:
-        - stretch 
+        - stretch
         - buster
 
     - name: SLES

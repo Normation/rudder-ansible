@@ -1,4 +1,6 @@
 ---
+- include_tasks: variables.yml
+
 - include_tasks: sles.yml
   when: ansible_os_family == "Suse"
 

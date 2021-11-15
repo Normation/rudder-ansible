@@ -1,0 +1,15 @@
+---
+# This is an example playbook to execute Ansible tests.
+
+- name: Verify
+  hosts: all
+  vars:
+    apt_key_url: https://repository.rudder.io/apt/rudder_apt_key.pub
+    rpm_key_url: https://repository.rudder.io/rpm/rudder_rpm_key.pub
+  tasks:
+  - include_tasks: redhat.yml
+    when: ansible_os_family == "RedHat"
+  - include_tasks: debian.yml
+    when: ansible_os_family == "Debian"
+  - include_tasks: sles.yml
+    when: ansible_os_family == "Suse"

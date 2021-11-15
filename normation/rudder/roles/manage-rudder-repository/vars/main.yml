@@ -1,4 +1,0 @@
----
-# vars file for repository-with-subscription
-rudder_repo_username: "YOUR USERNAME"
-rudder_repo_password: "YOUR PASSWORD"

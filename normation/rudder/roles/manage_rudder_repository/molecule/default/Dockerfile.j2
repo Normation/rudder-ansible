@@ -1,0 +1,10 @@
+# Molecule managed
+
+{% if item.registry is defined %}
+FROM {{ item.registry.url }}/{{ item.image }}
+{% else %}
+FROM {{ item.image }}
+{% endif %}
+
+RUN if [ $(command -v apt-get) ]; then apt-get update && apt-get install -y python sudo bash ca-certificates gpg-agent && apt-get clean; fi
+RUN if [ $(command -v zypper) ]; then zypper --non-interactive install python python-xml sudo && zypper --non-interactive clean --all; fi
