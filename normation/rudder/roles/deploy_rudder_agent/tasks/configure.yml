@@ -1,0 +1,7 @@
+- name: Define policy server
+  ansible.builtin.copy:
+    content: "{{ policy_server }}"
+    dest: "{{ policy_server_file }}"
+    owner: root
+    group: root
+    mode: '0644'

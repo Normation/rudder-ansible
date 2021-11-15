@@ -1,0 +1,5 @@
+policy_server: rudder.server
+policy_server_file: /var/rudder/cfengine-community/policy_server.dat
+rudder_repository_username: ""
+rudder_repository_password: ""
+rudder_repository: repository.rudder.io

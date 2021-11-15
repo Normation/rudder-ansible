@@ -8,6 +8,8 @@ platforms:
     image: geerlingguy/docker-ubuntu2004-ansible
   - name: centos8
     image: geerlingguy/docker-centos8-ansible
+  - name: sles15
+    image: opensuse/leap:latest
 provisioner:
   name: ansible
 verifier:

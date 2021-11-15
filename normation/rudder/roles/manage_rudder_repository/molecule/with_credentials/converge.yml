@@ -6,6 +6,7 @@
       include_role:
         name: "manage_rudder_repository"
       vars:
-        repo_username: my_user
-        repo_password: my_password
+        repository: "download.rudder.io"
+        repository_username: "my_user"
+        repository_password: "my_password"
         update_cache: no

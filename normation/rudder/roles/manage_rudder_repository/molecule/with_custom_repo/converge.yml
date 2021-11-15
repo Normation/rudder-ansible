@@ -6,7 +6,7 @@
       include_role:
         name: "manage_rudder_repository"
       vars:
-        repository_name: my_private_repo
+        repository: my_private_repo
         update_cache: no
 
 

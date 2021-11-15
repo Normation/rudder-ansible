@@ -2,7 +2,9 @@
 rudder_version: 6.2
 
 rudder_public_repo: repository.rudder.io
-rudder_private_repo: download.rudder.io
+repository: "repository.rudder.io"
+repository_username: ""
+repository_password: ""
 update_cache: yes
 
 rudder_apt_key_url: "https://{{ rudder_public_repo }}/apt/rudder_apt_key.pub"
