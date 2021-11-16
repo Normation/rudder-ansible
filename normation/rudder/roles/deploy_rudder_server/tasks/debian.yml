@@ -1,0 +1,4 @@
+- name: Install Rudder Agent
+  apt:
+    name: rudder-server-root
+    state: present
