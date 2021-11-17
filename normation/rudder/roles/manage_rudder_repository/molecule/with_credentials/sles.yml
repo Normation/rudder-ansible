@@ -1,0 +1,46 @@
+---
+- name: Define const
+  set_fact:
+    repository_username: "my_user"
+    repository_password: "my_password"
+
+- name: Define vars
+  set_fact:
+    sles_repo_url: "https://{{ repository_username }}@download.rudder.io/rpm/6.2/SLES_{{ ansible_distribution_major_version }}/"
+
+- name: Rpm repo key must be included
+  ansible.builtin.rpm_key:
+    state: present
+    key: "{{ rpm_key_url }}"
+  register: repo_key
+  failed_when: (repo_key is changed) or (repo_key is failed)
+
+- name: Repository must be correct
+  ansible.builtin.zypper_repository:
+    name: Rudder
+    description: Rudder
+    state: present
+    repo: "{{ sles_repo_url }}"
+    enabled: yes
+    disable_gpg_check: false
+    runrefresh: no
+  register: repo_config
+  failed_when: (repo_config is changed) or (repo_config is failed)
+
+- name: Repository credentials must be correct (username)
+  community.general.ini_file:
+    path: /root/.zypp/credentials.cat
+    section: "{{ sles_repo_url }}"
+    option: "username"
+    value: "{{ repository_username }}"
+  register: repo_username
+  failed_when: (repo_username is changed) or (repo_username is failed)
+
+- name: Repository credentials must be correct (password)
+  community.general.ini_file:
+    path: /root/.zypp/credentials.cat
+    section: "{{ sles_repo_url }}"
+    option: "password"
+    value: "{{ repository_password }}"
+  register: repo_password
+  failed_when: (repo_password is changed) or (repo_password is failed)

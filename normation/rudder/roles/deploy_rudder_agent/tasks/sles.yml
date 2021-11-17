@@ -1,0 +1,6 @@
+- name: Install Rudder Agent
+  zypper:
+    name: rudder-agent
+    state: latest
+  notify:
+    - Send inventory

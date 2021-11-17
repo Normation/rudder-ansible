@@ -66,7 +66,7 @@ options:
       - Choosing either to ignore or not Rudder certificate validation. Defaults to true.
     required: false
     type: boolean
-    
+
   node_id:
     description:
       - Define the identifier of the node to be configured
@@ -78,37 +78,37 @@ options:
       - Set the policy mode to (default, enforce or audit)
     required: false
     type: str
-    
+
   state:
     description:
       - Set the node life cycle state to (enabled, ignored, empty-policies, initializing or preparing-eol)
     required: false
     type: str
-    
+
   properties:
     description:
       - Define a properties (with "name:" and "value:")
     required: false
     type: dict
-    
+
   agent_key:
     description:
       - Define information about agent key or certificate (update PEM with ("value:<PEM>") and status with "status:<certified|undefined>")
     required: false
     type: dict
-    
+
   include:
     description:
       - Level of information to include from the node inventory.
     required: false
     type: str
-    
+
   query:
     description:
       - The criterion you want to find for your nodes.
     required: false
     type: dict
-    
+
 """
 
 EXAMPLES = r"""
@@ -117,7 +117,7 @@ EXAMPLES = r"""
         rudder_url: "https://my.rudder.server/rudder"
         node_id: my_node_id
         policy_mode: enforce
-        
+
   - name: Complex Modify Rudder Node Settings
     rudder_node_settings:
         rudder_url: "https://my.rudder.server/rudder"
@@ -130,7 +130,7 @@ EXAMPLES = r"""
           name: "env_type"
           value: "production"
         validate_certs: False
-        
+
   - name: Complex Modify Rudder Node Settings with query
     rudder_node_settings:
         rudder_url: "https://my.rudder.server/rudder"

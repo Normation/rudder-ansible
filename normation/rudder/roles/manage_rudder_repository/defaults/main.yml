@@ -1,0 +1,11 @@
+---
+rudder_version: 6.2
+
+rudder_public_repo: repository.rudder.io
+repository: "repository.rudder.io"
+repository_username: ""
+repository_password: ""
+update_cache: yes
+
+rudder_apt_key_url: "https://{{ rudder_public_repo }}/apt/rudder_apt_key.pub"
+rudder_rpm_key_url: "https://{{ rudder_public_repo }}/rpm/rudder_rpm_key.pub"

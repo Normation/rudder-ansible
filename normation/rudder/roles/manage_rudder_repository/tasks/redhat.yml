@@ -1,0 +1,17 @@
+- name: Adding Rudder Repo Key
+  rpm_key:
+    key: "{{ rudder_rpm_key_url }}"
+    state: present
+  become: true
+
+- name: Adding Rudder Repo
+  yum_repository:
+    name: Rudder
+    description: Rudder
+    state: present
+    baseurl: "{{ repository_url }}/rpm/{{ rudder_version|string }}/RHEL_{{ ansible_distribution_major_version }}/"
+    enabled: yes
+    gpgcheck: true
+    gpgkey: "{{ rudder_rpm_key_url }}"
+    sslverify: yes
+  become: true

@@ -1,0 +1,3 @@
+- name: Send inventory
+  ansible.builtin.command: rudder agent inventory
+  when: molecule_yml is not defined
