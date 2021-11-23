@@ -1,0 +1,12 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include rudder_repository"
+      include_role:
+        name: "rudder_repository"
+      vars:
+        repository: "download.rudder.io"
+        repository_username: "my_user"
+        repository_password: "my_password"
+        update_cache: no

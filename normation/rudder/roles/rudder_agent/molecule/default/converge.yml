@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include rudder_agent"
+      include_role:
+        name: "rudder_agent"

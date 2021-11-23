@@ -1,3 +1,0 @@
-    - name: plugins | Update plugin list
-	      ansible.builtin.shell: | 
-            rudder package update
