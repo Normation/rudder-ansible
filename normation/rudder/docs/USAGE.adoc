@@ -1,5 +1,5 @@
 ////
-    Copyright: (c) 2021, Normation
+    Copyright: (c) 2021, Rudder
     GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
     Documentation for Rudder/Ansible users.
@@ -8,10 +8,10 @@
 :usage_doc_dir: usage/roles
 
 = User's documentation
-Normation SAS <rudder@rudder.io>
+Rudder <rudder@rudder.io>
 
 == Role example
-To call one of the roles available in this collection, you obviously need 2 files. 
+To call one of the roles available in this collection, you obviously need 2 files.
 The first is the _inventory_ file. The second is your playbook.
 
 include::{usage_doc_dir}/MAIN.adoc[]

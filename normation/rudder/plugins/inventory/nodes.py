@@ -16,18 +16,18 @@ description:
     - "Plugin to recover Rudder nodes in Ansible."
 options:
 author:
-    - Normation SAS
+    - Rudder
 '''
 
 class InventoryModule(BaseInventoryPlugin):
     """An example inventory plugin."""
 
-    NAME = 'normation.rudder.nodes'
+    NAME = 'rudder.nodes'
 
     def verify_file(self, path):
         """Verify that the source file can be processed correctly.
 
-        Parameters: 
+        Parameters:
             path:AnyStr The path to the file that needs to be verified
 
         Returns:
