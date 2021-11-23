@@ -1,6 +1,0 @@
-- name: Converge
-  hosts: all
-  tasks:
-    - name: "Include deploy_rudder_server"
-      include_role:
-        name: "deploy_rudder_server"

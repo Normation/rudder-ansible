@@ -1,4 +1,0 @@
-# /!\ TIPS /!\ You can list all the plugins you have available using the command: 'sudo rudder package list --all'
-    - name: plugins | Install CVE plugin
-	      ansible.builtin.shell: | 
-            rudder package install rudder-plugin-cve

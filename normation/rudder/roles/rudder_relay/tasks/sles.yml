@@ -1,0 +1,6 @@
+- name: Install Rudder Agent
+  zypper:
+    name: rudder-server-relay
+    state: latest
+  notify:
+    - Send inventory

@@ -1,0 +1,6 @@
+- name: Install Rudder Agent
+  apt:
+    name: rudder-server-relay
+    state: present
+  notify:
+    - Send inventory

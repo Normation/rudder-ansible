@@ -1,0 +1,7 @@
+- name: Define policy server
+  ansible.builtin.copy:
+    content: "{{ policy_server }}"
+    dest: "/var/rudder/cfengine-community/policy_server.dat"
+    owner: root
+    group: root
+    mode: '0644'

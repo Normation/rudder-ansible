@@ -1,7 +1,0 @@
-    - name: plugins | Configure publisher repository
-      ansible.builtin.template:
-        src: rudder-pkg.conf.j2
-        dest: /opt/rudder/etc/rudder-pkg/rudder-pkg.conf
-        owner: rudder
-        group: rudder
-        mode: '0644'
