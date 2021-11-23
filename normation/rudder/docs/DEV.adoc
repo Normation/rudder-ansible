@@ -8,6 +8,6 @@
 :dev_doc_dir: dev
 
 = Developer's documentation
-Rudder <rudder@rudder.io>
+Rudder <dev@rudder.io>
 
 include::{dev_doc_dir}/RELEASE.adoc[]
