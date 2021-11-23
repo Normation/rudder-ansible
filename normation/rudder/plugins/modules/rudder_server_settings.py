@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
-# Copyright: (c) 2020, Normation
+# Copyright: (c) 2020, Rudder
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 
@@ -16,7 +16,7 @@ DOCUMENTATION = """
 ---
 module: rudder_server_settings
 author:
-  - Normation
+  - Rudder
 version_added: '2.9'
 short_description: Configure Rudder Server 6.2 parameters via APIs
 requirements:

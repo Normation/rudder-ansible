@@ -1,3 +1,3 @@
-# Ansible Collection - normation.rudder
+# Ansible Collection - rudder
 
 Documentation for the collection.
