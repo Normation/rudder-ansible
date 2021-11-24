@@ -380,7 +380,9 @@ class RudderNodeSettingsInterface(object):
 
         else:
             module.fail_json(
-                failed=True, msg=f"Unsupported cfg type: '{cfg_type}'"
+                failed=True, msg=f"Unsupported cfg type: '{cfg_type}'".format(
+                  cfg_type=cfg_type
+                )
             )
 
     def set_NodePendingValue(self, node_id):
