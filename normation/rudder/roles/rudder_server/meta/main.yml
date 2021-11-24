@@ -38,3 +38,4 @@ dependencies:
       repository_username: "{{ rudder_repository_username }}"
       repository_password: "{{ rudder_repository_password }}"
       update_cache: yes
+      rudder_version: "{{ server_version }}"
