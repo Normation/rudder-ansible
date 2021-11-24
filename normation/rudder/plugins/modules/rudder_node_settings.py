@@ -217,14 +217,14 @@ class RudderNodeSettingsInterface(object):
 
     def _send_request(
         self,
-        path: str,
+        path,
         data=None,
         serialize_json=None,
         headers=None,
         method="GET",
         verify=False,
         params=None,
-    ) -> str:
+    ):
         """Send HTTP request
 
         Args:
@@ -294,7 +294,7 @@ class RudderNodeSettingsInterface(object):
                 ),
             )
 
-    def set_NodeSettingValue(self, node_id: str, cfg_type: str) -> str:
+    def set_NodeSettingValue(self, node_id, cfg_type):
         """Function to define a setting or properties via the API
 
         Args:
@@ -383,7 +383,7 @@ class RudderNodeSettingsInterface(object):
                 failed=True, msg=f"Unsupported cfg type: '{cfg_type}'"
             )
 
-    def set_NodePendingValue(self, node_id: str):
+    def set_NodePendingValue(self, node_id):
         """Function to define pending status for a specific node via the API
 
         Args:
