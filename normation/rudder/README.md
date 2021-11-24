@@ -15,7 +15,7 @@ Debian, RedHat and SUSE based systems.
 rudder_agent
 ------------
 
-# Role variables:
+### Role variables: ###
 
 This role does not auto accept the node. It only configures the repository
 and installs the packages.
@@ -26,7 +26,7 @@ and installs the packages.
 - `rudder_repository_username`: Optional username to pass to repository if using credentials
 - `rudder_repository_password`: Optional password to pass to repository if using credentials
 
-# Example Playbook:
+### Example Playbook: ###
 ```yaml
 - name: Install Rudder agents
   hosts: agents
@@ -43,14 +43,14 @@ and installs the packages.
 rudder_server
 ------------
 
-# Role variables:
+### Role variables: ###
 
 - `server_version`: Rudder version(default: `6.2`)
 - `rudder_repository`: Rudder repository domain (default: `repository.rudder.io`)
 - `rudder_repository_username`: Optional username to pass to repository if using credentials
 - `rudder_repository_password`: Optional password to pass to repository if using credentials
 
-# Example Playbook:
+### Example Playbook: ###
 ```yaml
 - name: Install Rudder Server
   hosts: server
@@ -69,14 +69,14 @@ rudder_relay
 This role does not auto accept the node nor promotes it to relay. It only configures the repository
 and installs the packages.
 
-# Role variables:
+### Role variables: ###
 
 - `relay_version`: Rudder version(default: `6.2`)
 - `rudder_repository`: Rudder repository domain (default: `repository.rudder.io`)
 - `rudder_repository_username`: Optional username to pass to repository if using credentials
 - `rudder_repository_password`: Optional password to pass to repository if using credentials
 
-# Example Playbook:
+### Example Playbook: ###
 ```yaml
 - name: Install Rudder Server
   hosts: server
@@ -95,7 +95,7 @@ rudder_repository
 This role configures the Rudder repositories, it is included as dependencies in each of
 the roles listed above.
 
-# Role variables:
+### Role variables: ###
 
 - `rudder_version`: Rudder version(default: `6.2`)
 - `repository`: Rudder repository domain (default: `repository.rudder.io`)
@@ -105,7 +105,7 @@ the roles listed above.
 - `rudder_apt_key_url`: Repository key for APT based repositories
 - `rudder_rpm_key_url`: Repository key for RPM based repositories
 
-# Example Playbook:
+### Example Playbook: ###
 ```yaml
 - name: Install Rudder Server
   hosts: server
