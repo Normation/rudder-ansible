@@ -26,9 +26,6 @@ pipeline {
         steps {
             sh "mkdir -p ${collection_path}"
             sh "mv * ${collection_path} || true"
-            sh "ls -la / || true"
-            sh "id -u root"
-            //withEnv(["DEFAULT_LOCAL_TMP=${env.WORKSPACE}/tmp", "HOME=${env.WORKSPACE}"]) {
             dir(collection_path) {
                 sh script: 'ansible-test sanity', label: 'ansible sanity checks'
             }
