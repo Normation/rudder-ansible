@@ -1,5 +1,5 @@
 ---
-rudder_version: 6.2
+server_version: 6.2
 rudder_repository_username: ""
 rudder_repository_password: ""
 rudder_repository: repository.rudder.io

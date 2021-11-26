@@ -2,3 +2,4 @@ policy_server: rudder.server
 rudder_repository_username: ""
 rudder_repository_password: ""
 rudder_repository: repository.rudder.io
+agent_version: 6.2
