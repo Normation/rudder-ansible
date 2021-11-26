@@ -1,6 +1,0 @@
----
-- hosts: RudderServer
-  connection: local
-  roles:
-    - deploy-rudder-server
- 
