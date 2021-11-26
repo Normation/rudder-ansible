@@ -1,0 +1,33 @@
+#!/bin/bash
+set -e
+
+test_role()
+{
+  cd roles/$1 && molecule test
+}
+
+test_typos()
+{
+  typos
+}
+
+if [ "$1" = "--rudder_relay" ]; then
+  test_role rudder_relay
+  exit 0
+elif [ "$1" = "--rudder_server" ]; then
+  test_role rudder_server
+  exit 0
+elif [ "$1" = "--rudder_agent" ]; then
+  test_role rudder_agent
+  exit 0
+elif [ "$1" = "--rudder_repository" ]; then
+  test_role rudder_repository
+  exit 0
+elif [ "$1" = "--typos" ]; then
+  test_typos
+  exit 0
+else
+  test_typos
+  exit 0
+fi
+

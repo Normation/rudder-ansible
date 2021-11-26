@@ -1,0 +1,10 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include rudder_repository"
+      include_role:
+        name: "rudder_repository"
+      vars:
+        repository: my_private_repo
+        update_cache: no
