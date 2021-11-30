@@ -69,8 +69,6 @@ This collection allows you to:
   - _rudder_relay_ allows you to deploy a relay server and configure it.
   - _rudder_repository_ allows the management of private Rudder repos.
 
-You can find more information and examples of use [here](https://github.com/Normation/rudder-ansible/blob/master/USAGE.md).
-
 ## Getting started
 
 ### Installation
