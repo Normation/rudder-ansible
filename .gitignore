@@ -1,5 +1,9 @@
 .vagrant/
 venv/
 normation/rudder/build/
+plugins/modules/.hypothesis/
+plugins/modules/__pycache__/
+__pycache__/
+*.py[cod]
 NOTES*
 build/
