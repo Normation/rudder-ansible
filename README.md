@@ -78,7 +78,7 @@ To install the collection directly from this git repository, you must create a *
 collections:
   - name: https://github.com/Normation/rudder-ansible.git
     type: git
-    version: devel
+    version: master
 ```
 
 Then execute the following command:
