@@ -10,7 +10,17 @@
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
-        <li><a href="#installation">Installation</a></li>
+        <li>
+          <a href="#installation">Installation</a>
+          <ul>
+          <li>
+            <a href="#with-ansible-210">With Ansible >= 2.10</a>
+          </li>
+          <li>
+            <a href="#with-ansible-210">With Ansible < 2.9</a>
+          </li>
+          </ul>
+        </li>
       </ul>
     </li>
     <li><a href="#usage">Usage</a>
@@ -51,6 +61,12 @@
         </li>
       </ul>
     </li>
+        <li>
+      <a href="#going-further">Going further</a>
+      <ul>
+        <li><a href="#uninstall-the-collection">Uninstall the collection</a></li>
+      </ul>
+    </li>
   </ol>
 </details>
 
@@ -72,6 +88,8 @@ This collection allows you to:
 ## Getting started
 
 ### Installation
+
+#### With Ansible >= 2.10
 To install the collection directly from this git repository, you must create a *requirements.yml* file and add the following content:
 
 ```yml
@@ -85,6 +103,14 @@ Then execute the following command:
 
 ```bash
 ansible-galaxy install -r requirements.yml
+```
+
+#### With Ansible < 2.9
+
+You must first clone the current git repo, move to the directory of the cloned repo and then use the following command:
+
+```bash
+ansible-galaxy collection install .
 ```
 
 ## Role usage
@@ -207,4 +233,16 @@ the roles listed above.
             repository: "download.rudder.io"
             repository_username: "my_user"
             repository_password: "my_password"
+```
+
+## Going further
+
+### Uninstall the collection
+
+To delete the collection, if you have not changed the default settings, is stored in `~/.ansible/collections/ansible_collections/`. So you will have to delete the directory named "*rudder*".
+
+You can use the following command to see if the collection is correctly installed and to see where it is installed.
+
+```bash
+ansible-galaxy collection list
 ```
