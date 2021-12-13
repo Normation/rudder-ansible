@@ -428,13 +428,10 @@ class RudderNodeSettingsInterface(object):
             method="GET",
         )
 
-        # Init list
         list_id = []
 
         for value in response["data"]["nodes"]:
             list_id.append(value["id"])
-
-        # logging.debug(list_id) # for debug
 
         return list_id
 
@@ -562,10 +559,7 @@ def main():
         supports_check_mode=False,
     )
 
-    # rudder_url = module.params['rudder_url']
-    # rudder_token = module.params['rudder_token']
     rudder_node_id = module.params["node_id"]
-    # rudder_validate_certs = module.params['validate_certs']
     rudder_properties = module.params["properties"]
     rudder_policy_mode = module.params["policy_mode"]
     rudder_state = module.params["state"]
@@ -588,7 +582,6 @@ def main():
 
     for node_id in all_rudder_node_id:
         if rudder_policy_mode is not None and rudder_policy_mode != "keep":
-            # logging.debug(f"Send policy mode: '{rudder_policy_mode}' for {rudder_node_id}!")
             try:
                 rudder_node_iface.set_NodeSettingValue(
                     node_id=node_id, cfg_type="policy_mode"
@@ -598,7 +591,6 @@ def main():
                     msg=f"Error during 'policy_mode' configuration for node ID: {node_id}"
                 )
         if rudder_state is not None:
-            # logging.debug(f"Send node lifecycle state: '{rudder_state}' for {rudder_node_id}!")
             try:
                 rudder_node_iface.set_NodeSettingValue(
                     node_id=node_id, cfg_type="state"
@@ -608,7 +600,6 @@ def main():
                     msg=f"Error during the configuration of the state (lifecycle) for node ID: {node_id}"
                 )
         if rudder_pending is not None:
-            # logging.debug(f"Send pending status: '{rudder_pending}' for {rudder_node_id}!")
             try:
                 rudder_node_iface.set_NodePendingValue(node_id=node_id)
             except:
@@ -644,9 +635,8 @@ def main():
     module.exit_json(
         failed=False,
         changed=True,
-        meta=module.params,  # for debug (remove this)
+        meta=module.params,
     )
-
 
 if __name__ == "__main__":
     main()
