@@ -144,7 +144,7 @@ class RudderNodeSettingsInterface(object):
     def __init__(self, module):
         self._module = module
         self.headers = {"Content-Type": "application/json"}
-        self.validate_certs = False
+        self.validate_certs = True
         self.rudder_url = "https://localhost/rudder"
         
         # Get local API Token (when is not specified)
@@ -153,7 +153,6 @@ class RudderNodeSettingsInterface(object):
                 "X-API-Token": module.params["rudder_token"],
                 "Content-Type": "application/json",
             }
-            # logging.info(self.headers)  # for debug (remove this)
         else:
             with open("/var/rudder/run/api-token") as f:
                 token = f.read()
@@ -163,7 +162,9 @@ class RudderNodeSettingsInterface(object):
             }
         if module.params.get("rudder_url", None):
             self.rudder_url = module.params["rudder_url"]
-            # logging.info(self.rudder_url)  # for debug (remove this)
+        else:
+            self.validate_certs = False
+            
         if module.params.get("validate_certs", None):
             self.validate_certs = module.params["validate_certs"]
 

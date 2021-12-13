@@ -76,9 +76,8 @@ __metaclass__ = type
 class RudderSettingsInterface(object):
     def __init__(self, module):
         self._module = module
-        # {{{ Authentication header
         self.headers = {"Content-Type": "application/json"}
-        self.validate_certs = False
+        self.validate_certs = True
         self.rudder_url = "https://localhost/rudder"
         
         if module.params.get("rudder_token", None):
@@ -93,9 +92,11 @@ class RudderSettingsInterface(object):
                 "X-API-Token": token,
                 "Content-Type": "application/json",
             }
-        # }}}
+
         if module.params.get("rudder_url", None):
             self.rudder_url = module.params.get("rudder_url")
+        else:
+            self.validate_certs = False
 
         if module.params.get("validate_certs", None):
             self.validate_certs = module.params.get("validate_certs")
