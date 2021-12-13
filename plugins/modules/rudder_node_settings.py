@@ -22,18 +22,6 @@ else:
 
 __metaclass__ = type
 
-# import logging
-
-# {{{ for debug (remove this)
-# logging.basicConfig(
-#     filename="/tmp/rudder-ansible.log",  # tail -f -n0 /var/log/rudder/ansible/ansible_debug.log
-#     format='[%(asctime)s %(levelname)s %(module)s - %(funcName)s: %(message)s',
-#     datefmt='%Y-%m-%d %H:%M:%S]',
-#     # encoding='utf-8',
-#     level=logging.DEBUG
-# )
-# }}}
-
 # Disable SSL certificate warning messages
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
@@ -157,13 +145,14 @@ class RudderNodeSettingsInterface(object):
         self._module = module
         self.headers = {"Content-Type": "application/json"}
         self.validate_certs = True
+        self.rudder_url = "https://localhost/rudder"
+        
         # Get local API Token (when is not specified)
         if module.params.get("rudder_token", None):
             self.headers = {
                 "X-API-Token": module.params["rudder_token"],
                 "Content-Type": "application/json",
             }
-            # logging.info(self.headers)  # for debug (remove this)
         else:
             with open("/var/rudder/run/api-token") as f:
                 token = f.read()
@@ -173,10 +162,9 @@ class RudderNodeSettingsInterface(object):
             }
         if module.params.get("rudder_url", None):
             self.rudder_url = module.params["rudder_url"]
-            # logging.info(self.rudder_url)  # for debug (remove this)
         else:
-            self.rudder_url = "https://localhost/rudder"
             self.validate_certs = False
+            
         if module.params.get("validate_certs", None):
             self.validate_certs = module.params["validate_certs"]
 
