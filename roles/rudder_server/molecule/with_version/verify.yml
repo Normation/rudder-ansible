@@ -1,0 +1,21 @@
+---
+# This is an example playbook to execute Ansible tests.
+
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Get rudder cli path
+      command: which rudder
+      register: rudder_path
+
+    - name: Rudder-agent must be installed
+      assert:
+        that:
+          - rudder_path.stdout == "/usr/bin/rudder"
+
+    - include_tasks: redhat.yml
+      when: ansible_os_family == "RedHat"
+    - include_tasks: debian.yml
+      when: ansible_os_family == "Debian"
+    - include_tasks: sles.yml
+      when: ansible_os_family == "Suse"

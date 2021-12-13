@@ -1,0 +1,16 @@
+- name: Install Rudder Agent
+  apt:
+    name: rudder-server-root
+    state: present
+  register: server_installed
+  failed_when: (server_installed is changed) or (server_installed is failed)
+
+- name: Repository must be correct
+  ansible.builtin.apt_repository:
+    state: present
+    repo: "deb https://repository.rudder.io/apt/7.0.0 {{ ansible_distribution_release }} main"
+    update_cache: no
+    validate_certs: yes
+  register: repo_config
+  failed_when: (repo_config is changed) or (repo_config is failed)
+
