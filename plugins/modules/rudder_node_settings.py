@@ -281,20 +281,17 @@ class RudderNodeSettingsInterface(object):
                 ),
             )
             
-    def check_NodeSettingValue(self, node_id, cfg_type) -> bool:
+    def check_NodeSettingValue(self, node_id, values: dict) -> bool:
         """Function to check if a setting or property as already set on node via the API
         
         Args:
-            node_id (str): ID of the Rudder node to configure
+            values (str): Values to check in API
         
         Returns:
             bool: Return if yes (true) or no (false) a value as already set (default: False)
         """
         url = "/api/latest/nodes/{node_id}\?include=full".format(node_id=self.node_id)
-        
-        if cfg_type == "policy_mode":
-            pass
-        
+
         return False
 
     def set_NodeSettingValue(self, node_id, cfg_type):
