@@ -581,44 +581,24 @@ def main():
             all_rudder_node_id.append(item)
 
     for node_id in all_rudder_node_id:
-        if rudder_policy_mode is not None and rudder_policy_mode != "keep":
-            try:
-                rudder_node_iface.set_NodeSettingValue(
-                    node_id=node_id, cfg_type="policy_mode"
-                )
-            except:
-                module.fail_json(
-                    msg=f"Error during 'policy_mode' configuration for node ID: {node_id}"
-                )
-        if rudder_state is not None:
-            try:
-                rudder_node_iface.set_NodeSettingValue(
-                    node_id=node_id, cfg_type="state"
-                )
-            except:
-                module.fail_json(
-                    msg=f"Error during the configuration of the state (lifecycle) for node ID: {node_id}"
-                )
-        if rudder_pending is not None:
-            try:
-                rudder_node_iface.set_NodePendingValue(node_id=node_id)
-            except:
-                module.fail_json(
-                    msg=f"Error during node status configuration for: {node_id}"
-                )
+        try:
+            if rudder_policy_mode is not None and rudder_policy_mode != "keep":
+                    rudder_node_iface.set_NodeSettingValue(
+                        node_id=node_id, cfg_type="policy_mode"
+                    )
+            if rudder_state is not None:
+                    rudder_node_iface.set_NodeSettingValue(
+                        node_id=node_id, cfg_type="state"
+                    )
+            if rudder_pending is not None:
+                    rudder_node_iface.set_NodePendingValue(node_id=node_id)
 
-        if rudder_properties is not None:
-            try:
-                rudder_node_iface.set_NodeSettingValue(
-                    node_id=node_id, cfg_type="properties"
-                )
-            except:
-                module.fail_json(
-                    msg=f"Error during definition of nodes properties for: {node_id}"
-                )
+            if rudder_properties is not None:
+                    rudder_node_iface.set_NodeSettingValue(
+                        node_id=node_id, cfg_type="properties"
+                    )
 
-        if rudder_agent_key is not None:
-            try:
+            if rudder_agent_key is not None:
                 if module.params["agent_key"]["value"] is None:
                     rudder_node_iface.set_NodeSettingValue(
                         node_id=node_id, cfg_type="agent_key_without_value"
@@ -627,10 +607,9 @@ def main():
                     rudder_node_iface.set_NodeSettingValue(
                         node_id=node_id, cfg_type="agent_key_with_value"
                     )
-            except:
-                module.fail_json(
-                    msg=f"Error during agentKey configuration for: {node_id}"
-                )
+        except requests.exceptions.RequestException as err:
+            module.fail_json(err)
+
 
     module.exit_json(
         failed=False,
