@@ -608,7 +608,7 @@ def main():
                         node_id=node_id, cfg_type="agent_key_with_value"
                     )
         except requests.exceptions.RequestException as err:
-            module.fail_json(err)
+            module.fail_json(msg=err)
 
 
     module.exit_json(
