@@ -1,9 +1,9 @@
 ---
 galaxy_info:
-  role_name: rudder_agent
+  role_name: rudder_agent_linux
   namespace: rudder
   author: Rudder
-  description: Ansible role to install Rudder Agent
+  description: Ansible role to install Rudder Agent on GNU/Linux
   company: Rudder
   license: GPLv3
   min_ansible_version: 2.9

@@ -127,7 +127,7 @@ A set of [Ansible][ansible] roles for installing and managing [Rudder][rudder] s
 [ansible]: http://www.ansible.com/
 [rudder]: http://www.rudder.io/
 
-### rudder_agent
+### rudder_agent_linux
 
 #### Role variables
 
@@ -149,7 +149,7 @@ and installs the packages.
   collections:
     - rudder.rudder
       roles:
-        - role: rudder.rudder.rudder_agent
+        - role: rudder.rudder.rudder_agent_linux
           vars:
             agent_version: 6.2
 ```

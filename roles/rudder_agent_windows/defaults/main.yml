@@ -1,0 +1,6 @@
+---
+policy_server: rudder.server
+rudder_repository_username: ""
+rudder_repository_password: ""
+rudder_repository: download.rudder.io
+agent_version: 6.2
