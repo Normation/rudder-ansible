@@ -281,7 +281,7 @@ class RudderNodeSettingsInterface(object):
                 ),
             )
             
-    def check_NodeSettingValue(self, node_id, values: dict) -> bool:
+    def check_NodeSettingValue(self, node_id, values):
         """Function to check if a setting or property as already set on node via the API
         
         Args:
