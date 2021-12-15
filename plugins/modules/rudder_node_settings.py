@@ -281,7 +281,7 @@ class RudderNodeSettingsInterface(object):
                 ),
             )
             
-    def check_NodeSettingValue(self, node_id, property_name, property_value):
+    def check_NodeSettingValue(self, property_name, property_value):
         """Function to check if a setting or property as already set on node via the API
         
         Args:
@@ -319,7 +319,7 @@ class RudderNodeSettingsInterface(object):
         
         return False
 
-    def set_NodeSettingValue(self, node_id, cfg_type):
+    def set_NodeSettingValue(self, cfg_type):
         """Function to define a setting or properties via the API
 
         Args:
@@ -422,7 +422,7 @@ class RudderNodeSettingsInterface(object):
                 failed=True, msg=f"Unsupported cfg type: '{cfg_type}'"
             )
 
-    def set_NodePendingValue(self, node_id):
+    def set_NodePendingValue(self):
         """Function to define pending status for a specific node via the API
 
         Args:
