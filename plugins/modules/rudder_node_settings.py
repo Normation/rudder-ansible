@@ -281,24 +281,41 @@ class RudderNodeSettingsInterface(object):
                 ),
             )
             
-    def check_NodeSettingValue(self, node_id, data):
+    def check_NodeSettingValue(self, node_id, property_name, property_value):
         """Function to check if a setting or property as already set on node via the API
         
         Args:
             values (str): Values to check in API
+            property_name (str): Name of your node property to check
+            property_value (str): Value of your node property to check
         
         Returns:
             bool: Return if yes (true) or no (false) a value as already set (default: False)
         """
         url = "/api/latest/nodes/{node_id}\?include=default".format(node_id=self.node_id)
 
-        request = self._send_request(
-            path=url,
-            data=data,
-            headers=self.headers,
-            serialize_json=False,
-            method="POST",
-        )
+        if property_name is not None and property_value is not None:
+            response = self._send_request(
+                path=url,
+                headers=self.headers,
+                serialize_json=False,
+                method="GET",
+            )
+            
+            binary = response.content
+            output = json.loads(binary)
+            
+            path = output['data']['nodes'][0]['properties']
+
+            for out in path:
+                name = out['name']
+                value = out['value']
+                
+                name_to_parse = property_name in name
+                value_to_parse = property_value in value
+                
+                if name_to_parse and value_to_parse:
+                    return True
         
         return False
 
@@ -377,14 +394,28 @@ class RudderNodeSettingsInterface(object):
                     }
                 ]
             }
-
-            return self._send_request(
-                path=url,
-                data=data,
-                headers=self.headers,
-                serialize_json=True,
-                method="POST",
+            # This call return a boolean value, if true, 
+            # the name or the value is already set, if false, the value as updated 
+            check_property_exist = self.check_NodeSettingValue(
+                node_id=self.node_id,
+                property_name=self.properties_name,
+                property_value=self.properties_value,
             )
+            
+            if check_property_exist:
+                module.log(msg="Properties already set ({}:{})".format(
+                    self.properties_name, 
+                    self.properties_value
+                    )
+                )
+            else:
+                return self._send_request(
+                    path=url,
+                    data=data,
+                    headers=self.headers,
+                    serialize_json=True,
+                    method="POST",
+                )
 
         else:
             module.fail_json(
