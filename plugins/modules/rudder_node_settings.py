@@ -395,7 +395,7 @@ class RudderNodeSettingsInterface(object):
                 ]
             }
             # This call return a boolean value, if true, 
-            # the name or the value is already set, if false, the value as updated 
+            # the name or the value is already set, if false,the value as updated 
             check_property_exist = self.check_NodeSettingValue(
                 node_id=self.node_id,
                 property_name=self.properties_name,
