@@ -1,4 +1,4 @@
-- name: Install Rudder Agent
+- name: Install Rudder Server
   yum:
     name: rudder-server-root
     state: present

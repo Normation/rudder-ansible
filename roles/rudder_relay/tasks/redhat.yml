@@ -1,4 +1,4 @@
-- name: Install Rudder Agent
+- name: Install Rudder Relay
   yum:
     name: rudder-server-relay
     state: present

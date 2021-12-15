@@ -1,4 +1,4 @@
-- name: Install Rudder Agent
+- name: Install Rudder Server
   zypper:
     name: rudder-server-root
     state: latest
