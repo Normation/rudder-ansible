@@ -281,7 +281,7 @@ class RudderNodeSettingsInterface(object):
                 ),
             )
             
-    def check_NodeSettingValue(self, node_id, values):
+    def check_NodeSettingValue(self, node_id, data):
         """Function to check if a setting or property as already set on node via the API
         
         Args:
@@ -290,8 +290,16 @@ class RudderNodeSettingsInterface(object):
         Returns:
             bool: Return if yes (true) or no (false) a value as already set (default: False)
         """
-        url = "/api/latest/nodes/{node_id}\?include=full".format(node_id=self.node_id)
+        url = "/api/latest/nodes/{node_id}\?include=default".format(node_id=self.node_id)
 
+        request = self._send_request(
+            path=url,
+            data=data,
+            headers=self.headers,
+            serialize_json=False,
+            method="POST",
+        )
+        
         return False
 
     def set_NodeSettingValue(self, node_id, cfg_type):
