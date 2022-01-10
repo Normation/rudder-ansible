@@ -39,7 +39,7 @@ options:
 
   rudder_url:
     description:
-      - Providing Rudder server IP address. Defaults to localhost of the target node if not set, with certificate validation disabled, unless explicitly enabled by setting validate_certs.
+      - Providing Rudder server IP address. Defaults to localhost.
     required: false
     type: str
 
@@ -146,7 +146,7 @@ class RudderNodeSettingsInterface(object):
         self.headers = {"Content-Type": "application/json"}
         self.validate_certs = True
         self.rudder_url = "https://localhost/rudder"
-        
+
         # Get local API Token (when is not specified)
         if module.params.get("rudder_token", None):
             self.headers = {
@@ -164,7 +164,7 @@ class RudderNodeSettingsInterface(object):
             self.rudder_url = module.params["rudder_url"]
         else:
             self.validate_certs = False
-            
+
         if module.params.get("validate_certs", None):
             self.validate_certs = module.params["validate_certs"]
 
@@ -583,20 +583,20 @@ def main():
     for node_id in all_rudder_node_id:
         try:
             if rudder_policy_mode is not None and rudder_policy_mode != "keep":
-                    rudder_node_iface.set_NodeSettingValue(
-                        node_id=node_id, cfg_type="policy_mode"
-                    )
+                rudder_node_iface.set_NodeSettingValue(
+                    node_id=node_id, cfg_type="policy_mode"
+                )
             if rudder_state is not None:
-                    rudder_node_iface.set_NodeSettingValue(
-                        node_id=node_id, cfg_type="state"
-                    )
+                rudder_node_iface.set_NodeSettingValue(
+                    node_id=node_id, cfg_type="state"
+                )
             if rudder_pending is not None:
-                    rudder_node_iface.set_NodePendingValue(node_id=node_id)
+                rudder_node_iface.set_NodePendingValue(node_id=node_id)
 
             if rudder_properties is not None:
-                    rudder_node_iface.set_NodeSettingValue(
-                        node_id=node_id, cfg_type="properties"
-                    )
+                rudder_node_iface.set_NodeSettingValue(
+                    node_id=node_id, cfg_type="properties"
+                )
 
             if rudder_agent_key is not None:
                 if module.params["agent_key"]["value"] is None:
@@ -610,12 +610,12 @@ def main():
         except requests.exceptions.RequestException as err:
             module.fail_json(msg=err)
 
-
     module.exit_json(
         failed=False,
         changed=True,
         meta=module.params,
     )
+
 
 if __name__ == "__main__":
     main()
