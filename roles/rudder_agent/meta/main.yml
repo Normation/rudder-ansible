@@ -8,10 +8,10 @@ galaxy_info:
   license: GPLv3
   min_ansible_version: 2.9
   galaxy_tags:
-  - rudder
-  - automation
-  - compliance
-  - audit
+    - rudder
+    - automation
+    - compliance
+    - audit
 
   platforms:
     - name: Ubuntu
@@ -24,7 +24,7 @@ galaxy_info:
 
     - name: SLES
       versions:
-         - all
+        - all
 
     - name: EL
       versions:
