@@ -78,7 +78,7 @@ class RudderSettingsInterface(object):
         self._module = module
         self.headers = {"Content-Type": "application/json"}
         self.validate_certs = True
-        self.rudder_url = "https://localhost/rudder"        
+        self.rudder_url = "https://localhost/rudder"
         if module.params.get("rudder_token", None):
             self.headers = {
                 "X-API-Token": module.params["rudder_token"],
