@@ -7,17 +7,14 @@
 
 from __future__ import absolute_import, division, print_function
 
-import json
-
-from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.urls import basic_auth_header, fetch_url
-
 DOCUMENTATION = """
 ---
 module: rudder_server_settings
-author: Rudder
-version_added: '2.9'
+author: Rudder (@Normation)
+version_added: '1.0.0'
 short_description: Configure Rudder Server 6.2 parameters via APIs
+description:
+    - Configure Rudder Server 6.2 parameters via APIs.
 requirements:
     - 'python >= 2.7'
 
@@ -32,7 +29,6 @@ options:
   rudder_token:
     description:
       - Providing Rudder server token. Defaults to the content of /var/rudder/run/api-token if not set.
-    required: false
     type: str
 
   name:
@@ -50,8 +46,8 @@ options:
   validate_certs:
     description:
       - Choosing either to ignore or not Rudder certificate validation. Defaults to true.
-    required: false
-    type: boolean
+    type: bool
+    default: yes
 
 """
 
@@ -70,6 +66,11 @@ EXAMPLES = r"""
       validate_certs: False
 """
 
+import json
+
+from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.urls import basic_auth_header, fetch_url
+
 __metaclass__ = type
 
 
@@ -79,6 +80,7 @@ class RudderSettingsInterface(object):
         self.headers = {"Content-Type": "application/json"}
         self.validate_certs = True
         self.rudder_url = "https://localhost/rudder"
+
         if module.params.get("rudder_token", None):
             self.headers = {
                 "X-API-Token": module.params["rudder_token"],
@@ -156,18 +158,18 @@ def main():
     module_args = dict(
         name=dict(type="str", required=True),
         value=dict(required=True),
-        rudder_url=dict(type="str", required=True),
+        rudder_url=dict(type="str", required=False),
         rudder_token=dict(type="str", required=False),
-        validate_certs=dict(type="bool", default=False),
+        validate_certs=dict(type="bool", default=True),
     )
 
     module = AnsibleModule(
         argument_spec={
-            "rudder_url": {"type": "str", "required": True},
+            "rudder_url": {"type": "str", "required": False},
             "rudder_token": {"type": "str", "required": False},
             "name": {"type": "str", "required": True},
             "value": {"type": "str", "required": True},
-            "validate_certs": {"type": "bool", "default": False},
+            "validate_certs": {"type": "bool", "default": True},
         },
         supports_check_mode=False,
     )
