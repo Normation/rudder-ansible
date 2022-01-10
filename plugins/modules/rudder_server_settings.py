@@ -25,7 +25,7 @@ options:
 
   rudder_url:
     description:
-      - Providing Rudder server IP address. Defaults to localhost of the target node if not set, with certificate validation disabled, unless explicitly enabled by setting validate_certs.
+      - Providing Rudder server IP address. Defaults to localhost.
     required: false
     type: str
 
@@ -78,8 +78,7 @@ class RudderSettingsInterface(object):
         self._module = module
         self.headers = {"Content-Type": "application/json"}
         self.validate_certs = True
-        self.rudder_url = "https://localhost/rudder"
-        
+        self.rudder_url = "https://localhost/rudder"        
         if module.params.get("rudder_token", None):
             self.headers = {
                 "X-API-Token": module.params["rudder_token"],
