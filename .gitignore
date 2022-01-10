@@ -7,4 +7,3 @@ __pycache__/
 *.py[cod]
 NOTES*
 build/
-ansible-local-test.Dockerfile
