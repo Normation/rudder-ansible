@@ -56,7 +56,6 @@
           <a href="#rudder_repository">Manage Rudder repository role</a>
             <ul>
             <li><a href="#role-variables">Role variables</a></li>
-            <li><a href="#example-playbook">Example Playbook</a></li>
           </ul>
         </li>
       </ul>
@@ -65,6 +64,12 @@
       <a href="#going-further">Going further</a>
       <ul>
         <li><a href="#uninstall-the-collection">Uninstall the collection</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#development">Development</a>
+      <ul>
+        <li><a href="#run-checks-locally">Run checks locally with Docker</a></li>
       </ul>
     </li>
   </ol>
@@ -246,3 +251,39 @@ You can use the following command to see if the collection is correctly installe
 ```bash
 ansible-galaxy collection list
 ```
+
+## Development
+
+### Run checks locally with [Docker](https://www.docker.com/)
+You have the possibility to run status checks on the code before publishing it locally. To do this, you need to create a Dockerfile (with `ansible-test.Dockerfile` for example) with the content below in the *root of the project*.
+
+```dockerfile
+FROM debian:bullseye
+ARG USER_ID=1000
+COPY ci/user.sh .
+RUN ./user.sh $USER_ID
+
+RUN apt-get -y update && \
+    apt-get install -y ansible git python3-pip
+RUN pip install pycodestyle voluptuous yamllint
+
+RUN mkdir -p /tmp/ansible_collections/rudder/rudder
+
+COPY . /tmp/ansible_collections/rudder/rudder/
+WORKDIR "/tmp/ansible_collections/rudder/rudder/"
+
+ENTRYPOINT ["/bin/bash", "-c"]
+```
+
+To build the container :
+
+```bash
+docker build . -f ansible-test.Dockerfile
+```
+
+To start the verification, simply use the command :
+
+```bash
+docker run <container-hash> "ansible-test sanity" 
+```
+If you make new changes in the code, you will have to restart a build of the container and make a new run of the Docker command that goes well with the new container hash obtained.
