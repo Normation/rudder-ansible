@@ -1,206 +1,226 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
-#
-# Copyright: (c) 2021, Rudder
+# Copyright: (c) 2022, Rudder <dev@rudder.io>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
 
-import json
-
-from ansible.module_utils.basic import AnsibleModule
-
-# Check if 'requests' is installed
-# Use : 'pip3 install requests' if not
-try:
-    import requests
-    from requests.packages.urllib3.exceptions import InsecureRequestWarning
-except ImportError:
-    HAS_REQUESTS = False
-else:
-    HAS_REQUESTS = True
-
-__metaclass__ = type
-
-# Disable SSL certificate warning messages
-requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
-
-DOCUMENTATION = """
----
+DOCUMENTATION = r'''
 module: rudder_node_settings
-author:
-  - Rudder
-version_added: '2.9'
 short_description: Configure Rudder Nodes parameters via APIs
+description:
+    - Configure Rudder nodes parameters via APIs.
+version_added: '1.0.0'
+author: Rudder (@Normation)
 requirements:
     - 'python >= 2.7'
 
 options:
-
   rudder_url:
     description:
       - Providing Rudder server IP address. Defaults to localhost.
-    required: false
     type: str
 
   rudder_token:
     description:
       - Providing Rudder server token. Defaults to the content of /var/rudder/run/api-token if not set.
-    required: false
     type: str
 
   validate_certs:
     description:
       - Choosing either to ignore or not Rudder certificate validation. Defaults to true.
-    required: false
-    type: boolean
+    type: bool
+    default: yes
 
   node_id:
     description:
       - Define the identifier of the node to be configured
-    required: false
     type: str
 
   policy_mode:
     description:
       - Set the policy mode to (default, enforce or audit)
-    required: false
     type: str
+    choices:
+      - audit
+      - enforce
+      - default
+      - keep
+
+  pending:
+    description:
+      - Set the status of the (pending) node
+    type: str
+    choices:
+      - accepted
+      - refused
 
   state:
     description:
       - Set the node life cycle state to (enabled, ignored, empty-policies, initializing or preparing-eol)
-    required: false
     type: str
+    choices:
+      - enabled
+      - ignored
+      - empty-policies
+      - initializing
+      - preparing-eol
 
   properties:
+    type: list
+    elements: dict
     description:
-      - Define a properties (with "name:" and "value:")
-    required: false
-    type: dict
+      - Define a list of properties (with "name:" and "value:")
+    suboptions:
+      name:
+        description: property name
+        required: yes
+        type: str
+      value:
+        description: property value
+        required: yes
+        type: str
 
   agent_key:
     description:
-      - Define information about agent key or certificate (update PEM with ("value:<PEM>") and status with "status:<certified|undefined>")
-    required: false
+      - Define information about agent key or certificate
     type: dict
+    suboptions:
+      status:
+        description: TODO
+        required: yes
+        choices:
+          - certified
+          - undefined
+        type: str
+      value:
+        description: Agent key, PEM format
+        type: str
 
   include:
     description:
       - Level of information to include from the node inventory.
-    required: false
     type: str
 
   query:
     description:
       - The criterion you want to find for your nodes.
-    required: false
     type: dict
+    suboptions:
+      composition:
+        choices:
+          - or
+          - and
+        type: str
+        description: Boolean operator to use between each where criteria.
+      select:
+        description: What kind of data we want to include. Here we can get policy servers/relay by setting nodeAndPolicyServer. Only used if where is defined.
+        type: str
+      where:
+        type: dict
+        description: The criterion you want to find for your nodes.
+        suboptions:
+          object_type:
+            description: Object type from which the attribute will be taken.
+            type: str
+          attribute:
+            description: Attribute to compare to value.
+            type: str
+          comparator:
+            description: Comparator type to use.
+            choices:
+              - and
+              - or
+            type: str
+          value:
+            type: str
+            description: Value to compare to.
+'''
 
-"""
+EXAMPLES = r'''
+- name: Simple Modify Rudder Node Settings
+  rudder_node_settings:
+      rudder_url: "https://my.rudder.server/rudder"
+      node_id: my_node_id
+      policy_mode: enforce
+- name: Complex Modify Rudder Node Settings
+  rudder_node_settings:
+      rudder_url: "https://my.rudder.server/rudder"
+      rudder_token: "<rudder_server_token>"
+      node_id: root
+      pending: accepted
+      policy_mode: audit
+      state: enabled
+      properties:
+        name: "env_type"
+        value: "production"
+      validate_certs: False
+- name: Complex Modify Rudder Node Settings with query
+  rudder_node_settings:
+      rudder_url: "https://my.rudder.server/rudder"
+      rudder_token: "<rudder_server_token>"
+      pending: accepted
+      policy_mode: audit
+      state: enabled
+      properties:
+        name: "env_type"
+        value: "production"
+      query:
+        select: "nodeAndPolicyServer"
+        composition: "and"
+        where:
+          object_type: "node"
+          attribute: "nodeHostname"
+          comparator: "regex"
+          value: "rudder-ansible-node.*"
+'''
 
-EXAMPLES = r"""
-  - name: Simple Modify Rudder Node Settings
-    rudder_node_settings:
-        rudder_url: "https://my.rudder.server/rudder"
-        node_id: my_node_id
-        policy_mode: enforce
+import json
+import requests
+from ansible.module_utils.basic import AnsibleModule
 
-  - name: Complex Modify Rudder Node Settings
-    rudder_node_settings:
-        rudder_url: "https://my.rudder.server/rudder"
-        rudder_token: "<rudder_server_token>"
-        node_id: root
-        pending: accepted
-        policy_mode: audit
-        state: enabled
-        properties:
-          name: "env_type"
-          value: "production"
-        validate_certs: False
+__metaclass__ = type
 
-  - name: Complex Modify Rudder Node Settings with query
-    rudder_node_settings:
-        rudder_url: "https://my.rudder.server/rudder"
-        rudder_token: "<rudder_server_token>"
-        pending: accepted
-        policy_mode: audit
-        state: enabled
-        properties:
-          name: "env_type"
-          value: "production"
-        query:
-          select: "nodeAndPolicyServer"
-          composition: "and"
-          where:
-            object_type: "node"
-            attribute: "nodeHostname"
-            comparator: "regex"
-            value: "rudder-ansible-node.*"
-"""
+# API available settings for the nodes
+nodeSettingsParams = ['state', 'properties', 'agent_key', 'policy_mode']
+
+# Ansible module parameters
+allParams = [
+    'rudder_url',
+    'rudder_token',
+    'node_id',
+    'pending',
+    'include',
+    'query',
+    'validate_certs',
+] + nodeSettingsParams
 
 
 class RudderNodeSettingsInterface(object):
     def __init__(self, module):
         self._module = module
-        self.headers = {"Content-Type": "application/json"}
         self.validate_certs = True
-        self.rudder_url = "https://localhost/rudder"
+        for param in allParams:
+            if param in module.params:
+                setattr(self, param, module.params[param])
 
-        # Get local API Token (when is not specified)
-        if module.params.get("rudder_token", None):
-            self.headers = {
-                "X-API-Token": module.params["rudder_token"],
-                "Content-Type": "application/json",
-            }
-        else:
-            with open("/var/rudder/run/api-token") as f:
-                token = f.read()
-            self.headers = {
-                "X-API-Token": token,
-                "Content-Type": "application/json",
-            }
-        if module.params.get("rudder_url", None):
-            self.rudder_url = module.params["rudder_url"]
-        else:
+        if module.params.get('rudder_url', None) is None:
+            self.rudder_url = 'https://localhost/rudder'
             self.validate_certs = False
+        if module.params.get('rudder_token', None) is None:
+            with open('/var/rudder/run/api-token') as system_token:
+                token = system_token.read()
+        else:
+            token = module.params['rudder_token']
+        self.headers = {
+            'X-API-Token': token,
+            'Content-Type': 'application/json',
+        }
 
-        if module.params.get("validate_certs", None):
-            self.validate_certs = module.params["validate_certs"]
-
-        self.node_id = module.params["node_id"]
-
-        if module.params.get("policy_mode", None):
-            self.policy_mode = module.params["policy_mode"]
-
-        if module.params.get("state", None):
-            self.state = module.params["state"]
-
-        if module.params.get("pending", None):
-            self.pending = module.params["pending"]
-
-        if module.params.get("properties", None):
-            self.properties_name = module.params["properties"]["name"]
-            self.properties_value = module.params["properties"]["value"]
-
-        if module.params.get("agent_key", None):
-            self.agent_key_value = module.params["agent_key"]["value"]
-            self.agent_key_status = module.params["agent_key"]["status"]
-
-        if module.params.get("include", None):
-            self.include = module.params["include"]
-
-        if module.params.get("query", None):
-            self.query_select = module.params["query"]["select"]
-            self.query_composition = module.params["query"]["composition"]
-            self.where_object_type = module.params["query"]["where"][
-                "object_type"
-            ]
-            self.where_attribute = module.params["query"]["where"]["attribute"]
-            self.where_comparator = module.params["query"]["where"][
-                "comparator"
-            ]
-            self.where_value = module.params["query"]["where"]["value"]
+        raw_settings_to_set = {}
+        for param in nodeSettingsParams:
+            if param in module.params:
+                raw_settings_to_set.update({param: module.params[param]})
+        self.settings_to_set = self._translate_settings(raw_settings_to_set)
 
     def _send_request(
         self,
@@ -208,7 +228,7 @@ class RudderNodeSettingsInterface(object):
         data=None,
         serialize_json=None,
         headers=None,
-        method="GET",
+        method='GET',
         verify=False,
         params=None,
     ):
@@ -233,24 +253,24 @@ class RudderNodeSettingsInterface(object):
         if not headers:
             headers = []
 
-        full_url = "{rudder_url}{path}".format(
+        full_url = '{rudder_url}{path}'.format(
             rudder_url=self.rudder_url, path=path
         )
 
-        if method == "POST":
+        if method == 'POST':
             resp = requests.post(
                 url=full_url,
                 headers=self.headers,
-                params=params,
                 data=s_data,
+                params=params,
                 verify=verify,
             )
 
-        elif method == "GET":
+        elif method == 'GET':
             resp = requests.get(
                 url=full_url,
-                params=params,
                 headers=self.headers,
+                params=params,
                 verify=verify,
             )
         else:
@@ -260,164 +280,81 @@ class RudderNodeSettingsInterface(object):
             )
 
         status_code = resp.status_code
-        if status_code == 404:
-            return None
-        elif status_code == 401:
-            self._module.fail_json(
-                failed=True,
-                msg="Unauthorized to perform action '{}' on '{}'".format(
-                    method, full_url
-                ),
-            )
-        elif status_code == 403:
-            self._module.fail_json(failed=True, msg="Permission Denied")
-        elif status_code == 200:
+        if status_code == 200:
             return self._module.from_json(resp.content)
-        else:
-            self._module.fail_json(
-                failed=True,
-                msg="Rudder API answered with HTTP {} details: {} ".format(
-                    status_code, resp.content
-                ),
-            )
-
-    def set_NodeSettingValue(self, node_id, cfg_type):
-        """Function to define a setting or properties via the API
-
-        Args:
-            node_id (str): ID of the Rudder node to configure
-            data (str): Data in JSON format to be sent, see here: 'https://docs.rudder.io/api/v/13/#operation/nodeDetails'
-            cfg_type (str): Setting type (state, policyMode)
-
-        Returns:
-            str: Returns the result of the query
-        """
-        url = "/api/latest/nodes/{node_id}".format(node_id=self.node_id)
-
-        if cfg_type == "policy_mode":
-            data = {"policyMode": self.policy_mode}
-
-            return self._send_request(
-                path=url,
-                data=data,
-                headers=self.headers,
-                serialize_json=False,
-                method="POST",
-            )
-        elif cfg_type == "state":
-            data = {"state": self.state}
-
-            return self._send_request(
-                path=url,
-                data=data,
-                headers=self.headers,
-                serialize_json=False,
-                method="POST",
-            )
-        elif cfg_type == "agent_key_without_value":
-            data = {
-                "agentKey": {
-                    "status": self.agent_key_status,
-                }
-            }
-
-            return self._send_request(
-                path=url,
-                data=data,
-                headers=self.headers,
-                serialize_json=True,
-                method="POST",
-            )
-
-        elif cfg_type == "agent_key_with_value":
-            data = {
-                "agentKey": [
-                    {
-                        "value": self.agent_key_value,
-                        "status": self.agent_key_status,
-                    }
-                ]
-            }
-
-            return self._send_request(
-                path=url,
-                data=data,
-                headers=self.headers,
-                serialize_json=False,
-                method="POST",
-            )
-
-        elif cfg_type == "properties":
-            data = {
-                "properties": [
-                    {
-                        "name": self.properties_name,
-                        "value": self.properties_value,
-                    }
-                ]
-            }
-
-            return self._send_request(
-                path=url,
-                data=data,
-                headers=self.headers,
-                serialize_json=True,
-                method="POST",
-            )
-
-        else:
-            module.fail_json(
-                failed=True, msg=f"Unsupported cfg type: '{cfg_type}'"
-            )
-
-    def set_NodePendingValue(self, node_id):
-        """Function to define pending status for a specific node via the API
-
-        Args:
-            node_id (str): ID of the Rudder node (in pending nodes)
-
-        Returns:
-            str: Return the result of the query
-        """
-        url = "/api/latest/nodes/pending/{node_id}".format(
-            node_id=self.node_id
+        self._module.fail_json(
+            failed=True,
+            msg='Rudder API answered with HTTP {} details: {} '.format(
+                status_code, resp.content
+            ),
         )
 
-        data = {"status": self.pending}
+    def _translate_settings(self, settings_dict):
+        api_formatted_settings = {}
+        for key, value in settings_dict.items():
+            if key == 'policy_mode' and value is not None:
+                api_formatted_settings.update({'policyMode': value})
+            elif key == 'agent_key' and value is not None:
+                key_data = {'status': value['status']}
+                if 'value' in value:
+                    key_data.update({'value': value['value']})
+                api_formatted_settings.update({'agentKey': key_data})
+            elif value is not None:
+                api_formatted_settings.update({key: value})
+        return api_formatted_settings
 
+    def get_node_settings(self, node_id):
         return self._send_request(
-            path=url,
-            data=data,
+            path='/api/latest/nodes/{node_id}'.format(node_id=node_id),
+            data={},
             headers=self.headers,
-            serialize_json=False,
-            method="POST",
-        )
+            method='GET',
+        )['data']['nodes'][0]
 
-    def get_QueryNodesValue(self):
+    def set_node_settings(self, node_id):
+        current_node_settings = self.get_node_settings(node_id)
+        update = False
+        for i_settings in self.settings_to_set:
+            if (
+                current_node_settings[i_settings]
+                != self.settings_to_set[i_settings]
+            ):
+                update = True
+        if update:
+            self._send_request(
+                path='/api/latest/nodes/{node_id}'.format(node_id=node_id),
+                data=self.settings_to_set,
+                headers=self.headers,
+                serialize_json=True,
+                method='POST',
+            )
+        return update
+
+    def evaluate_node_query(self):
         """Get all nodes (with query)
 
         Returns:
             str: All nodes who match with query
         """
 
-        url = "/api/latest/nodes"
+        url = '/api/latest/nodes'
 
         query_json_struct = {
-            "select": self.query_select,
-            "composition": self.query_composition,
+            'select': self.query_select,
+            'composition': self.query_composition,
         }
 
         where_json_struct = {
-            "objectType": self.where_object_type,
-            "attribute": self.where_attribute,
-            "comparator": self.where_comparator,
-            "value": self.where_value,
+            'objectType': self.where_object_type,
+            'attribute': self.where_attribute,
+            'comparator': self.where_comparator,
+            'value': self.where_value,
         }
 
         params = {
-            "where": json.dumps(where_json_struct),
-            "query": json.dumps(query_json_struct),
-            "include": self.include,
+            'where': json.dumps(where_json_struct),
+            'query': json.dumps(query_json_struct),
+            'include': self.include,
         }
 
         response = self._send_request(
@@ -425,15 +362,14 @@ class RudderNodeSettingsInterface(object):
             headers=self.headers,
             serialize_json=False,
             params=params,
-            method="GET",
+            method='GET',
         )
 
-        list_id = []
-
-        for value in response["data"]["nodes"]:
-            list_id.append(value["id"])
-
-        return list_id
+        # Init list
+        nodes_id = []
+        for value in response['data']['nodes']:
+            nodes_id.append(value['id'])
+        return nodes_id
 
 
 def main():
@@ -441,181 +377,120 @@ def main():
     # of the 'rudder_node_settings' module
     module = AnsibleModule(
         argument_spec=dict(
-            rudder_url=dict(
-                type="str",
-                required=True,
-            ),
-            rudder_token=dict(
-                type="str",
-                required=False,
-            ),
-            node_id=dict(
-                type="str",
-                required=False,
-            ),
+            rudder_url=dict(type='str', required=False),
+            rudder_token=dict(type='str', required=False),
+            node_id=dict(type='str', required=False),
             properties=dict(
-                type="dict",
+                type='list',
                 required=False,
+                elements='dict',
                 options=dict(
                     name=dict(
-                        type="str",
+                        type='str',
                         required=True,
                     ),
                     value=dict(
-                        type="str",
+                        type='str',
                         required=True,
                     ),
                 ),
             ),
             agent_key=dict(
-                type="dict",
+                type='dict',
                 required=False,
                 options=dict(
-                    value=dict(
-                        required=False,
-                        type="str",
-                    ),
+                    value=dict(required=False, type='str'),
                     status=dict(
-                        type="str",
+                        type='str',
                         required=True,
-                        choices=[
-                            "certified",
-                            "undefined",
-                        ],
+                        choices=['certified', 'undefined'],
                     ),
                 ),
             ),
             pending=dict(
-                type="str",
-                required=False,
-                choices=["accepted", "refused"],
+                type='str', required=False, choices=['accepted', 'refused']
             ),
             state=dict(
-                type="str",
+                type='str',
                 choices=[
-                    "enabled",
-                    "ignored",
-                    "empty-policies",
-                    "initializing",
-                    "preparing-eol",
+                    'enabled',
+                    'ignored',
+                    'empty-policies',
+                    'initializing',
+                    'preparing-eol',
                 ],
                 required=False,
             ),
-            validate_certs=dict(
-                type="bool",
-                required=False,
-            ),
+            validate_certs=dict(type='bool', required=False, default=True),
             policy_mode=dict(
-                type="str",
+                type='str',
                 choices=[
-                    "audit",
-                    "enforce",
-                    "default",
-                    "keep",
+                    'audit',
+                    'enforce',
+                    'default',
+                    'keep',
                 ],
                 required=False,
             ),
-            include=dict(
-                type="str",
-                required=False,
-            ),
+            include=dict(type='str', required=False),
             query=dict(
-                type="dict",
+                type='dict',
                 required=False,
-                select=dict(
-                    type="str",
-                    required=False,
-                ),
-                composition=dict(
-                    type="str",
-                    required=False,
-                ),
-                where=dict(
-                    type="dict",
-                    required=False,
-                    object_type=dict(
-                        type="str",
+                options=dict(
+                    select=dict(type='str', required=False),
+                    composition=dict(type='str', required=False, choices=['or', 'and']),
+                    where=dict(
+                        type='dict',
                         required=False,
-                    ),
-                    attribute=dict(
-                        type="str",
-                        required=False,
-                    ),
-                    comparator=dict(
-                        type="str",
-                        choices=[
-                            "and",
-                            "or",
-                        ],
-                        required=False,
-                    ),
-                    value=dict(
-                        type="str",
-                        required=False,
-                    ),
-                ),
+                        options=dict(
+                            object_type=dict(type='str', required=False),
+                            attribute=dict(type='str', required=False),
+                            comparator=dict(
+                                type='str',
+                                choices=[
+                                    'and',
+                                    'or',
+                                ],
+                                required=False,
+                            ),
+                            value=dict(type='str', required=False),
+                        )
+                    )
+                )
             ),
         ),
         supports_check_mode=False,
     )
 
-    rudder_node_id = module.params["node_id"]
-    rudder_properties = module.params["properties"]
-    rudder_policy_mode = module.params["policy_mode"]
-    rudder_state = module.params["state"]
-    rudder_pending = module.params["pending"]
-    rudder_agent_key = module.params["agent_key"]
-
     rudder_node_iface = RudderNodeSettingsInterface(module)
 
-    if not HAS_REQUESTS:
-        module.fail_json(msg="The Python 'requests' module is required!")
-
-    # Init list
-    all_rudder_node_id = []
-
-    if rudder_node_id is not None:
-        all_rudder_node_id.append(rudder_node_id)
+    # Define the target nodes
+    target_nodes = []
+    if 'node_id' in module.params:
+        target_nodes.append(module.params['node_id'])
+    elif 'query' not in module.params:
+        module.fail_json(msg='No target node_id nor query found!')
     else:
-        for item in rudder_node_iface.get_QueryNodesValue():
-            all_rudder_node_id.append(item)
+        target_nodes = rudder_node_iface.evaluate_node_query()
 
-    for node_id in all_rudder_node_id:
+    changed = False
+    impacted_nodes = {i: False for i in target_nodes}
+    for node_id in target_nodes:
         try:
-            if rudder_policy_mode is not None and rudder_policy_mode != "keep":
-                rudder_node_iface.set_NodeSettingValue(
-                    node_id=node_id, cfg_type="policy_mode"
-                )
-            if rudder_state is not None:
-                rudder_node_iface.set_NodeSettingValue(
-                    node_id=node_id, cfg_type="state"
-                )
-            if rudder_pending is not None:
-                rudder_node_iface.set_NodePendingValue(node_id=node_id)
-
-            if rudder_properties is not None:
-                rudder_node_iface.set_NodeSettingValue(
-                    node_id=node_id, cfg_type="properties"
-                )
-
-            if rudder_agent_key is not None:
-                if module.params["agent_key"]["value"] is None:
-                    rudder_node_iface.set_NodeSettingValue(
-                        node_id=node_id, cfg_type="agent_key_without_value"
-                    )
-                else:
-                    rudder_node_iface.set_NodeSettingValue(
-                        node_id=node_id, cfg_type="agent_key_with_value"
-                    )
-        except requests.exceptions.RequestException as err:
-            module.fail_json(msg=err)
+            node_changed = rudder_node_iface.set_node_settings(node_id)
+            changed = node_changed or changed
+            impacted_nodes[node_id] = node_changed
+        except Exception as exception:
+            module.fail_json(msg=exception)
 
     module.exit_json(
         failed=False,
-        changed=True,
+        changed=changed,
         meta=module.params,
+        audited_settings=rudder_node_iface.settings_to_set,
+        nodes=impacted_nodes,
     )
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
