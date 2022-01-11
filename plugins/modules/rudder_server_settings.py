@@ -4,7 +4,6 @@
 # Copyright: (c) 2020, Rudder
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-
 from __future__ import absolute_import, division, print_function
 
 DOCUMENTATION = """
@@ -19,7 +18,6 @@ requirements:
     - 'python >= 2.7'
 
 options:
-
   rudder_url:
     description:
       - Providing Rudder server IP address. Defaults to localhost.
@@ -73,43 +71,36 @@ from ansible.module_utils.urls import basic_auth_header, fetch_url
 
 __metaclass__ = type
 
+# Ansible module parameters
+allParams = ['rudder_url', 'rudder_token', 'name', 'value', 'validate_certs']
+
 
 class RudderSettingsInterface(object):
     def __init__(self, module):
         self._module = module
-        self.headers = {"Content-Type": "application/json"}
         self.validate_certs = True
-        self.rudder_url = "https://localhost/rudder"
 
-        if module.params.get("rudder_token", None):
-            self.headers = {
-                "X-API-Token": module.params["rudder_token"],
-                "Content-Type": "application/json",
-            }
-        else:
-            with open("/var/rudder/run/api-token") as f:
-                token = f.read()
-            self.headers = {
-                "X-API-Token": token,
-                "Content-Type": "application/json",
-            }
-
-        if module.params.get("rudder_url", None):
-            self.rudder_url = module.params.get("rudder_url")
-        else:
+        if module.params.get('rudder_url', None) is None:
+            self.rudder_url = 'https://localhost/rudder'
             self.validate_certs = False
+        if module.params.get('rudder_token', None) is None:
+            with open('/var/rudder/run/api-token') as system_token:
+                token = system_token.read()
+        else:
+            token = module.params['rudder_token']
+        self.headers = {
+            'X-API-Token': token,
+            'Content-Type': 'application/json',
+        }
 
-        if module.params.get("validate_certs", None):
-            self.validate_certs = module.params.get("validate_certs")
-
-    def _send_request(self, url, data=None, headers=None, method="GET"):
+    def _send_request(self, url, data=None, headers=None, method='GET'):
         if data is not None:
             data = json.dumps(data, sort_keys=True)
 
         if not headers:
             headers = []
 
-        full_url = "{rudder_url}{path}".format(
+        full_url = '{rudder_url}{path}'.format(
             rudder_url=self.rudder_url, path=url
         )
 
@@ -117,9 +108,9 @@ class RudderSettingsInterface(object):
             self._module, full_url, data=data, headers=headers, method=method
         )
 
-        status_code = info["status"]
+        status_code = info['status']
         if status_code == 404:
-            return None
+            self._module.fail_json(failed=True, msg='Not found')
         elif status_code == 401:
             self._module.fail_json(
                 failed=True,
@@ -127,75 +118,90 @@ class RudderSettingsInterface(object):
                     method, full_url
                 ),
             )
-        elif status_code == 403:
-            self._module.fail_json(failed=True, msg="Permission Denied")
         elif status_code == 200:
             return self._module.from_json(resp.read())
         else:
             self._module.fail_json(
                 failed=True,
-                msg="Rudder API answered with HTTP {} details: {} ".format(
-                    status_code, info["msg"]
+                msg='Rudder API answered with HTTP {} details: {} '.format(
+                    status_code, info['msg']
                 ),
             )
 
     def get_SettingValue(self, name):
-        url = "/api/latest/settings/{name}".format(name=name)
-        response = self._send_request(url, headers=self.headers, method="GET")
-        VALUE = response.get("data")
-        return VALUE.get("settings").get(name)
+        url = '/api/latest/settings/{name}'.format(name=name)
+        response = self._send_request(url, headers=self.headers, method='GET')
+        return response['data']['settings'][name]
 
     def set_SettingValue(self, name, value):
-        url = "/api/latest/settings/{name}?value={value}".format(
-            name=name, value=value
-        )
+        url = '/api/latest/settings/{name}'.format(name=name)
+        current_server_settings = self.get_SettingValue(name)
+        data = value
 
-        return self._send_request(url, headers=self.headers, method="POST")
+        update = False
+
+        if (current_server_settings != self.get_SettingValue(name)):
+            update = True
+
+        if update:
+            self._send_request(
+                url, headers=self.headers, method='POST', data=data
+            )
 
 
 def main():
 
     module_args = dict(
-        name=dict(type="str", required=True),
+        name=dict(type='str', required=True),
         value=dict(required=True),
-        rudder_url=dict(type="str", required=False),
-        rudder_token=dict(type="str", required=False),
-        validate_certs=dict(type="bool", default=True),
+        rudder_url=dict(type='str', required=False),
+        rudder_token=dict(type='str', required=False),
+        validate_certs=dict(type='bool', default=True),
     )
 
     module = AnsibleModule(
         argument_spec={
-            "rudder_url": {"type": "str", "required": False},
-            "rudder_token": {"type": "str", "required": False},
-            "name": {"type": "str", "required": True},
-            "value": {"type": "str", "required": True},
-            "validate_certs": {"type": "bool", "default": True},
+            'rudder_url': {'type': 'str', 'required': False},
+            'rudder_token': {'type': 'str', 'required': False},
+            'name': {'type': 'str', 'required': True},
+            'value': {'type': 'str', 'required': True},
+            'validate_certs': {'type': 'bool', 'default': True},
         },
         supports_check_mode=False,
     )
 
-    rudder_url = module.params["rudder_url"]
-    rudder_token = module.params["rudder_token"]
-    name = module.params["name"]
-    value = module.params["value"]
-    validate_certs = module.params["validate_certs"]
+    rudder_url = module.params['rudder_url']
+    rudder_token = module.params['rudder_token']
+    name = module.params['name']
+    value = module.params['value']
+    validate_certs = module.params['validate_certs']
 
-    rudder_iface = RudderSettingsInterface(module)
-    VALUE = rudder_iface.get_SettingValue(name)
-    """ module.exit_json(failed=False, changed=True, message=VALUE) """
+    rudder_server_iface = RudderSettingsInterface(module)
+
+    VALUE = rudder_server_iface.get_SettingValue(name)
+
+    changed = False
 
     if str(VALUE) != value:
-        rudder_iface.set_SettingValue(name, value)
+        rudder_server_iface.set_SettingValue(name, value)
         changed = True
         module.exit_json(
-            failed=False, changed=changed, message="changed succefully"
+            failed=False,
+            changed=changed,
+            meta=module.params,
+            new_value=str(VALUE),
+            message='changed succefully',
         )
     else:
-        rudder_iface.get_SettingValue(name)
+        rudder_server_iface.get_SettingValue(name)
+        changed = False
         module.exit_json(
-            failed=False, changed=True, ok=True, message="Already exist"
+            failed=False,
+            changed=False,
+            meta=module.params,
+            message='Already exist',
         )
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
