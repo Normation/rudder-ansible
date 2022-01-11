@@ -4,7 +4,7 @@
 
 from __future__ import absolute_import, division, print_function
 
-DOCUMENTATION = r'''
+DOCUMENTATION = r"""
 module: rudder_node_settings
 short_description: Configure Rudder Nodes parameters via APIs
 description:
@@ -134,9 +134,9 @@ options:
           value:
             type: str
             description: Value to compare to.
-'''
+"""
 
-EXAMPLES = r'''
+EXAMPLES = r"""
 - name: Simple Modify Rudder Node Settings
   rudder_node_settings:
       rudder_url: "https://my.rudder.server/rudder"
@@ -172,7 +172,7 @@ EXAMPLES = r'''
           attribute: "nodeHostname"
           comparator: "regex"
           value: "rudder-ansible-node.*"
-'''
+"""
 
 import json
 import requests
@@ -282,12 +282,13 @@ class RudderNodeSettingsInterface(object):
         status_code = resp.status_code
         if status_code == 200:
             return self._module.from_json(resp.content)
-        self._module.fail_json(
-            failed=True,
-            msg='Rudder API answered with HTTP {} details: {} '.format(
-                status_code, resp.content
-            ),
-        )
+        else:
+            self._module.fail_json(
+                failed=True,
+                msg='Rudder API answered with HTTP {} details: {} '.format(
+                    status_code, resp.content
+                ),
+            )
 
     def _translate_settings(self, settings_dict):
         api_formatted_settings = {}
@@ -305,10 +306,10 @@ class RudderNodeSettingsInterface(object):
 
     def get_node_settings(self, node_id):
         return self._send_request(
+            method='GET',
             path='/api/latest/nodes/{node_id}'.format(node_id=node_id),
             data={},
             headers=self.headers,
-            method='GET',
         )['data']['nodes'][0]
 
     def set_node_settings(self, node_id):
@@ -385,14 +386,8 @@ def main():
                 required=False,
                 elements='dict',
                 options=dict(
-                    name=dict(
-                        type='str',
-                        required=True,
-                    ),
-                    value=dict(
-                        type='str',
-                        required=True,
-                    ),
+                    name=dict(type='str', required=True),
+                    value=dict(type='str', required=True),
                 ),
             ),
             agent_key=dict(
@@ -424,12 +419,7 @@ def main():
             validate_certs=dict(type='bool', required=False, default=True),
             policy_mode=dict(
                 type='str',
-                choices=[
-                    'audit',
-                    'enforce',
-                    'default',
-                    'keep',
-                ],
+                choices=['audit', 'enforce', 'default', 'keep'],
                 required=False,
             ),
             include=dict(type='str', required=False),
@@ -438,7 +428,9 @@ def main():
                 required=False,
                 options=dict(
                     select=dict(type='str', required=False),
-                    composition=dict(type='str', required=False, choices=['or', 'and']),
+                    composition=dict(
+                        type='str', required=False, choices=['or', 'and']
+                    ),
                     where=dict(
                         type='dict',
                         required=False,
@@ -447,16 +439,13 @@ def main():
                             attribute=dict(type='str', required=False),
                             comparator=dict(
                                 type='str',
-                                choices=[
-                                    'and',
-                                    'or',
-                                ],
+                                choices=['and', 'or'],
                                 required=False,
                             ),
                             value=dict(type='str', required=False),
-                        )
-                    )
-                )
+                        ),
+                    ),
+                ),
             ),
         ),
         supports_check_mode=False,
