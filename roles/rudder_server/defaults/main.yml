@@ -1,5 +1,12 @@
 ---
 server_version: 6.2
+
+# More informations here: 
+# https://docs.rudder.io/reference/7.0/administration/port.html
+policy_port_cfengine: 5309
+policy_port_https: 443
+relay_port: 443
+
 rudder_repository_username: ""
 rudder_repository_password: ""
 rudder_repository: repository.rudder.io

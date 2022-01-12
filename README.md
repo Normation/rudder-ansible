@@ -140,6 +140,7 @@ This role does not auto accept the node. It only configures the repository
 and installs the packages.
 
 - `policy_server`: Rudder policy server (default: `rudder.server`)
+- `policy_port`: Rudder policy server port (default: `5310`)
 - `agent_version`: Rudder version(default: `6.2`)
 - `rudder_repository`: Rudder repository domain (default: `repository.rudder.io`)
 - `rudder_repository_username`: Optional username to pass to repository if using credentials
@@ -164,6 +165,9 @@ and installs the packages.
 #### Role variables
 
 - `server_version`: Rudder version(default: `6.2`)
+- `policy_port_cfengine`: Listen port for CFEngine (default: `5309`)
+- `policy_port_https`: Listen port HTTPS (default: `443`)
+- `relay_port`: Listen port for the relay on Root Server (default: `443`)
 - `rudder_repository`: Rudder repository domain (default: `repository.rudder.io`)
 - `rudder_repository_username`: Optional username to pass to repository if using credentials
 - `rudder_repository_password`: Optional password to pass to repository if using credentials

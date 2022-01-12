@@ -1,4 +1,5 @@
 policy_server: rudder.server
+policy_port: 5309
 rudder_repository_username: ""
 rudder_repository_password: ""
 rudder_repository: repository.rudder.io

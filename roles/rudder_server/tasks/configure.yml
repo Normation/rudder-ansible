@@ -1,7 +1,12 @@
-- name: Define policy server
-  ansible.builtin.copy:
-    content: "{{ policy_server }}"
-    dest: "{{ policy_server_file }}"
-    owner: root
-    group: root
-    mode: '0644'
+---
+- name: Configure listen ports for Rudder 6 
+  template:
+    src: rudder6-web.properties.j2
+    dest: "/opt/rudder/etc/rudder-web.properties"
+  when: server_version is version('6.2', operator='<=')
+
+- name: Configure listen ports for Rudder 7 
+  template:
+    src: rudder7-web.properties.j2
+    dest: "/opt/rudder/etc/rudder-web.properties"
+    when: server_version is version('7.0', operator='>=')

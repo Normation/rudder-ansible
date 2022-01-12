@@ -1,7 +1,18 @@
-- name: Define policy server
+---
+- name: Define policy server for Rudder 6 
   ansible.builtin.copy:
-    content: "{{ policy_server }}"
+    content: "{{ policy_server }}:{{ policy_port }}"
     dest: "/var/rudder/cfengine-community/policy_server.dat"
     owner: root
     group: root
     mode: '0644'
+  when: "{{ agent_version is version('6.2', operator='<=') }}"
+
+- name: Define policy server for Rudder 7
+  ansible.builtin.copy:
+    content: "{{ policy_server }}:{{ policy_port }}"
+    dest: "/opt/rudder/etc/policy_server.dat"
+    owner: root
+    group: root
+    mode: '0644'
+  when: "{{ agent_version is version('7.0', operator='>=') }}"
