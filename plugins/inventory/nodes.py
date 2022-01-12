@@ -1,15 +1,16 @@
 from ansible.plugins.inventory import BaseInventoryPlugin
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 
 ANSIBLE_METADATA = {
     'metadata_version': '1.0.0',
     'status': ['preview'],
-    'supported_by': 'community'
+    'supported_by': 'community',
 }
 
-DOCUMENTATION = '''
+DOCUMENTATION = """
 ---
 module: nodes
 plugin_type: inventory
@@ -20,7 +21,7 @@ description:
 options:
 author:
     - Rudder
-'''
+"""
 
 
 class InventoryModule(BaseInventoryPlugin):
@@ -47,19 +48,13 @@ class InventoryModule(BaseInventoryPlugin):
             dict The host data formatted as expected for an Inventory Script
         """
         return {
-            "all": {
-                "hosts": ["web1.example.com", "web2.example.com"]
-            },
-            "_meta": {
-                "hostvars": {
-                    "web1.example.com": {
-                        "ansible_user": "rdiscala"
-                    },
-                    "web2.example.com": {
-                        "ansible_user": "rdiscala"
-                    }
+            'all': {'hosts': ['web1.example.com', 'web2.example.com']},
+            '_meta': {
+                'hostvars': {
+                    'web1.example.com': {'ansible_user': 'rdiscala'},
+                    'web2.example.com': {'ansible_user': 'rdiscala'},
                 }
-            }
+            },
         }
 
     def parse(self, inventory, *args, **kwargs):
