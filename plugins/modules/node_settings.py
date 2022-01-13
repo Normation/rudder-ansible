@@ -207,8 +207,14 @@ class RudderNodeSettingsInterface(object):
             self.rudder_url = 'https://localhost/rudder'
             self.validate_certs = False
         if module.params.get('rudder_token', None) is None:
-            with open('/var/rudder/run/api-token') as system_token:
-                token = system_token.read()
+            try:
+                with open('/var/rudder/run/api-token') as system_token:
+                    token = system_token.read()
+            except FileNotFoundError:
+                self._module.fail_json(
+                    failed=True,
+                    msg="No token found in parameters, could not find the default system token under '/var/rudder/run/api-token'.",
+                )
         else:
             token = module.params['rudder_token']
         self.headers = {
