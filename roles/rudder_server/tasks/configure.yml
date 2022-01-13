@@ -1,12 +1,20 @@
 ---
 - name: Configure listen ports for Rudder 6 
-  template:
-    src: rudder6-web.properties.j2
-    dest: "/opt/rudder/etc/rudder-web.properties"
+  lineinfile:
+    path: "/opt/rudder/etc/rudder-web.properties"
+    regexp: '^{{item.key}}='
+    line: "{{item.key}}={{item.value}}"
+  with_dict: {rudder.community.port: policy_port_cfengine}
   when: server_version is version('6.2', operator='<=')
 
 - name: Configure listen ports for Rudder 7 
-  template:
-    src: rudder7-web.properties.j2
-    dest: "/opt/rudder/etc/rudder-web.properties"
-    when: server_version is version('7.0', operator='>=')
+  lineinfile:
+    path: "/opt/rudder/etc/rudder-web.properties"
+    regexp: '^{{item.key}}='
+    line: "{{item.key}}={{item.value}}"
+  with_dict: {
+    rudder.policy.distribution.port.cfengine: policy_port_cfengine, 
+    rudder.policy.distribution.port.https: policy_port_https, 
+    rudder.server.relay.api: "https://localhost:{{ relay_port }}/rudder/relay"
+    }
+  when: server_version is version('7.0', operator='>=')
