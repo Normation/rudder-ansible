@@ -263,26 +263,32 @@ class RudderNodeSettingsInterface(object):
             rudder_url=self.rudder_url, path=path
         )
 
-        if method == 'POST':
-            resp = requests.post(
-                url=full_url,
-                headers=self.headers,
-                data=s_data,
-                params=params,
-                verify=verify,
-            )
+        try:
+            if method == 'POST':
+                resp = requests.post(
+                    url=full_url,
+                    headers=self.headers,
+                    data=s_data,
+                    params=params,
+                    verify=verify,
+                )
 
-        elif method == 'GET':
-            resp = requests.get(
-                url=full_url,
-                headers=self.headers,
-                params=params,
-                verify=verify,
-            )
-        else:
+            elif method == 'GET':
+                resp = requests.get(
+                    url=full_url,
+                    headers=self.headers,
+                    params=params,
+                    verify=verify,
+                )
+            else:
+                self._module.fail_json(
+                    failed=True,
+                    msg="Method not supported by the function '_send_request'!",
+                )
+        except requests.exceptions.ConnectionError as errc:
             self._module.fail_json(
                 failed=True,
-                msg="Method not supported by the function '_send_request'!",
+                msg=str(errc)
             )
 
         status_code = resp.status_code

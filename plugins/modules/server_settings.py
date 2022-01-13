@@ -22,6 +22,7 @@ options:
     description:
       - Providing Rudder server IP address. Defaults to localhost.
     required: false
+    default: https://localhost/rudder
     type: str
 
   rudder_token:
@@ -80,9 +81,9 @@ class RudderSettingsInterface(object):
         self._module = module
         self.validate_certs = True
 
-        if module.params.get('rudder_url', None) is None:
-            self.rudder_url = 'https://localhost/rudder'
-            self.validate_certs = False
+        self.rudder_url = module.params['rudder_url']
+        self.validate_certs = module.params['validate_certs']
+
         if module.params.get('rudder_token', None) is None:
             try:
                 with open('/var/rudder/run/api-token') as system_token:
@@ -156,18 +157,9 @@ class RudderSettingsInterface(object):
 
 
 def main():
-
-    module_args = dict(
-        name=dict(type='str', required=True),
-        value=dict(required=True),
-        rudder_url=dict(type='str', required=False),
-        rudder_token=dict(type='str', required=False),
-        validate_certs=dict(type='bool', default=True),
-    )
-
     module = AnsibleModule(
         argument_spec={
-            'rudder_url': {'type': 'str', 'required': False},
+            'rudder_url': {'type': 'str', 'required': False, 'default': 'https://localhost/rudder'},
             'rudder_token': {'type': 'str', 'required': False},
             'name': {'type': 'str', 'required': True},
             'value': {'type': 'str', 'required': True},
