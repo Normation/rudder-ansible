@@ -8,7 +8,7 @@ from __future__ import absolute_import, division, print_function
 
 DOCUMENTATION = """
 ---
-module: rudder_server_settings
+module: server_settings
 author: Rudder (@Normation)
 version_added: '1.0.0'
 short_description: Configure Rudder Server 6.2 parameters via APIs
@@ -51,12 +51,12 @@ options:
 
 EXAMPLES = r"""
 - name: Simple Modify Rudder Settings
-  rudder_server_settings:
+  server_settings:
       name: "modified_file_ttl"
       value: "23"
 
 - name: Complex Modify Rudder Settings
-  rudder_server_settings:
+  server_settings:
       rudder_url: "https://my.rudder.server/rudder"
       rudder_token: "<rudder_server_token>"
       name: "modified_file_ttl"

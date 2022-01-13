@@ -5,7 +5,7 @@
 from __future__ import absolute_import, division, print_function
 
 DOCUMENTATION = r"""
-module: rudder_node_settings
+module: node_settings
 short_description: Configure Rudder Nodes parameters via APIs
 description:
     - Configure Rudder nodes parameters via APIs.
@@ -138,12 +138,12 @@ options:
 
 EXAMPLES = r"""
 - name: Simple Modify Rudder Node Settings
-  rudder_node_settings:
+  node_settings:
       rudder_url: "https://my.rudder.server/rudder"
       node_id: my_node_id
       policy_mode: enforce
 - name: Complex Modify Rudder Node Settings
-  rudder_node_settings:
+  node_settings:
       rudder_url: "https://my.rudder.server/rudder"
       rudder_token: "<rudder_server_token>"
       node_id: root
@@ -155,7 +155,7 @@ EXAMPLES = r"""
         value: "production"
       validate_certs: False
 - name: Complex Modify Rudder Node Settings with query
-  rudder_node_settings:
+  node_settings:
       rudder_url: "https://my.rudder.server/rudder"
       rudder_token: "<rudder_server_token>"
       pending: accepted
@@ -375,7 +375,7 @@ class RudderNodeSettingsInterface(object):
 
 def main():
     # Definition of the arguments and options
-    # of the 'rudder_node_settings' module
+    # of the 'node_settings' module
     module = AnsibleModule(
         argument_spec=dict(
             rudder_url=dict(type='str', required=False),
