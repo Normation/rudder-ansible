@@ -11,9 +11,9 @@ DOCUMENTATION = """
 module: server_settings
 author: Rudder (@Normation)
 version_added: '1.0.0'
-short_description: Configure Rudder Server 6.2 parameters via APIs
+short_description: Configure Rudder Server parameters via APIs.
 description:
-    - Configure Rudder Server 6.2 parameters via APIs.
+    - Configure Rudder Server parameters via APIs.
 requirements:
     - 'python >= 2.7'
 

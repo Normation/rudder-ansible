@@ -361,10 +361,40 @@ Configure Rudder nodes parameters via APIs.
 ```
 
 ### server_settings
-
+Configure Rudder Server parameters via APIs.
 #### Module parameters
+- `rudder_url` (str): Providing Rudder server IP address. Defaults to `localhost`.
+- `rudder_token` (str): Providing Rudder server token. Defaults to the content of /var/rudder/run/api-token if not set.
+- `name` (str): The name of the parameter to set.
+- `value` (str): The value defined to modify a given parameter name.
+- `validate_certs` (bool): Choosing either to ignore or not Rudder certificate validation. Defaults to `true`.
 
 #### Example playbook
+
+```yaml
+# Example 1
+- name: Simple Modify Rudder Settings
+  hosts: server
+  become: yes
+  collections:
+    - rudder.rudder
+  server_settings:
+      name: "modified_file_ttl"
+      value: "23"
+
+# Example 2
+- name: Complex Modify Rudder Settings
+  hosts: server
+  become: yes
+  collections:
+    - rudder.rudder
+  server_settings:
+      rudder_url: "https://my.rudder.server/rudder"
+      rudder_token: "<rudder_server_token>"
+      name: "modified_file_ttl"
+      value: "22"
+      validate_certs: False
+```
 
 ## Going further
 
