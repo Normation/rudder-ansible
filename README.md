@@ -261,10 +261,104 @@ The collection provides 2 major roles allowing to configure a Rudder root server
 
 
 ### node_settings
+
+Configure Rudder nodes parameters via APIs.
 #### Module parameters
 
+- `rudder_url` (str): Providing Rudder server IP address. Defaults to `localhost`.
+- `rudder_token` (str): Providing Rudder server token. Defaults to the content of /var/rudder/run/api-token if not set.
+- `validate_certs` (bool): Choosing either to ignore or not Rudder certificate validation. Defaults to `true`.
+- `node_id` (str): Define the identifier of the node to be configured.
+<br>
+- `policy_mode` (str): Set the policy mode
+  - *Choices*: `audit`, `enforce`, `default`, `keep`
+<br>
+- `pending` (str): Set the status of the (pending) node
+  - *Choices*: `accepted` or `refused`
+<br>
+- `state` (str): Set the node life cycle state
+  - *Choices*: `enabled`, `ignored`, `empty-policies`, `initializing`, `preparing-eol`
+<br>
+- `properties` (list): Define a list of properties
+  - *Subparameters*:
+    - `name` (str): Property name
+    - `value` (str): Property value
+<br>
+- `agent_key` (dict): Define information about agent key or certificate
+  - *Subparameters*:
+    - `status` (str): TODO
+      - *Choices*: `certified`, `undefined`
+    - `value` (str): Agent key, PEM format
+<br>
+- `include` (str): Level of information to include from the node inventory.
+- `query` (dict): The criterion you want to find for your nodes.
+  - *Subparameters*:
+    - `composition` (str): Boolean operator to use between each where criteria.
+      - *Choices*: `or`, `and`
+    - `select` (str): What kind of data we want to include. Here we can get policy servers/relay by setting *nodeAndPolicyServer*. Only used if where is defined.
+    - `where` (dict): The criterion you want to find for your nodes.
+      - *Subparameters*:
+        - `object_type` (str): Object type from which the attribute will be taken.
+        - `attribute` (str): Attribute to compare to value.
+        - `comparator` (str): Comparator type to use.
+          - *Choices*: `or`, `and`
+        - `value` (str): Value to compare to.
 #### Example playbook
 
+```yaml
+# Example 1
+- name: Simple Modify Rudder Node Settings
+  hosts: server
+  become: yes
+  collections:
+    - rudder.rudder
+  node_settings:
+      rudder_url: "https://my.rudder.server/rudder"
+      node_id: my_node_id
+      policy_mode: enforce
+
+# Example 2
+- name: Complex Modify Rudder Node Settings
+  hosts: server
+  become: yes
+  collections:
+    - rudder.rudder
+  node_settings:
+      rudder_url: "https://my.rudder.server/rudder"
+      rudder_token: "<rudder_server_token>"
+      node_id: root
+      pending: accepted
+      policy_mode: audit
+      state: enabled
+      properties:
+        name: "env_type"
+        value: "production"
+      validate_certs: False
+
+# Example 3
+- name: Complex Modify Rudder Node Settings with query
+  hosts: server
+  become: yes
+  collections:
+    - rudder.rudder
+  node_settings:
+      rudder_url: "https://my.rudder.server/rudder"
+      rudder_token: "<rudder_server_token>"
+      pending: accepted
+      policy_mode: audit
+      state: enabled
+      properties:
+        name: "env_type"
+        value: "production"
+      query:
+        select: "nodeAndPolicyServer"
+        composition: "and"
+        where:
+          object_type: "node"
+          attribute: "nodeHostname"
+          comparator: "regex"
+          value: "rudder-ansible-node.*"
+```
 
 ### server_settings
 
