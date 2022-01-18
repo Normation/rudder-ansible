@@ -1,79 +1,96 @@
 # Rudder Ansible Collection
 
 <!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#overview">Overview</a>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
+<summary>Table of Contents</summary>
+<ol>
+  <li>
+    <a href="#overview">Overview</a>
+  </li>
+  <li>
+    <a href="#getting-started">Getting Started</a>
+    <ul>
+      <li>
+        <a href="#installation">Installation</a>
+        <ul>
         <li>
-          <a href="#installation">Installation</a>
+          <a href="#with-ansible-210">With Ansible >= 2.10</a>
+        </li>
+        <li>
+          <a href="#with-ansible-210">With Ansible < 2.9</a>
+        </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#role-usage">Role usage</a>
+    <ul>
+      <li>
+        <a href="#rudder_agent">Deploy Rudder agent role</a>
           <ul>
-          <li>
-            <a href="#with-ansible-210">With Ansible >= 2.10</a>
-          </li>
-          <li>
-            <a href="#with-ansible-210">With Ansible < 2.9</a>
-          </li>
-          </ul>
-        </li>
-      </ul>
-    </li>
-    <li><a href="#usage">Usage</a>
-      <ul>
-        <li>
-          <a href="#rudder_agent">Deploy Rudder agent role</a>
-            <ul>
-            <li><a href="#role-variables">Role variables</a></li>
-            <li><a href="#example-playbook">Example Playbook</a></li>
-          </ul>
-        </li>
-      </ul>
-      <ul>
-        <li>
-          <a href="#rudder_server">Deploy Rudder root server role</a>
-            <ul>
-            <li><a href="#role-variables">Role variables</a></li>
-            <li><a href="#example-playbook">Example Playbook</a></li>
-          </ul>
-        </li>
-      </ul>
-      <ul>
-        <li>
-          <a href="#rudder_relay">Deploy Rudder relay server role</a>
-            <ul>
-            <li><a href="#role-variables">Role variables</a></li>
-            <li><a href="#example-playbook">Example Playbook</a></li>
-          </ul>
-        </li>
-      </ul>
-      <ul>
-        <li>
-          <a href="#rudder_repository">Manage Rudder repository role</a>
-            <ul>
-            <li><a href="#role-variables">Role variables</a></li>
-          </ul>
-        </li>
-      </ul>
-    </li>
-        <li>
-      <a href="#going-further">Going further</a>
-      <ul>
-        <li><a href="#uninstall-the-collection">Uninstall the collection</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#development">Development</a>
-      <ul>
-        <li><a href="#run-checks-locally">Run checks locally with Docker</a></li>
-      </ul>
-    </li>
-  </ol>
-</details>
+          <li><a href="#role-variables">Role variables</a></li>
+          <li><a href="#example-playbook">Example Playbook</a></li>
+        </ul>
+      </li>
+    </ul>
+    <ul>
+      <li>
+        <a href="#rudder_server">Deploy Rudder root server role</a>
+          <ul>
+          <li><a href="#role-variables">Role variables</a></li>
+          <li><a href="#example-playbook">Example Playbook</a></li>
+        </ul>
+      </li>
+    </ul>
+    <ul>
+      <li>
+        <a href="#rudder_relay">Deploy Rudder relay server role</a>
+          <ul>
+          <li><a href="#role-variables">Role variables</a></li>
+          <li><a href="#example-playbook">Example Playbook</a></li>
+        </ul>
+      </li>
+    </ul>
+    <ul>
+      <li>
+        <a href="#rudder_repository">Manage Rudder repository role</a>
+          <ul>
+          <li><a href="#role-variables">Role variables</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+    <li><a href="#module-usage">Module usage</a>
+    <ul>
+      <li>
+        <a href="#node_settings">node_settings</a>
+          <ul>
+          <li><a href="#module-parameters">Module parameters</a></li>
+          <li><a href="#example-playbook">Example Playbook</a></li>
+        </ul>
+      </li>
+    </ul>
+        <ul>
+      <li>
+        <a href="#server_settings">server_settings</a>
+          <ul>
+          <li><a href="#module-parameters">Module parameters</a></li>
+          <li><a href="#example-playbook">Example Playbook</a></li>
+        </ul>
+      </li>
+    </ul>
+      <li>
+    <a href="#going-further">Going further</a>
+    <ul>
+      <li><a href="#uninstall-the-collection">Uninstall the collection</a></li>
+    </ul>
+  </li>
+  <li>
+    <a href="#development">Development</a>
+    <ul>
+      <li><a href="#run-checks-locally-with-docker">Run checks locally with Docker</a></li>
+    </ul>
+  </li>
+</ol>
 
 ## Overview
 This Ansible collection allows to manage and interact with one or more Rudder instances.
@@ -239,6 +256,21 @@ the roles listed above.
             repository_username: "my_user"
             repository_password: "my_password"
 ```
+## Module usage
+The collection provides 2 major roles allowing to configure a Rudder root server but also to set up nodes dynamically (adding node properties for example).
+
+
+### node_settings
+#### Module parameters
+
+#### Example playbook
+
+
+### server_settings
+
+#### Module parameters
+
+#### Example playbook
 
 ## Going further
 
