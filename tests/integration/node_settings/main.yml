@@ -1,0 +1,21 @@
+---
+- hosts: localhost
+  gather_facts: false
+  name: Test the node_settings module
+
+  tasks:
+    - name: Change a setting
+      rudder.rudder.node_settings:
+        rudder_url: "<my rudder>"
+        rudder_token: "<my token>"
+        validate_certs: no
+        query:
+          select: "nodeAndPolicyServer"
+          composition: and
+          where:
+            - object_type: node
+              attribute: nodeHostname
+              comparator: eq
+              value: "<my target hostname>"
+        status: accepted
+        policy_mode: enforce

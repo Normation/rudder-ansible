@@ -1,0 +1,1 @@
+tests/unit/plugins/modules/test_node_settings_should_format_well_the_queries.py pep8!skip
