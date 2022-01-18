@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
 from os import walk
-from ansible.utils import plugin_docs as module_docs
+
+from ansible.module_utils.common.yaml import yaml_load
+from ansible.utils.plugin_docs import get_docstring
 from ansible.module_utils.basic import AnsibleModule
 
 
@@ -25,17 +27,19 @@ def main():
             for mod in ansible_modules:
                 try:
                     try:
-                        (
-                            doc,
-                            plainexamples,
-                            returndocs,
-                        ) = module_docs.get_docstring(path + mod)
-                    except ValueError:
-                        doc, plainexamples = module_docs.get_docstring(
-                            path + mod
+                        (doc, plainexamples, returndocs,) = get_docstring(
+                            filename=path + mod,
+                            fragment_loader=fragment_loader,
+                            verbose=True,
                         )
-                    except Exception as e:
-                        module.fail_json(msg='error', error=str(e))
+                    except ValueError:
+                        doc, plainexamples = get_docstring(
+                            filenmae=path + mod,
+                            fragment_loader=fragment_loader,
+                            verbose=True,
+                        )
+                    except Exception as err:
+                        module.fail_json(msg='error', error=str(err))
 
                     try:
                         examples_list = plainexamples.split('\n')
