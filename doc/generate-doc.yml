@@ -1,0 +1,11 @@
+---
+- name: Create local markdown doc
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Get docs and examples for modules
+      generate-doc: path=../
+      register: modules
+    - name: Build markdown doc
+      template: src=templates/modules.j2 dest=web/output-doc.md
