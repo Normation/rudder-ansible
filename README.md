@@ -1,79 +1,96 @@
 # Rudder Ansible Collection
 
 <!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#overview">Overview</a>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
+<summary>Table of Contents</summary>
+<ol>
+  <li>
+    <a href="#overview">Overview</a>
+  </li>
+  <li>
+    <a href="#getting-started">Getting Started</a>
+    <ul>
+      <li>
+        <a href="#installation">Installation</a>
+        <ul>
         <li>
-          <a href="#installation">Installation</a>
+          <a href="#with-ansible-210">With Ansible >= 2.10</a>
+        </li>
+        <li>
+          <a href="#with-ansible-210">With Ansible < 2.9</a>
+        </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#role-usage">Role usage</a>
+    <ul>
+      <li>
+        <a href="#rudder_agent">Deploy Rudder agent role</a>
           <ul>
-          <li>
-            <a href="#with-ansible-210">With Ansible >= 2.10</a>
-          </li>
-          <li>
-            <a href="#with-ansible-210">With Ansible < 2.9</a>
-          </li>
-          </ul>
-        </li>
-      </ul>
-    </li>
-    <li><a href="#usage">Usage</a>
-      <ul>
-        <li>
-          <a href="#rudder_agent">Deploy Rudder agent role</a>
-            <ul>
-            <li><a href="#role-variables">Role variables</a></li>
-            <li><a href="#example-playbook">Example Playbook</a></li>
-          </ul>
-        </li>
-      </ul>
-      <ul>
-        <li>
-          <a href="#rudder_server">Deploy Rudder root server role</a>
-            <ul>
-            <li><a href="#role-variables">Role variables</a></li>
-            <li><a href="#example-playbook">Example Playbook</a></li>
-          </ul>
-        </li>
-      </ul>
-      <ul>
-        <li>
-          <a href="#rudder_relay">Deploy Rudder relay server role</a>
-            <ul>
-            <li><a href="#role-variables">Role variables</a></li>
-            <li><a href="#example-playbook">Example Playbook</a></li>
-          </ul>
-        </li>
-      </ul>
-      <ul>
-        <li>
-          <a href="#rudder_repository">Manage Rudder repository role</a>
-            <ul>
-            <li><a href="#role-variables">Role variables</a></li>
-          </ul>
-        </li>
-      </ul>
-    </li>
-        <li>
-      <a href="#going-further">Going further</a>
-      <ul>
-        <li><a href="#uninstall-the-collection">Uninstall the collection</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#development">Development</a>
-      <ul>
-        <li><a href="#run-checks-locally">Run checks locally with Docker</a></li>
-      </ul>
-    </li>
-  </ol>
-</details>
+          <li><a href="#role-variables">Role variables</a></li>
+          <li><a href="#example-playbook">Example Playbook</a></li>
+        </ul>
+      </li>
+    </ul>
+    <ul>
+      <li>
+        <a href="#rudder_server">Deploy Rudder root server role</a>
+          <ul>
+          <li><a href="#role-variables">Role variables</a></li>
+          <li><a href="#example-playbook">Example Playbook</a></li>
+        </ul>
+      </li>
+    </ul>
+    <ul>
+      <li>
+        <a href="#rudder_relay">Deploy Rudder relay server role</a>
+          <ul>
+          <li><a href="#role-variables">Role variables</a></li>
+          <li><a href="#example-playbook">Example Playbook</a></li>
+        </ul>
+      </li>
+    </ul>
+    <ul>
+      <li>
+        <a href="#rudder_repository">Manage Rudder repository role</a>
+          <ul>
+          <li><a href="#role-variables">Role variables</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+    <li><a href="#module-usage">Module usage</a>
+    <ul>
+      <li>
+        <a href="#node_settings">node_settings</a>
+          <ul>
+          <li><a href="#module-parameters">Module parameters</a></li>
+          <li><a href="#example-playbook">Example Playbook</a></li>
+        </ul>
+      </li>
+    </ul>
+        <ul>
+      <li>
+        <a href="#server_settings">server_settings</a>
+          <ul>
+          <li><a href="#module-parameters">Module parameters</a></li>
+          <li><a href="#example-playbook">Example Playbook</a></li>
+        </ul>
+      </li>
+    </ul>
+      <li>
+    <a href="#going-further">Going further</a>
+    <ul>
+      <li><a href="#uninstall-the-collection">Uninstall the collection</a></li>
+    </ul>
+  </li>
+  <li>
+    <a href="#development">Development</a>
+    <ul>
+      <li><a href="#run-checks-locally-with-docker">Run checks locally with Docker</a></li>
+    </ul>
+  </li>
+</ol>
 
 ## Overview
 This Ansible collection allows to manage and interact with one or more Rudder instances.
@@ -238,6 +255,139 @@ the roles listed above.
             repository: "download.rudder.io"
             repository_username: "my_user"
             repository_password: "my_password"
+```
+## Module usage
+The collection provides 2 major roles allowing to configure a Rudder root server but also to set up nodes dynamically (adding node properties for example).
+
+
+### node_settings
+
+Configure Rudder nodes parameters via APIs.
+#### Module parameters
+
+- `rudder_url` (str): Providing Rudder server IP address. Defaults to `localhost`.
+- `rudder_token` (str): Providing Rudder server token. Defaults to the content of /var/rudder/run/api-token if not set.
+- `validate_certs` (bool): Choosing either to ignore or not Rudder certificate validation. Defaults to `true`.
+- `node_id` (str): Define the identifier of the node to be configured.
+- `policy_mode` (str): Set the policy mode
+  - *Choices*: `audit`, `enforce`, `default`, `keep`
+- `pending` (str): Set the status of the (pending) node
+  - *Choices*: `accepted` or `refused`
+- `state` (str): Set the node life cycle state
+  - *Choices*: `enabled`, `ignored`, `empty-policies`, `initializing`, `preparing-eol`
+- `properties` (list): Define a list of properties
+  - *Subparameters*:
+    - `name` (str): Property name
+    - `value` (str): Property value
+- `agent_key` (dict): Define information about agent key or certificate
+  - *Subparameters*:
+    - `status` (str): TODO
+      - *Choices*: `certified`, `undefined`
+    - `value` (str): Agent key, PEM format
+- `include` (str): Level of information to include from the node inventory.
+- `query` (dict): The criterion you want to find for your nodes.
+  - *Subparameters*:
+    - `composition` (str): Boolean operator to use between each where criteria.
+      - *Choices*: `or`, `and`
+    - `select` (str): What kind of data we want to include. Here we can get policy servers/relay by setting *nodeAndPolicyServer*. Only used if where is defined.
+    - `where` (dict): The criterion you want to find for your nodes.
+      - *Subparameters*:
+        - `object_type` (str): Object type from which the attribute will be taken.
+        - `attribute` (str): Attribute to compare to value.
+        - `comparator` (str): Comparator type to use.
+          - *Choices*: `or`, `and`
+        - `value` (str): Value to compare to.
+#### Example playbook
+
+```yaml
+# Example 1
+- name: Simple Modify Rudder Node Settings
+  hosts: server
+  become: yes
+  collections:
+    - rudder.rudder
+  node_settings:
+      rudder_url: "https://my.rudder.server/rudder"
+      node_id: my_node_id
+      policy_mode: enforce
+
+# Example 2
+- name: Complex Modify Rudder Node Settings
+  hosts: server
+  become: yes
+  collections:
+    - rudder.rudder
+  node_settings:
+      rudder_url: "https://my.rudder.server/rudder"
+      rudder_token: "<rudder_server_token>"
+      node_id: root
+      pending: accepted
+      policy_mode: audit
+      state: enabled
+      properties:
+        name: "env_type"
+        value: "production"
+      validate_certs: False
+
+# Example 3
+- name: Complex Modify Rudder Node Settings with query
+  hosts: server
+  become: yes
+  collections:
+    - rudder.rudder
+  node_settings:
+      rudder_url: "https://my.rudder.server/rudder"
+      rudder_token: "<rudder_server_token>"
+      pending: accepted
+      policy_mode: audit
+      state: enabled
+      properties:
+        name: "env_type"
+        value: "production"
+      query:
+        select: "nodeAndPolicyServer"
+        composition: "and"
+        where:
+          object_type: "node"
+          attribute: "nodeHostname"
+          comparator: "regex"
+          value: "rudder-ansible-node.*"
+```
+
+### server_settings
+Configure Rudder Server parameters via APIs.
+#### Module parameters
+- `rudder_url` (str): Providing Rudder server IP address. Defaults to `localhost`.
+- `rudder_token` (str): Providing Rudder server token. Defaults to the content of /var/rudder/run/api-token if not set.
+- `name` (str): The name of the parameter to set.
+- `value` (str): The value defined to modify a given parameter name.
+- `validate_certs` (bool): Choosing either to ignore or not Rudder certificate validation. Defaults to `true`.
+
+#### Example playbook
+
+```yaml
+# Example 1
+- name: Simple Modify Rudder Settings
+  hosts: server
+  become: yes
+  collections:
+    - rudder.rudder
+  server_settings:
+      name: "modified_file_ttl"
+      value: "23"
+
+# Example 2
+- name: Complex Modify Rudder Settings
+  hosts: server
+  become: yes
+  collections:
+    - rudder.rudder
+  server_settings:
+      rudder_url: "https://my.rudder.server/rudder"
+      rudder_token: "<rudder_server_token>"
+      name: "modified_file_ttl"
+      value: "22"
+      validate_certs: False
 ```
 
 ## Going further
