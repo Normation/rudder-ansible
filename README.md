@@ -290,7 +290,7 @@ Configure Rudder nodes parameters via APIs.
     - `composition` (str): Boolean operator to use between each where criteria.
       - *Choices*: `or`, `and`
     - `select` (str): What kind of data we want to include. Here we can get policy servers/relay by setting *nodeAndPolicyServer*. Only used if where is defined.
-    - `where` (dict): The criterion you want to find for your nodes.
+    - `where` (list): The criterion you want to find for your nodes. List of selectors.
       - *Subparameters*:
         - `object_type` (str): Object type from which the attribute will be taken.
         - `attribute` (str): Attribute to compare to value.
@@ -348,10 +348,10 @@ Configure Rudder nodes parameters via APIs.
         select: "nodeAndPolicyServer"
         composition: "and"
         where:
-          object_type: "node"
-          attribute: "nodeHostname"
-          comparator: "regex"
-          value: "rudder-ansible-node.*"
+          - object_type: "node"
+            attribute: "nodeHostname"
+            comparator: "regex"
+            value: "rudder-ansible-node.*"
 ```
 
 ### server_settings
