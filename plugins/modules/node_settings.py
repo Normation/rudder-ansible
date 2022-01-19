@@ -302,15 +302,15 @@ class RudderNodeSettingsInterface(object):
                     headers=headers,
                     validate_certs=self.validate_certs,
                     method=method,
-                    data=data,
+                    data=data
                 )
                 .read()
                 .decode('utf8')
             )
             return self._module.from_json(resp)
-        except Exception as e:
+        except Exception as error:
             self._module.fail_json(
-                failed=True, msg='Rudder API call failed!', reason=str(e)
+                failed=True, msg='Rudder API call failed!', reason=str(error)
             )
 
     def _translate_settings(self, settings_dict):
@@ -349,7 +349,7 @@ class RudderNodeSettingsInterface(object):
                 path='/api/latest/nodes/{node_id}'.format(node_id=node_id),
                 data=self.settings_to_set,
                 headers=self.headers,
-                method='POST',
+                method='POST'
             )
         return update
 
@@ -364,7 +364,7 @@ class RudderNodeSettingsInterface(object):
 
         query_json_struct = {
             'select': query['select'],
-            'composition': query['composition'],
+            'composition': query['composition']
         }
 
         url_query = '?' + json_query_to_url_query(query['where'])
@@ -373,7 +373,7 @@ class RudderNodeSettingsInterface(object):
             method='GET',
             path='/api/latest/nodes' + url_query,
             data={},
-            headers=self.headers,
+            headers=self.headers
         )['data']['nodes']
         nodes_id = [node['id'] for node in nodes]
 

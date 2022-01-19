@@ -14,7 +14,7 @@ class TestStringMethods(unittest.TestCase):
                         'object_type': 'node',
                         'attribute': 'nodeHostname',
                         'comparator': 'eq',
-                        'value': 'my_machine.my_domain',
+                        'value': 'my_machine.my_domain'
                     }
                 ],
                 'where=[{"objectType":"node","attribute":"nodeHostname","comparator":"eq","value":"my_machine.my_domain"}]',
@@ -24,22 +24,22 @@ class TestStringMethods(unittest.TestCase):
                     'object_type': 'node',
                     'attribute': 'OS',
                     'comparator': 'eq',
-                    'value': 'Linux',
+                    'value': 'Linux'
                 },
                 {
                     'object_type': 'node',
                     'attribute': 'osFullName',
                     'comparator': 'regex',
-                    'value': '.*Linux.*',
+                    'value': '.*Linux.*'
                 },
                 {
                     'object_type': 'memoryPhysicalElement',
                     'attribute': 'quantity',
                     'comparator': 'gteq',
-                    'value': '1',
+                    'value': '1'
                 },
             ],
-            'where=[{"objectType":"node","attribute":"OS","comparator":"eq","value":"Linux"},{"objectType":"node","attribute":"osFullName","comparator":"regex","value":".*Linux.*"},{"objectType":"memoryPhysicalElement","attribute":"quantity","comparator":"gteq","value":"1"}]',
+            'where=[{"objectType":"node","attribute":"OS","comparator":"eq","value":"Linux"},{"objectType":"node","attribute":"osFullName","comparator":"regex","value":".*Linux.*"},{"objectType":"memoryPhysicalElement","attribute":"quantity","comparator":"gteq","value":"1"}]'
         ]
     )
     def test_query_translation(self, json_query, expected):
