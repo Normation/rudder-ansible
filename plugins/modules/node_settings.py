@@ -46,7 +46,7 @@ options:
       - default
       - keep
 
-  pending:
+  status:
     description:
       - Set the status of the (pending) node
     type: str
@@ -100,6 +100,7 @@ options:
     description:
       - Level of information to include from the node inventory.
     type: str
+    default: default
 
   query:
     description:
@@ -116,8 +117,9 @@ options:
         description: What kind of data we want to include. Here we can get policy servers/relay by setting nodeAndPolicyServer. Only used if where is defined.
         type: str
       where:
-        type: dict
+        type: list
         description: The criterion you want to find for your nodes.
+        elements: dict
         suboptions:
           object_type:
             description: Object type from which the attribute will be taken.
@@ -127,9 +129,6 @@ options:
             type: str
           comparator:
             description: Comparator type to use.
-            choices:
-              - and
-              - or
             type: str
           value:
             type: str
@@ -147,7 +146,7 @@ EXAMPLES = r"""
       rudder_url: "https://my.rudder.server/rudder"
       rudder_token: "<rudder_server_token>"
       node_id: root
-      pending: accepted
+      status: accepted
       policy_mode: audit
       state: enabled
       properties:
@@ -158,7 +157,7 @@ EXAMPLES = r"""
   node_settings:
       rudder_url: "https://my.rudder.server/rudder"
       rudder_token: "<rudder_server_token>"
-      pending: accepted
+      status: accepted
       policy_mode: audit
       state: enabled
       properties:
@@ -168,31 +167,76 @@ EXAMPLES = r"""
         select: "nodeAndPolicyServer"
         composition: "and"
         where:
-          object_type: "node"
-          attribute: "nodeHostname"
-          comparator: "regex"
-          value: "rudder-ansible-node.*"
+          - object_type: "node"
+            attribute: "nodeHostname"
+            comparator: "regex"
+            value: "rudder-ansible-node.*"
 """
 
 import json
 import requests
+import traceback
+from ansible.module_utils.urls import open_url, fetch_url
 from ansible.module_utils.basic import AnsibleModule
 
 __metaclass__ = type
 
 # API available settings for the nodes
-nodeSettingsParams = ['state', 'properties', 'agent_key', 'policy_mode']
+nodeSettingsParams = [
+    'state',
+    'properties',
+    'agent_key',
+    'policy_mode',
+    'status',
+]
 
 # Ansible module parameters
 allParams = [
     'rudder_url',
     'rudder_token',
     'node_id',
-    'pending',
     'include',
     'query',
     'validate_certs',
 ] + nodeSettingsParams
+
+
+def json_query_to_url_query(json_query):
+    """
+    Expects an array of the form:
+      [
+          {
+              "object_type": "node",
+              "attribute": "OS",
+              "comparator": "eq",
+              "value": "Linux"
+          },
+          {
+              "object_type": "node",
+              "attribute": "osFullName",
+              "comparator": "regex",
+              "value": ".*Linux.*"
+          },
+          {
+              "object_type": "memoryPhysicalElement",
+              "attribute": "quantity",
+              "comparator": "gteq",
+              "value": "1"
+          }
+       ]
+    """
+    queries = []
+    for i in json_query:
+        query_struct = {
+            'objectType': i['object_type'],
+            'attribute': i['attribute'],
+            'comparator': i['comparator'],
+            'value': i['value'],
+        }
+        queries.append(query_struct)
+    return 'where={dump}'.format(
+        dump=json.dumps(queries, separators=(',', ':'))
+    )
 
 
 class RudderNodeSettingsInterface(object):
@@ -228,33 +272,21 @@ class RudderNodeSettingsInterface(object):
                 raw_settings_to_set.update({param: module.params[param]})
         self.settings_to_set = self._translate_settings(raw_settings_to_set)
 
-    def _send_request(
-        self,
-        path,
-        data=None,
-        serialize_json=None,
-        headers=None,
-        method='GET',
-        verify=False,
-        params=None,
-    ):
+    def _send_request(self, path, data=None, headers=None, method='GET'):
         """Send HTTP request
 
         Args:
-            path (str): Specify the API path (for example: "/rudder/api/latest/nodes/{nodeId}") .
+            url (str): API path
             data (str): Specify all JSON data (for example: "{'policyMode':'audit'}").
-            serialize_json (bool): Specify if you want to serialize obj into a JSON formatted string.
             headers (str, optional): Specify HTTP headers. Defaults to None.
             method (str, optional): Specify HTTP method (GET or POST only). Defaults to "GET".
-            verify (bool, optional): Specify if you want to check SSL certificate
-            params (str, optional): Specify all params
 
         Returns:
-            str: return request content as an object.
+            str: return request content as a json object.
         """
 
-        # Serialise obj into a str formatted as JSON or not
-        s_data = json.dumps(data) if serialize_json is not None else data
+        if data is not None:
+            data = json.dumps(data, sort_keys=True)
 
         if not headers:
             headers = []
@@ -264,42 +296,21 @@ class RudderNodeSettingsInterface(object):
         )
 
         try:
-            if method == 'POST':
-                resp = requests.post(
-                    url=full_url,
-                    headers=self.headers,
-                    data=s_data,
-                    params=params,
-                    verify=verify,
+            resp = (
+                open_url(
+                    full_url,
+                    headers=headers,
+                    validate_certs=self.validate_certs,
+                    method=method,
+                    data=data
                 )
-
-            elif method == 'GET':
-                resp = requests.get(
-                    url=full_url,
-                    headers=self.headers,
-                    params=params,
-                    verify=verify,
-                )
-            else:
-                self._module.fail_json(
-                    failed=True,
-                    msg="Method not supported by the function '_send_request'!",
-                )
-        except requests.exceptions.ConnectionError as errc:
-            self._module.fail_json(
-                failed=True,
-                msg=str(errc)
+                .read()
+                .decode('utf8')
             )
-
-        status_code = resp.status_code
-        if status_code == 200:
-            return self._module.from_json(resp.content)
-        else:
+            return self._module.from_json(resp)
+        except Exception as error:
             self._module.fail_json(
-                failed=True,
-                msg='Rudder API answered with HTTP {} details: {} '.format(
-                    status_code, resp.content
-                ),
+                failed=True, msg='Rudder API call failed!', reason=str(error)
             )
 
     def _translate_settings(self, settings_dict):
@@ -338,8 +349,7 @@ class RudderNodeSettingsInterface(object):
                 path='/api/latest/nodes/{node_id}'.format(node_id=node_id),
                 data=self.settings_to_set,
                 headers=self.headers,
-                serialize_json=True,
-                method='POST',
+                method='POST'
             )
         return update
 
@@ -350,44 +360,38 @@ class RudderNodeSettingsInterface(object):
             str: All nodes who match with query
         """
 
-        url = '/api/latest/nodes'
+        query = self._module.params['query']
 
         query_json_struct = {
-            'select': self.query_select,
-            'composition': self.query_composition,
+            'select': query['select'],
+            'composition': query['composition']
         }
 
-        where_json_struct = {
-            'objectType': self.where_object_type,
-            'attribute': self.where_attribute,
-            'comparator': self.where_comparator,
-            'value': self.where_value,
-        }
+        url_query = '?' + json_query_to_url_query(query['where'])
 
-        params = {
-            'where': json.dumps(where_json_struct),
-            'query': json.dumps(query_json_struct),
-            'include': self.include,
-        }
-
-        response = self._send_request(
-            path=url,
-            headers=self.headers,
-            serialize_json=False,
-            params=params,
+        nodes = self._send_request(
             method='GET',
-        )
+            path='/api/latest/nodes' + url_query,
+            data={},
+            headers=self.headers
+        )['data']['nodes']
+        nodes_id = [node['id'] for node in nodes]
 
-        # Init list
-        nodes_id = []
-        for value in response['data']['nodes']:
-            nodes_id.append(value['id'])
-        return nodes_id
+        return (url_query, nodes_id)
 
 
 def main():
     # Definition of the arguments and options
     # of the 'node_settings' module
+    where_object = dict(
+        object_type=dict(type='str', required=False),
+        attribute=dict(type='str', required=False),
+        comparator=dict(
+            type='str',
+            required=False,
+        ),
+        value=dict(type='str', required=False),
+    )
     module = AnsibleModule(
         argument_spec=dict(
             rudder_url=dict(type='str', required=False),
@@ -414,7 +418,7 @@ def main():
                     ),
                 ),
             ),
-            pending=dict(
+            status=dict(
                 type='str', required=False, choices=['accepted', 'refused']
             ),
             state=dict(
@@ -434,7 +438,7 @@ def main():
                 choices=['audit', 'enforce', 'default', 'keep'],
                 required=False,
             ),
-            include=dict(type='str', required=False),
+            include=dict(type='str', required=False, default='default'),
             query=dict(
                 type='dict',
                 required=False,
@@ -444,18 +448,10 @@ def main():
                         type='str', required=False, choices=['or', 'and']
                     ),
                     where=dict(
-                        type='dict',
+                        type='list',
                         required=False,
-                        options=dict(
-                            object_type=dict(type='str', required=False),
-                            attribute=dict(type='str', required=False),
-                            comparator=dict(
-                                type='str',
-                                choices=['and', 'or'],
-                                required=False,
-                            ),
-                            value=dict(type='str', required=False),
-                        ),
+                        elements='dict',
+                        options=where_object,
                     ),
                 ),
             ),
@@ -466,30 +462,33 @@ def main():
     rudder_node_iface = RudderNodeSettingsInterface(module)
 
     # Define the target nodes
+    query = ''
     target_nodes = []
-    if 'node_id' in module.params:
+    if module.params.get('node_id', None) is not None:
         target_nodes.append(module.params['node_id'])
-    elif 'query' not in module.params:
-        module.fail_json(msg='No target node_id nor query found!')
     else:
-        target_nodes = rudder_node_iface.evaluate_node_query()
+        (query, target_nodes) = rudder_node_iface.evaluate_node_query()
 
     changed = False
     impacted_nodes = {i: False for i in target_nodes}
+    errors = []
     for node_id in target_nodes:
         try:
             node_changed = rudder_node_iface.set_node_settings(node_id)
             changed = node_changed or changed
             impacted_nodes[node_id] = node_changed
-        except Exception as exception:
-            module.fail_json(msg=exception)
+        except Exception as err:
+            errors.append(err)
 
+    failed = bool(errors)
     module.exit_json(
-        failed=False,
+        failed=failed,
         changed=changed,
         meta=module.params,
         audited_settings=rudder_node_iface.settings_to_set,
         nodes=impacted_nodes,
+        query=query,
+        errors=errors,
     )
 
 

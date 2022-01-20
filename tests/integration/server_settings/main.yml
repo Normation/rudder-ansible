@@ -1,0 +1,27 @@
+---
+- hosts: localhost
+  gather_facts: false
+  name: Test the server_settings module
+
+  tasks:
+    - name: Make sure we have id or name parameter 2
+      rudder.rudder.server_settings:
+      ignore_errors: true
+      register: result
+
+    - assert:
+        that:
+          - result is failed
+          - "'name', 'value' in result.msg"
+
+    - name: Change a setting
+      rudder.rudder.server_settings:
+        rudder_url: "<my rudder>"
+        rudder_token: "<my token>"
+        validate_certs: no
+        name: "{{ item.name }}"
+        value: "{{ item.value }}"
+      with_items:
+        - { name: run_frequency, value: 5 }
+        - { name: first_run_hour, value: 1 }
+        - { name: allowed_networks, value: [ { "id": "root", "allowed_networks": ["192.168.3.0/24", "10.0.2.15/32", "192.168.3.2/32"] } ] }

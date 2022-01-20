@@ -108,31 +108,23 @@ class RudderSettingsInterface(object):
             headers = []
 
         full_url = '{rudder_url}{path}'.format(
-            rudder_url=self.rudder_url, path=url
+            rudder_url=self.rudder_url, path=path
         )
 
-        resp, info = fetch_url(
-            self._module, full_url, data=data, headers=headers, method=method
-        )
-
-        status_code = info['status']
-        if status_code == 404:
-            self._module.fail_json(failed=True, msg='Not found')
-        elif status_code == 401:
+        try:
+            resp = open_url(
+                full_url,
+                headers=headers,
+                validate_certs=self.validate_certs,
+                method=method,
+                data=data
+            ).read().decode('utf8')
+            return self._module.from_json(resp)
+        except Exception as e:
             self._module.fail_json(
                 failed=True,
-                msg="Unauthorized to perform action '{}' on '{}'".format(
-                    method, full_url
-                ),
-            )
-        elif status_code == 200:
-            return self._module.from_json(resp.read())
-        else:
-            self._module.fail_json(
-                failed=True,
-                msg='Rudder API answered with HTTP {} details: {} '.format(
-                    status_code, info['msg']
-                ),
+                msg='Rudder API call failed!',
+                reason=str(e)
             )
 
     def get_SettingValue(self, name):
@@ -197,7 +189,7 @@ def main():
             failed=False,
             changed=False,
             meta=module.params,
-            message='Already exist',
+            message='Already correct',
         )
 
 
