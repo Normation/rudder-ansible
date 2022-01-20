@@ -89,6 +89,9 @@
     <ul>
       <li><a href="#run-checks-locally-with-docker">Run checks locally with Docker</a></li>
     </ul>
+        <ul>
+      <li><a href="#push-this-collection-on-ansible-galaxy">Push this collection on Ansible Galaxy</a></li>
+    </ul>
   </li>
 </ol>
 
@@ -437,3 +440,14 @@ To start the verification, simply use the command :
 docker run <container-hash> "ansible-test sanity" 
 ```
 If you make new changes in the code, you will have to restart a build of the container and make a new run of the Docker command that goes well with the new container hash obtained.
+
+### Push this collection on Ansible Galaxy
+
+To push the collection, you must have a [GitHub](https://github.com/) account.
+
+* Log in to Galaxy with the account that will perform the buid and publication. 
+* Generate Galaxy API key, more informations [here](https://docs.ansible.com/ansible/latest/cli/ansible-galaxy.html#synopsis).
+* Modify the content of the `galaxy.yml` file before publishing.
+* Build the collection locally with `ansible-galaxy collection build`.
+* Then *publish* the collection with the following command `ansible-galaxy collection publish ./rudder-ansible-1.0.0.tar.gz --api-key you_galaxy_api_key`
+
