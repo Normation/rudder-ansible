@@ -1,5 +1,7 @@
 #!/bin/sh
+
 set -e
+
 test_role()
 {
   cd roles/$1 && molecule test
@@ -8,6 +10,12 @@ test_role()
 test_typos()
 {
   typos
+}
+
+test_unit()
+{
+  export PYTHONPATH="."
+  pytest tests/unit/plugins/modules/
 }
 
 if [ "$1" = "--rudder_relay" ]; then
@@ -24,6 +32,9 @@ elif [ "$1" = "--rudder_repository" ]; then
   exit 0
 elif [ "$1" = "--typos" ]; then
   test_typos
+  exit 0
+elif [ "$1" = "--unit-tests" ]; then
+  test_unit
   exit 0
 else
   test_typos

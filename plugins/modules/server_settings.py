@@ -67,8 +67,7 @@ EXAMPLES = r"""
 
 import json
 
-from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.urls import basic_auth_header, fetch_url
+from ansible.module_utils.urls import open_url, fetch_url
 
 __metaclass__ = type
 
@@ -100,6 +99,17 @@ class RudderSettingsInterface(object):
             'Content-Type': 'application/json',
         }
 
+    def _value_to_test(self, value):
+        """Function for unit test to test value overload
+
+        Args:
+            value (str): parameter type
+        """
+        if value == 'url':
+            return self.rudder_url
+        elif value == 'validate_certs':
+            return self.validate_certs
+
     def _send_request(self, url, data=None, headers=None, method='GET'):
         if data is not None:
             data = json.dumps(data, sort_keys=True)
@@ -112,19 +122,21 @@ class RudderSettingsInterface(object):
         )
 
         try:
-            resp = open_url(
-                full_url,
-                headers=headers,
-                validate_certs=self.validate_certs,
-                method=method,
-                data=data
-            ).read().decode('utf8')
+            resp = (
+                open_url(
+                    full_url,
+                    headers=headers,
+                    validate_certs=self.validate_certs,
+                    method=method,
+                    data=data,
+                )
+                .read()
+                .decode('utf8')
+            )
             return self._module.from_json(resp)
         except Exception as e:
             self._module.fail_json(
-                failed=True,
-                msg='Rudder API call failed!',
-                reason=str(e)
+                failed=True, msg='Rudder API call failed!', reason=str(e)
             )
 
     def get_SettingValue(self, name):
@@ -139,7 +151,7 @@ class RudderSettingsInterface(object):
 
         update = False
 
-        if (current_server_settings != self.get_SettingValue(name)):
+        if current_server_settings != self.get_SettingValue(name):
             update = True
 
         if update:
@@ -149,9 +161,13 @@ class RudderSettingsInterface(object):
 
 
 def main():
-    module = AnsibleModule(
+    module = basic.AnsibleModule(
         argument_spec={
-            'rudder_url': {'type': 'str', 'required': False, 'default': 'https://localhost/rudder'},
+            'rudder_url': {
+                'type': 'str',
+                'required': False,
+                'default': 'https://localhost/rudder',
+            },
             'rudder_token': {'type': 'str', 'required': False},
             'name': {'type': 'str', 'required': True},
             'value': {'type': 'str', 'required': True},
