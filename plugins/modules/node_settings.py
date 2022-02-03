@@ -404,7 +404,7 @@ def main():
         ),
         value=dict(type='str', required=False),
     )
-    module = basic.AnsibleModule(
+    module = AnsibleModule(
         argument_spec=dict(
             rudder_url=dict(type='str', required=False),
             rudder_token=dict(type='str', required=False),

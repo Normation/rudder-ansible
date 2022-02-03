@@ -162,7 +162,7 @@ class RudderSettingsInterface(object):
 
 
 def main():
-    module = basic.AnsibleModule(
+    module = AnsibleModule(
         argument_spec={
             'rudder_url': {
                 'type': 'str',
