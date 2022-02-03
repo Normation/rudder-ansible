@@ -39,7 +39,7 @@ pipeline {
             }
         }
         steps {
-            sh script: 'pytest', label: 'ansible unit checks'
+            sh script: './qa-test --unit-tests', label: 'ansible unit checks'
         }
     }
 
