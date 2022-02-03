@@ -67,7 +67,8 @@ EXAMPLES = r"""
 
 import json
 
-from ansible.module_utils.urls import open_url, fetch_url
+from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.urls import basic_auth_header, fetch_url
 
 __metaclass__ = type
 

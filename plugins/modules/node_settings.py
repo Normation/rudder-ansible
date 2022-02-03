@@ -177,6 +177,8 @@ import json
 import requests
 import traceback
 from ansible.module_utils.urls import open_url, fetch_url
+from ansible.module_utils.basic import AnsibleModule
+
 
 __metaclass__ = type
 
