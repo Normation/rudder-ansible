@@ -175,9 +175,9 @@ EXAMPLES = r"""
 
 import json
 import requests
-import traceback
 from ansible.module_utils.urls import open_url, fetch_url
 from ansible.module_utils.basic import AnsibleModule
+
 
 __metaclass__ = type
 
@@ -272,6 +272,17 @@ class RudderNodeSettingsInterface(object):
                 raw_settings_to_set.update({param: module.params[param]})
         self.settings_to_set = self._translate_settings(raw_settings_to_set)
 
+    def _value_to_test(self, value):
+        """Function for unit test to test value overload
+
+        Args:
+            value (str): parameter type
+        """
+        if value == 'url':
+            return self.rudder_url
+        elif value == 'validate_certs':
+            return self.validate_certs
+
     def _send_request(self, path, data=None, headers=None, method='GET'):
         """Send HTTP request
 
@@ -302,7 +313,7 @@ class RudderNodeSettingsInterface(object):
                     headers=headers,
                     validate_certs=self.validate_certs,
                     method=method,
-                    data=data
+                    data=data,
                 )
                 .read()
                 .decode('utf8')
@@ -349,7 +360,7 @@ class RudderNodeSettingsInterface(object):
                 path='/api/latest/nodes/{node_id}'.format(node_id=node_id),
                 data=self.settings_to_set,
                 headers=self.headers,
-                method='POST'
+                method='POST',
             )
         return update
 
@@ -364,7 +375,7 @@ class RudderNodeSettingsInterface(object):
 
         query_json_struct = {
             'select': query['select'],
-            'composition': query['composition']
+            'composition': query['composition'],
         }
 
         url_query = '?' + json_query_to_url_query(query['where'])
@@ -373,7 +384,7 @@ class RudderNodeSettingsInterface(object):
             method='GET',
             path='/api/latest/nodes' + url_query,
             data={},
-            headers=self.headers
+            headers=self.headers,
         )['data']['nodes']
         nodes_id = [node['id'] for node in nodes]
 

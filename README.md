@@ -89,6 +89,12 @@
     <ul>
       <li><a href="#run-checks-locally-with-docker">Run checks locally with Docker</a></li>
     </ul>
+      <ul>
+      <li><a href="#improve-code-quality">Improve code quality</a></li>
+    </ul>
+    <ul>
+      <li><a href="#run-unit-tests-locally">Run unit tests locally</a></li>
+    </ul>
         <ul>
       <li><a href="#push-this-collection-on-ansible-galaxy">Push this collection on Ansible Galaxy</a></li>
     </ul>
@@ -441,6 +447,41 @@ docker run <container-hash> "ansible-test sanity"
 ```
 If you make new changes in the code, you will have to restart a build of the container and make a new run of the Docker command that goes well with the new container hash obtained.
 
+### Run unit tests locally
+
+To be able to run unit tests locally, you must have the following dependencies:
+
+```bash
+pip3 install -r ci/requirements.txt
+```
+
+You will have to go to the root of the project and temporarily change the content of the environment variable `PYTHONPATH`.
+
+```bash
+export PYTHONPATH="."
+```
+
+You can then run the tests:
+
+```bash
+python -m unittest tests/unit/plugins/modules/
+
+# Or 
+pytest tests/unit/plugins/modules/
+```
+
+### Improve code quality
+
+To improve the quality of your Python code you can use the `blue` tool.
+
+To install it, you must have installed the basic requirements (via the command `pip install -r utils/python/requirements/base-requirements.txt`).
+
+Then, you just have to execute it as in the following example on your Python file. This is so that the sanity tests can be conclusive.
+
+```bash
+blue tests/unit/plugins/modules/test_node_settings_parameter_overloard.py
+```
+
 ### Push this collection on Ansible Galaxy
 
 To push the collection, you must have a [GitHub](https://github.com/) account.
@@ -450,4 +491,3 @@ To push the collection, you must have a [GitHub](https://github.com/) account.
 * Modify the content of the `galaxy.yml` file before publishing.
 * Build the collection locally with `ansible-galaxy collection build`.
 * Then *publish* the collection with the following command `ansible-galaxy collection publish ./rudder-ansible-1.0.0.tar.gz --api-key you_galaxy_api_key`
-

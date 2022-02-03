@@ -100,6 +100,17 @@ class RudderSettingsInterface(object):
             'Content-Type': 'application/json',
         }
 
+    def _value_to_test(self, value):
+        """Function for unit test to test value overload
+
+        Args:
+            value (str): parameter type
+        """
+        if value == 'url':
+            return self.rudder_url
+        elif value == 'validate_certs':
+            return self.validate_certs
+
     def _send_request(self, url, data=None, headers=None, method='GET'):
         if data is not None:
             data = json.dumps(data, sort_keys=True)
@@ -112,19 +123,21 @@ class RudderSettingsInterface(object):
         )
 
         try:
-            resp = open_url(
-                full_url,
-                headers=headers,
-                validate_certs=self.validate_certs,
-                method=method,
-                data=data
-            ).read().decode('utf8')
+            resp = (
+                open_url(
+                    full_url,
+                    headers=headers,
+                    validate_certs=self.validate_certs,
+                    method=method,
+                    data=data,
+                )
+                .read()
+                .decode('utf8')
+            )
             return self._module.from_json(resp)
         except Exception as e:
             self._module.fail_json(
-                failed=True,
-                msg='Rudder API call failed!',
-                reason=str(e)
+                failed=True, msg='Rudder API call failed!', reason=str(e)
             )
 
     def get_SettingValue(self, name):
@@ -139,7 +152,7 @@ class RudderSettingsInterface(object):
 
         update = False
 
-        if (current_server_settings != self.get_SettingValue(name)):
+        if current_server_settings != self.get_SettingValue(name):
             update = True
 
         if update:
@@ -151,7 +164,11 @@ class RudderSettingsInterface(object):
 def main():
     module = AnsibleModule(
         argument_spec={
-            'rudder_url': {'type': 'str', 'required': False, 'default': 'https://localhost/rudder'},
+            'rudder_url': {
+                'type': 'str',
+                'required': False,
+                'default': 'https://localhost/rudder',
+            },
             'rudder_token': {'type': 'str', 'required': False},
             'name': {'type': 'str', 'required': True},
             'value': {'type': 'str', 'required': True},

@@ -31,6 +31,18 @@ pipeline {
             }
         }
     }
+    stage ('ansible unit tests') {
+        agent {
+            dockerfile {
+                filename 'ci/pytest.Dockerfile'
+                additionalBuildArgs  '--build-arg USER_ID='+user_id
+            }
+        }
+        steps {
+            sh script: './qa-test --unit-tests', label: 'ansible unit checks'
+        }
+    }
+
     //stage ('role rudder_relay') {
     //  agent {
     //    image 'quay.io/ansible/toolset'
