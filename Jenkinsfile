@@ -34,7 +34,7 @@ pipeline {
     stage ('ansible unit tests') {
         agent {
             dockerfile {
-                filename 'ci/pytest.Dockerfile'
+                filename 'ci/ansible-test.Dockerfile'
                 additionalBuildArgs  '--build-arg USER_ID='+user_id
             }
         }

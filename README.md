@@ -466,7 +466,7 @@ You can then run the tests:
 ```bash
 python -m unittest tests/unit/plugins/modules/
 
-# Or 
+# or 
 pytest tests/unit/plugins/modules/
 ```
 

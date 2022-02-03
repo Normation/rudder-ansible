@@ -8,3 +8,4 @@ __pycache__/
 NOTES*
 build/
 .pytest_cache/
+.coverage
