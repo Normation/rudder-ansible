@@ -16,3 +16,9 @@ repository: https://github.com/normation/rudder-ansible
 documentation: https://docs.rudder.io
 homepage: https://rudder.io
 issues: https://issues.rudder.io
+
+build_ignore:
+- '*.tar.gz'
+- 'ci/*'
+- 'utils/*'
+- 'tests/*'

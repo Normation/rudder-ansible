@@ -491,3 +491,9 @@ To push the collection, you must have a [GitHub](https://github.com/) account.
 * Modify the content of the `galaxy.yml` file before publishing.
 * Build the collection locally with `ansible-galaxy collection build`.
 * Then *publish* the collection with the following command `ansible-galaxy collection publish ./rudder-ansible-1.0.0.tar.gz --api-key you_galaxy_api_key`
+
+Or you can simply run the `ci/publisher.sh` script to publish from your computer and not from the CI, the collection.
+
+```bash
+./ci/publisher.sh GALAXY_API_KEY
+```
