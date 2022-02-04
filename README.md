@@ -12,12 +12,19 @@
       <li>
         <a href="#installation">Installation</a>
         <ul>
-        <li>
-          <a href="#with-ansible-210">With Ansible >= 2.10</a>
-        </li>
-        <li>
-          <a href="#with-ansible-210">With Ansible < 2.9</a>
-        </li>
+            <li>
+            <a href="#from-ansible-galaxy">From Ansible Galaxy</a>
+          </li>
+          <li>
+            <a href="#from-source">From source</a>
+            <ul>
+              <li>
+                <a href="#with-ansible-210">With Ansible >= 2.10</a>
+              </li>
+              <li>
+                <a href="#with-ansible-210">With Ansible < 2.9</a>
+              </li>
+            </ul>
         </ul>
       </li>
     </ul>
@@ -120,7 +127,14 @@ This collection allows you to:
 
 ### Installation
 
-#### With Ansible >= 2.10
+#### From Ansible Galaxy
+
+```bash
+ansible-galaxy collection install rudder.rudder
+```
+
+#### From source
+##### With Ansible >= 2.10
 To install the collection directly from this git repository, you must create a *requirements.yml* file and add the following content:
 
 ```yml
@@ -136,7 +150,7 @@ Then execute the following command:
 ansible-galaxy install -r requirements.yml
 ```
 
-#### With Ansible < 2.9
+##### With Ansible < 2.9
 
 You must first clone the current git repo, move to the directory of the cloned repo and then use the following command:
 
