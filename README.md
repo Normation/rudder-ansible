@@ -133,6 +133,7 @@ This collection allows you to:
 ansible-galaxy collection install rudder.rudder
 ```
 
+
 #### From source
 ##### With Ansible >= 2.10
 To install the collection directly from this git repository, you must create a *requirements.yml* file and add the following content:
