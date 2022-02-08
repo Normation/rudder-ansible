@@ -13,6 +13,6 @@ RUN pip install -r requirements.txt
 
 RUN mkdir -p ${WORKSPACE}
 COPY . ${WORKSPACE}
-WORKDIR "${WORKSPACE}"
+WORKDIR ${WORKSPACE}
 
 ENTRYPOINT ["/bin/bash", "-c"]

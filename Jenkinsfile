@@ -1,4 +1,4 @@
-def collection_path = 'ansible_collections/rudder/rudder'
+def collection_path = '/tmp/ansible_collections/rudder/rudder'
 
 // Do not use for the moment, do not store anything in clear text, to validate the way to store credentials.
 // def galaxy_api_key = ''
@@ -28,7 +28,9 @@ pipeline {
             }
         }
         steps {
-                sh script: 'ansible-test sanity', label: 'ansible sanity checks'
+            dir(collection_path) {
+                 sh script: 'ansible-test sanity', label: 'ansible sanity checks'
+            }
         }
     }
     stage ('ansible unit tests') {
@@ -39,7 +41,9 @@ pipeline {
             }
         }
         steps {
-            sh script: './qa-test --unit-tests', label: 'ansible unit checks'
+            dir(collection_path) {
+                sh script: './qa-test --unit-tests', label: 'ansible unit checks'
+            }
         }
     }
     // stage ('publication on Galaxy') {
