@@ -24,7 +24,9 @@ pipeline {
             }
         }
         steps {
-                sh script: 'ansible-test sanity', label: 'ansible sanity checks'
+            dir("/tmp/${collection_path}") {
+                 sh script: 'ansible-test sanity', label: 'ansible sanity checks'
+            }
         }
     }
     stage ('ansible unit tests') {
@@ -35,18 +37,10 @@ pipeline {
             }
         }
         steps {
-            sh script: './qa-test --unit-tests', label: 'ansible unit checks'
+            dir("/tmp/${collection_path}") {
+                sh script: './qa-test --unit-tests', label: 'ansible unit checks'
+            }
         }
     }
-
-    //stage ('role rudder_relay') {
-    //  agent {
-    //    image 'quay.io/ansible/toolset'
-    //    args '-v /var/run/docker.sock:/var/run/docker.sock'
-    //  }
-    //  steps {
-    //    sh './qa-test --rudder_relay'
-    //  }
-    //}
   }
 }
