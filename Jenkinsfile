@@ -23,6 +23,7 @@ pipeline {
             }
         }
         steps {
+            sh script: 'pwd'
             sh script: 'ansible-test sanity', label: 'ansible sanity checks'
         }
     }
