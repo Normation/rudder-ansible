@@ -1,4 +1,3 @@
-def collection_path = 'ansible_collections/rudder/rudder'
 // uid of the jenkins user of the docker runners
 def user_id = "1007"
 
@@ -24,9 +23,7 @@ pipeline {
             }
         }
         steps {
-            dir("/tmp/${collection_path}") {
-                 sh script: 'ansible-test sanity', label: 'ansible sanity checks'
-            }
+            sh script: 'ansible-test sanity', label: 'ansible sanity checks'
         }
     }
     stage ('ansible unit tests') {
@@ -37,9 +34,7 @@ pipeline {
             }
         }
         steps {
-            dir("/tmp/${collection_path}") {
-                sh script: './qa-test --unit-tests', label: 'ansible unit checks'
-            }
+            sh script: './qa-test --unit-tests', label: 'ansible unit checks'
         }
     }
   }
