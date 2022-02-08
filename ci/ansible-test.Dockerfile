@@ -9,8 +9,9 @@ RUN apt-get -y update && \
 RUN pip install -r requirements.txt
 
 # Uncomment if you want to use it on your machine
-#RUN mkdir -p /tmp/ansible_collections/rudder/rudder
-#COPY . /tmp/ansible_collections/rudder/rudder/
-#WORKDIR "/tmp/ansible_collections/rudder/rudder/"
+RUN mkdir -p /tmp/ansible_collections/rudder/rudder
+COPY . /tmp/ansible_collections/rudder/rudder/
+WORKDIR "/tmp/ansible_collections/rudder/rudder/"
+
 
 ENTRYPOINT ["/bin/bash", "-c"]
