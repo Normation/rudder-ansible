@@ -24,17 +24,13 @@ pipeline {
             }
         }
         steps {
-            sh "mkdir -p ${collection_path}"
-            sh "mv * ${collection_path} || true"
-            dir(collection_path) {
                 sh script: 'ansible-test sanity', label: 'ansible sanity checks'
-            }
         }
     }
     stage ('ansible unit tests') {
         agent {
             dockerfile {
-                filename 'ci/pytest.Dockerfile'
+                filename 'ci/ansible-test.Dockerfile'
                 additionalBuildArgs  '--build-arg USER_ID='+user_id
             }
         }

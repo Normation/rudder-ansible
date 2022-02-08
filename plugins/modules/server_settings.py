@@ -197,7 +197,7 @@ def main():
             changed=changed,
             meta=module.params,
             new_value=str(VALUE),
-            message='changed succefully',
+            message='changed successfully',
         )
     else:
         rudder_server_iface.get_SettingValue(name)

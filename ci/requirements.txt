@@ -1,2 +1,5 @@
 parameterized==0.8.1
 pytest==6.2.5
+pycodestyle
+voluptuous
+yamllint

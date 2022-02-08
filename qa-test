@@ -40,4 +40,3 @@ else
   test_typos
   exit 0
 fi
-

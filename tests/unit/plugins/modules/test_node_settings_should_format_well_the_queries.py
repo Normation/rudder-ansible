@@ -1,6 +1,6 @@
 from __future__ import absolute_import, division, print_function
 import unittest
-from plugins.modules import server_settings
+from plugins.modules import node_settings
 from parameterized import parameterized
 
 __metaclass__ = type

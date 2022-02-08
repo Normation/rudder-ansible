@@ -174,7 +174,7 @@ EXAMPLES = r"""
 """
 
 import json
-from ansible.module_utils.urls import open_url, fetch_url
+from ansible.module_utils.urls import open_url
 from ansible.module_utils.basic import AnsibleModule
 
 
