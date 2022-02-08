@@ -1,8 +1,4 @@
-def collection_path = '/tmp/ansible_collections/rudder/rudder'
-
-// Do not use for the moment, do not store anything in clear text, to validate the way to store credentials.
-// def galaxy_api_key = ''
-
+def collection_path = 'ansible_collections/rudder/rudder'
 // uid of the jenkins user of the docker runners
 def user_id = "1007"
 
@@ -28,24 +24,25 @@ pipeline {
             }
         }
         steps {
+            sh "mkdir -p ${collection_path}"
+            sh "mv * ${collection_path} || true"
             dir(collection_path) {
-                 sh script: 'ansible-test sanity', label: 'ansible sanity checks'
+                sh script: 'ansible-test sanity', label: 'ansible sanity checks'
             }
         }
     }
-    stage ('ansible unit tests') {
-        agent {
-            dockerfile {
-                filename 'ci/ansible-test.Dockerfile'
-                additionalBuildArgs  '--build-arg USER_ID='+user_id
-            }
-        }
-        steps {
-            dir(collection_path) {
-                sh script: './qa-test --unit-tests', label: 'ansible unit checks'
-            }
-        }
-    }
+    // stage ('ansible unit tests') {
+    //     agent {
+    //         dockerfile {
+    //             filename 'ci/pytest.Dockerfile'
+    //             additionalBuildArgs  '--build-arg USER_ID='+user_id
+    //         }
+    //     }
+    //     steps {
+    //         sh script: './qa-test --unit-tests', label: 'ansible unit checks'
+    //     }
+    // }
+
     // stage ('publication on Galaxy') {
     //     agent {
     //         dockerfile {
