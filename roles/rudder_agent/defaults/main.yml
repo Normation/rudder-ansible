@@ -2,4 +2,8 @@ policy_server: rudder.server
 rudder_repository_username: ""
 rudder_repository_password: ""
 rudder_repository: repository.rudder.io
-agent_version: 6.2
+rudder_repository_url: ""
+agent_version: 7.0
+update_cache: yes
+apt_key_url: "https://repository.rudder.io/apt/rudder_apt_key.pub"
+rpm_key_url: "https://repository.rudder.io/rpm/rudder_rpm_key.pub"

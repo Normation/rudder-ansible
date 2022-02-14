@@ -17,25 +17,43 @@ galaxy_info:
   platforms:
     - name: Ubuntu
       versions:
-        - all
+        - 10.04-LTS
+        - 12.04-LTS
+        - 14.04-LTS
+        - 16.04-LTS
+        - 18.04-LTS
+        - 20.04-LTS
 
     - name: Debian
       versions:
-        - all
+        - 6
+        - 7
+        - 8
+        - 9
+        - 10
+        - 11
 
     - name: SLES
       versions:
-        - all
+         - 10-SP3
+         - 11
 
-    - name: EL
+    - name: RHEL
       versions:
-        - all
+         - 3
+         - 5
+         - 6
+         - 7
+         - 8
 
 dependencies:
   - role: rudder_repository
     vars:
       repository: "{{ rudder_repository }}"
+      rudder_version: "{{ server_version }}"
+      repository_url: " {{ rudder_repository_url }}"
+      rudder_update_cache: " {{ update_cache }}"
       repository_username: "{{ rudder_repository_username }}"
       repository_password: "{{ rudder_repository_password }}"
-      update_cache: yes
-      rudder_version: "{{ server_version }}"
+      rudder_apt_key_url: " {{ apt_key_url }}"
+      rudder_rpm_key_url: " {{ rpm_key_url }}"

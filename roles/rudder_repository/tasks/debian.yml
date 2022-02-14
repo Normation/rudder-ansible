@@ -12,6 +12,16 @@
   apt_repository:
     repo: "deb {{ repository_url }}/apt/{{ rudder_version|string }} {{ ansible_distribution_release }} main"
     state: present
-    update_cache: "{{ update_cache }}"
+    update_cache: "{{ rudder_update_cache }}"
     validate_certs: yes
+  when: repository_url|length == 0
+  become: true
+
+- name: Adding Rudder Repo (from repository_url parameter)
+  apt_repository:
+    repo: "deb {{ repository_url }} {{ ansible_distribution_release }} main"
+    state: present
+    update_cache: "{{ rudder_update_cache }}"
+    validate_certs: yes
+  when: repository_url|length > 0
   become: true
