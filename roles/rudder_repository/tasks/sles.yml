@@ -16,6 +16,18 @@
     enabled: yes
     disable_gpg_check: false
     runrefresh: "{{ update_cache }}"
+  when: repository_url|length == 0
+
+- name: Adding Rudder Repo (from repository_url parameter)
+  zypper_repository:
+    name: Rudder
+    description: Rudder
+    state: present
+    repo: "{{ repository_url }}/"
+    enabled: yes
+    disable_gpg_check: false
+    runrefresh: "{{ update_cache }}"
+  when: repository_url|length > 0
 
 - name: Ensure repository username
   community.general.ini_file:

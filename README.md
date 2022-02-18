@@ -121,6 +121,7 @@ This collection allows you to:
 ### Installation
 
 #### With Ansible >= 2.10
+
 To install the collection directly from this git repository, you must create a *requirements.yml* file and add the following content:
 
 ```yml
@@ -166,10 +167,14 @@ This role does not auto accept the node. It only configures the repository
 and installs the packages.
 
 - `policy_server`: Rudder policy server (default: `rudder.server`)
-- `agent_version`: Rudder version(default: `6.2`)
+- `agent_version`: Rudder version(default: `7.0`)
 - `rudder_repository`: Rudder repository domain (default: `repository.rudder.io`)
+- `rudder_repository_url`: Complete Rudder repository URL (default: `empty`), used only when not empty, replace the server_version and rudder_repository when used.
 - `rudder_repository_username`: Optional username to pass to repository if using credentials
 - `rudder_repository_password`: Optional password to pass to repository if using credentials
+- `update_cache`: Refresh the package manager cache or not (default: `yes`)
+- `apt_key_url`: Repository key for APT based repositories
+- `rpm_key_url`: Repository key for RPM based repositories
 
 #### Example Playbook
 
@@ -182,17 +187,21 @@ and installs the packages.
       roles:
         - role: rudder.rudder.rudder_agent
           vars:
-            agent_version: 6.2
+            agent_version: 7.0
 ```
 
 ### rudder_server
 
 #### Role variables
 
-- `server_version`: Rudder version(default: `6.2`)
+- `server_version`: Rudder version(default: `7.0`)
 - `rudder_repository`: Rudder repository domain (default: `repository.rudder.io`)
+- `rudder_repository_url`: Complete Rudder repository URL (default: `empty`), used only when not empty, replace the server_version and rudder_repository when used.
 - `rudder_repository_username`: Optional username to pass to repository if using credentials
 - `rudder_repository_password`: Optional password to pass to repository if using credentials
+- `update_cache`: Refresh the package manager cache or not (default: `yes`)
+- `apt_key_url`: Repository key for APT based repositories
+- `rpm_key_url`: Repository key for RPM based repositories
 
 #### Example Playbook
 
@@ -205,7 +214,7 @@ and installs the packages.
       roles:
         - role: rudder.rudder.rudder_server
           vars:
-            server_version: 6.2
+            server_version: 7.0
 ```
 
 ### rudder_relay
@@ -215,10 +224,14 @@ and installs the packages.
 
 #### Role variables
 
-- `relay_version`: Rudder version(default: `6.2`)
+- `relay_version`: Rudder version(default: `7.0`)
 - `rudder_repository`: Rudder repository domain (default: `repository.rudder.io`)
+- `rudder_repository_url`: Complete Rudder repository URL (default: `empty`), used only when not empty, replace the server_version and rudder_repository when used.
 - `rudder_repository_username`: Optional username to pass to repository if using credentials
 - `rudder_repository_password`: Optional password to pass to repository if using credentials
+- `update_cache`: Refresh the package manager cache or not (default: `yes`)
+- `apt_key_url`: Repository key for APT based repositories
+- `rpm_key_url`: Repository key for RPM based repositories
 
 #### Example Playbook
 
@@ -231,7 +244,7 @@ and installs the packages.
       roles:
         - role: rudder.rudder.rudder_relay
           vars:
-            relay_version: 6.2
+            relay_version: 7.0
 ```
 
 ### rudder_repository
@@ -241,11 +254,12 @@ the roles listed above.
 
 #### Role variables
 
-- `rudder_version`: Rudder version(default: `6.2`)
+- `rudder_version`: Rudder version(default: `7.0`)
 - `repository`: Rudder repository domain (default: `repository.rudder.io`)
+- `repository_url`: Complete Rudder repository URL (default: `empty`), used only when not empty, replace the server_version and rudder_repository when used.
 - `repository_username`: Optional username to pass to repository if using credentials
 - `repository_password`: Optional password to pass to repository if using credentials
-- `update_cache`: Refresh the package manager cache or not (default: `yes`)
+- `rudder_update_cache`: Refresh the package manager cache or not (default: `yes`)
 - `rudder_apt_key_url`: Repository key for APT based repositories
 - `rudder_rpm_key_url`: Repository key for RPM based repositories
 
@@ -260,7 +274,7 @@ the roles listed above.
       roles:
         - role: rudder.rudder.rudder_repository
           vars:
-            rudder_version: 6.2.10
+            rudder_version: 7.0
             repository: "download.rudder.io"
             repository_username: "my_user"
             repository_password: "my_password"

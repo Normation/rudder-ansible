@@ -14,4 +14,18 @@
     gpgcheck: true
     gpgkey: "{{ rudder_rpm_key_url }}"
     sslverify: yes
+  when: repository_url|length == 0
+  become: true
+
+- name: Adding Rudder Repo (from repository_url parameter)
+  yum_repository:
+    name: Rudder
+    description: Rudder
+    state: present
+    baseurl: "{{ repository_url }}/"
+    enabled: yes
+    gpgcheck: true
+    gpgkey: "{{ rudder_rpm_key_url }}"
+    sslverify: yes
+  when: repository_url|length > 0
   become: true
