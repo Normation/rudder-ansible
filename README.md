@@ -260,8 +260,8 @@ the roles listed above.
 - `repository_username`: Optional username to pass to repository if using credentials
 - `repository_password`: Optional password to pass to repository if using credentials
 - `rudder_update_cache`: Refresh the package manager cache or not (default: `yes`)
-- `rudder_apt_key_url`: Repository key for APT based repositories
-- `rudder_rpm_key_url`: Repository key for RPM based repositories
+- `rudder_apt_key_url`: Repository key for APT based repositories (`false` if empty)
+- `rudder_rpm_key_url`: Repository key for RPM based repositories (`false` if empty)
 
 #### Example Playbook
 

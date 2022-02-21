@@ -6,6 +6,18 @@
   rpm_key:
     key: "{{ rudder_rpm_key_url }}"
     state: present
+  when: rudder_rpm_key_url|length > 0
+
+- name: Adding Rudder Repo (without GPG Key)
+  zypper_repository:
+    name: Rudder
+    description: Rudder
+    state: present
+    repo: "{{ sles_repo_url }}"
+    enabled: yes
+    disable_gpg_check: true
+    runrefresh: "{{ update_cache }}"
+  when: repository_url|length == 0 and rudder_rpm_key_url|length == 0
 
 - name: Adding Rudder Repo
   zypper_repository:
@@ -16,7 +28,18 @@
     enabled: yes
     disable_gpg_check: false
     runrefresh: "{{ update_cache }}"
-  when: repository_url|length == 0
+  when: repository_url|length == 0 and rudder_rpm_key_url|length > 0
+
+- name: Adding Rudder Repo (from repository_url parameter) without GPG key
+  zypper_repository:
+    name: Rudder
+    description: Rudder
+    state: present
+    repo: "{{ repository_url }}/"
+    enabled: yes
+    disable_gpg_check: true
+    runrefresh: "{{ update_cache }}"
+  when: repository_url|length > 0 and rudder_rpm_key_url|length == 0
 
 - name: Adding Rudder Repo (from repository_url parameter)
   zypper_repository:
@@ -27,7 +50,7 @@
     enabled: yes
     disable_gpg_check: false
     runrefresh: "{{ update_cache }}"
-  when: repository_url|length > 0
+  when: repository_url|length > 0 and rudder_rpm_key_url|length > 0
 
 - name: Ensure repository username
   community.general.ini_file:

@@ -3,6 +3,18 @@
     key: "{{ rudder_rpm_key_url }}"
     state: present
   become: true
+  when: rudder_rpm_key_url|length > 0
+
+- name: Adding Rudder Repo (without GPG key)
+  yum_repository:
+    name: Rudder
+    description: Rudder
+    state: present
+    baseurl: "{{ repository_url }}/rpm/{{ rudder_version|string }}/RHEL_{{ ansible_distribution_major_version }}/"
+    enabled: yes
+    gpgcheck: false
+  become: true
+  when: rudder_rpm_key_url|length == 0
 
 - name: Adding Rudder Repo
   yum_repository:
@@ -17,6 +29,17 @@
   when: repository_url|length == 0
   become: true
 
+- name: Adding Rudder Repo (from repository_url parameter and without GPG key)
+  yum_repository:
+    name: Rudder
+    description: Rudder
+    state: present
+    baseurl: "{{ repository_url }}/"
+    enabled: yes
+    gpgcheck: false
+  when: repository_url|length > 0 and rudder_rpm_key_url|length == 0
+  become: true
+
 - name: Adding Rudder Repo (from repository_url parameter)
   yum_repository:
     name: Rudder
@@ -27,5 +50,5 @@
     gpgcheck: true
     gpgkey: "{{ rudder_rpm_key_url }}"
     sslverify: yes
-  when: repository_url|length > 0
+  when: repository_url|length > 0 and rudder_rpm_key_url|length > 0
   become: true

@@ -7,6 +7,7 @@
     url: "{{ rudder_apt_key_url }}"
     state: present
   become: true
+  when: rudder_apt_key_url|length > 0
 
 - name: Adding Rudder Repo
   apt_repository:
