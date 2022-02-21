@@ -12,7 +12,6 @@
     state: present
     baseurl: "{{ repository_url }}/rpm/{{ rudder_version|string }}/RHEL_{{ ansible_distribution_major_version }}/"
     enabled: yes
-    gpgkey: ""
     gpgcheck: false
   become: true
   when: rudder_rpm_key_url|length == 0
@@ -37,7 +36,6 @@
     state: present
     baseurl: "{{ repository_url }}/"
     enabled: yes
-    gpgkey: ""
     gpgcheck: false
   when: repository_url|length > 0 and rudder_rpm_key_url|length == 0
   become: true
