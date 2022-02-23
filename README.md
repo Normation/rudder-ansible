@@ -109,7 +109,9 @@ You must first clone the current git repo, move to the directory of the cloned r
 ansible-galaxy collection install .
 ```
 
-## Role usage
+## Documentation
+
+### Roles
 
 A set of [Ansible][ansible] roles for installing and managing [Rudder][rudder] servers and agents. The roles works with
 **Debian**, **RedHat** and **SUSE** based systems.
@@ -123,9 +125,11 @@ A set of [Ansible][ansible] roles for installing and managing [Rudder][rudder] s
 [ansible]: http://www.ansible.com/
 [rudder]: http://www.rudder.io/
 
-## Module usage
-The collection provides 2 major roles allowing to configure a Rudder root server but also to set up nodes dynamically (adding node properties for example).
+You can find the documentation for each role in its folder, in the **README.md** file.
 
+## Module usage
+
+The collection provides 2 major roles allowing to configure a Rudder root server but also to set up nodes dynamically (adding node properties for example).
 
 ### node_settings
 
