@@ -22,43 +22,6 @@
       </li>
     </ul>
   </li>
-  <li><a href="#role-usage">Role usage</a>
-    <ul>
-      <li>
-        <a href="#rudder_agent">Deploy Rudder agent role</a>
-          <ul>
-          <li><a href="#role-variables">Role variables</a></li>
-          <li><a href="#example-playbook">Example Playbook</a></li>
-        </ul>
-      </li>
-    </ul>
-    <ul>
-      <li>
-        <a href="#rudder_server">Deploy Rudder root server role</a>
-          <ul>
-          <li><a href="#role-variables">Role variables</a></li>
-          <li><a href="#example-playbook">Example Playbook</a></li>
-        </ul>
-      </li>
-    </ul>
-    <ul>
-      <li>
-        <a href="#rudder_relay">Deploy Rudder relay server role</a>
-          <ul>
-          <li><a href="#role-variables">Role variables</a></li>
-          <li><a href="#example-playbook">Example Playbook</a></li>
-        </ul>
-      </li>
-    </ul>
-    <ul>
-      <li>
-        <a href="#rudder_repository">Manage Rudder repository role</a>
-          <ul>
-          <li><a href="#role-variables">Role variables</a></li>
-        </ul>
-      </li>
-    </ul>
-  </li>
     <li><a href="#module-usage">Module usage</a>
     <ul>
       <li>
@@ -102,6 +65,7 @@
 </ol>
 
 ## Overview
+
 This Ansible collection allows to manage and interact with one or more Rudder instances.
 It was created in order to gather all the necessary tools for a good integration of Ansible with Rudder.
 
@@ -145,7 +109,9 @@ You must first clone the current git repo, move to the directory of the cloned r
 ansible-galaxy collection install .
 ```
 
-## Role usage
+## Documentation
+
+### Roles
 
 A set of [Ansible][ansible] roles for installing and managing [Rudder][rudder] servers and agents. The roles works with
 **Debian**, **RedHat** and **SUSE** based systems.
@@ -159,129 +125,11 @@ A set of [Ansible][ansible] roles for installing and managing [Rudder][rudder] s
 [ansible]: http://www.ansible.com/
 [rudder]: http://www.rudder.io/
 
-### rudder_agent
+You can find the documentation for each role in its folder, in the **README.md** file.
 
-#### Role variables
-
-This role does not auto accept the node. It only configures the repository
-and installs the packages.
-
-- `policy_server`: Rudder policy server (default: `rudder.server`)
-- `agent_version`: Rudder version(default: `7.0`)
-- `rudder_repository`: Rudder repository domain (default: `repository.rudder.io`)
-- `rudder_repository_url`: Complete Rudder repository URL (default: `empty`), used only when not empty, replace the server_version and rudder_repository when used.
-- `rudder_repository_username`: Optional username to pass to repository if using credentials
-- `rudder_repository_password`: Optional password to pass to repository if using credentials
-- `update_cache`: Refresh the package manager cache or not (default: `yes`)
-- `apt_key_url`: Repository key for APT based repositories
-- `rpm_key_url`: Repository key for RPM based repositories
-
-#### Example Playbook
-
-```yaml
-- name: Install Rudder agents
-  hosts: agents
-  become: yes
-  collections:
-    - rudder.rudder
-      roles:
-        - role: rudder.rudder.rudder_agent
-          vars:
-            agent_version: 7.0
-```
-
-### rudder_server
-
-#### Role variables
-
-- `server_version`: Rudder version(default: `7.0`)
-- `rudder_repository`: Rudder repository domain (default: `repository.rudder.io`)
-- `rudder_repository_url`: Complete Rudder repository URL (default: `empty`), used only when not empty, replace the server_version and rudder_repository when used.
-- `rudder_repository_username`: Optional username to pass to repository if using credentials
-- `rudder_repository_password`: Optional password to pass to repository if using credentials
-- `update_cache`: Refresh the package manager cache or not (default: `yes`)
-- `apt_key_url`: Repository key for APT based repositories
-- `rpm_key_url`: Repository key for RPM based repositories
-
-#### Example Playbook
-
-```yaml
-- name: Install Rudder Server
-  hosts: server
-  become: yes
-  collections:
-    - rudder.rudder
-      roles:
-        - role: rudder.rudder.rudder_server
-          vars:
-            server_version: 7.0
-```
-
-### rudder_relay
-
-This role does not auto accept the node nor promotes it to relay. It only configures the repository
-and installs the packages.
-
-#### Role variables
-
-- `relay_version`: Rudder version(default: `7.0`)
-- `rudder_repository`: Rudder repository domain (default: `repository.rudder.io`)
-- `rudder_repository_url`: Complete Rudder repository URL (default: `empty`), used only when not empty, replace the server_version and rudder_repository when used.
-- `rudder_repository_username`: Optional username to pass to repository if using credentials
-- `rudder_repository_password`: Optional password to pass to repository if using credentials
-- `update_cache`: Refresh the package manager cache or not (default: `yes`)
-- `apt_key_url`: Repository key for APT based repositories
-- `rpm_key_url`: Repository key for RPM based repositories
-
-#### Example Playbook
-
-```yaml
-- name: Install Rudder Server
-  hosts: server
-  become: yes
-  collections:
-    - rudder.rudder
-      roles:
-        - role: rudder.rudder.rudder_relay
-          vars:
-            relay_version: 7.0
-```
-
-### rudder_repository
-
-This role configures the Rudder repositories, it is included as dependencies in each of
-the roles listed above.
-
-#### Role variables
-
-- `rudder_version`: Rudder version(default: `7.0`)
-- `repository`: Rudder repository domain (default: `repository.rudder.io`)
-- `repository_url`: Complete Rudder repository URL (default: `empty`), used only when not empty, replace the server_version and rudder_repository when used.
-- `repository_username`: Optional username to pass to repository if using credentials
-- `repository_password`: Optional password to pass to repository if using credentials
-- `rudder_update_cache`: Refresh the package manager cache or not (default: `yes`)
-- `rudder_apt_key_url`: Repository key for APT based repositories (`false` if empty)
-- `rudder_rpm_key_url`: Repository key for RPM based repositories (`false` if empty)
-
-#### Example Playbook
-
-```yaml
-- name: Install Rudder Server
-  hosts: server
-  become: yes
-  collections:
-    - rudder.rudder
-      roles:
-        - role: rudder.rudder.rudder_repository
-          vars:
-            rudder_version: 7.0
-            repository: "download.rudder.io"
-            repository_username: "my_user"
-            repository_password: "my_password"
-```
 ## Module usage
-The collection provides 2 major roles allowing to configure a Rudder root server but also to set up nodes dynamically (adding node properties for example).
 
+The collection provides 2 major roles allowing to configure a Rudder root server but also to set up nodes dynamically (adding node properties for example).
 
 ### node_settings
 
