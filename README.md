@@ -65,6 +65,7 @@
 </ol>
 
 ## Overview
+
 This Ansible collection allows to manage and interact with one or more Rudder instances.
 It was created in order to gather all the necessary tools for a good integration of Ansible with Rudder.
 
