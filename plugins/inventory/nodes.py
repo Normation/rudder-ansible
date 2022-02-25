@@ -1,5 +1,5 @@
-from ansible.plugins.inventory import BaseInventoryPlugin
 from __future__ import absolute_import, division, print_function
+from ansible.plugins.inventory import BaseInventoryPlugin
 
 __metaclass__ = type
 
