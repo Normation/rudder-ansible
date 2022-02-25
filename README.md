@@ -44,6 +44,14 @@
           </ul>
         </li>
       </ul>
+        <ul>
+        <li>
+          <a href="#inventory">Inventory</a>
+            <ul>
+            <li><a href="#example-usage">Example usage</a></li>
+          </ul>
+        </li>
+      </ul>
     </ul>
       <li>
     <a href="#going-further">Going further</a>
@@ -263,6 +271,19 @@ Configure Rudder Server parameters via APIs.
       name: "modified_file_ttl"
       value: "22"
       validate_certs: False
+```
+
+#### Inventory plugin
+
+Plugin to get the Rudder inventory in Ansible.
+
+##### Example usage
+
+Add follow lines in your `inventory` file:
+
+```yaml
+plugin: rudder.rudder.inventory
+
 ```
 
 ## Going further
