@@ -22,24 +22,28 @@
       </li>
     </ul>
   </li>
-    <li><a href="#module-usage">Module usage</a>
+    <li><a href="#documentation">Documentation</a>
     <ul>
-      <li>
-        <a href="#node_settings">node_settings</a>
+      <li><a href="#roles">Roles</a>
+      <li><a href="#modules">Modules</a>
+      <ul>
+        <li>
+          <a href="#node_settings">node_settings</a>
+            <ul>
+            <li><a href="#module-parameters">Module parameters</a></li>
+            <li><a href="#example-playbook">Example Playbook</a></li>
+          </ul>
+        </li>
+      </ul>
           <ul>
-          <li><a href="#module-parameters">Module parameters</a></li>
-          <li><a href="#example-playbook">Example Playbook</a></li>
-        </ul>
-      </li>
-    </ul>
-        <ul>
-      <li>
-        <a href="#server_settings">server_settings</a>
-          <ul>
-          <li><a href="#module-parameters">Module parameters</a></li>
-          <li><a href="#example-playbook">Example Playbook</a></li>
-        </ul>
-      </li>
+        <li>
+          <a href="#server_settings">server_settings</a>
+            <ul>
+            <li><a href="#module-parameters">Module parameters</a></li>
+            <li><a href="#example-playbook">Example Playbook</a></li>
+          </ul>
+        </li>
+      </ul>
     </ul>
       <li>
     <a href="#going-further">Going further</a>
@@ -127,14 +131,14 @@ A set of [Ansible][ansible] roles for installing and managing [Rudder][rudder] s
 
 You can find the documentation for each role in its folder, in the **README.md** file.
 
-## Module usage
+### Modules
 
 The collection provides 2 major roles allowing to configure a Rudder root server but also to set up nodes dynamically (adding node properties for example).
 
-### node_settings
+#### node_settings
 
 Configure Rudder nodes parameters via APIs.
-#### Module parameters
+##### Module parameters
 
 - `rudder_url` (str): Providing Rudder server IP address. Defaults to `localhost`.
 - `rudder_token` (str): Providing Rudder server token. Defaults to the content of /var/rudder/run/api-token if not set.
@@ -168,7 +172,7 @@ Configure Rudder nodes parameters via APIs.
         - `comparator` (str): Comparator type to use.
           - *Choices*: `or`, `and`
         - `value` (str): Value to compare to.
-#### Example playbook
+##### Example playbook
 
 ```yaml
 # Example 1
@@ -225,16 +229,16 @@ Configure Rudder nodes parameters via APIs.
             value: "rudder-ansible-node.*"
 ```
 
-### server_settings
+#### server_settings
 Configure Rudder Server parameters via APIs.
-#### Module parameters
+##### Module parameters
 - `rudder_url` (str): Providing Rudder server IP address. Defaults to `localhost`.
 - `rudder_token` (str): Providing Rudder server token. Defaults to the content of /var/rudder/run/api-token if not set.
 - `name` (str): The name of the parameter to set.
 - `value` (str): The value defined to modify a given parameter name.
 - `validate_certs` (bool): Choosing either to ignore or not Rudder certificate validation. Defaults to `true`.
 
-#### Example playbook
+##### Example playbook
 
 ```yaml
 # Example 1
