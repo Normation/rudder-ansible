@@ -1,61 +1,27 @@
-- name: Define sles_repo_url
-  set_fact:
-    sles_repo_url: "{{ repository_url }}/rpm/{{ rudder_version|string }}/SLES_{{ ansible_distribution_major_version }}/"
-
 - name: Adding Rudder Repo Key
   rpm_key:
-    key: "{{ rudder_rpm_key_url }}"
+    key: "{{ rpm_key_url }}"
     state: present
-  when: rudder_rpm_key_url|length > 0
+  when: rpm_key_url|length > 0
 
-- name: Adding Rudder Repo (without GPG Key)
-  zypper_repository:
-    name: Rudder
-    description: Rudder
-    state: present
-    repo: "{{ sles_repo_url }}"
-    enabled: yes
-    disable_gpg_check: true
-    runrefresh: "{{ update_cache }}"
-  when: repository_url|length == 0 and rudder_rpm_key_url|length == 0
+- name: Compute Rudder repo
+  ansible.builtin.set_fact:
+    repository_url: "{{ rudder_repository_repo_url }}/rpm/{{ rudder_version|string }}/SLES_{{ ansible_distribution_major_version }}/"
+  when: repository_url|length == 0
 
 - name: Adding Rudder Repo
   zypper_repository:
     name: Rudder
     description: Rudder
     state: present
-    repo: "{{ sles_repo_url }}"
+    repo: "{{ repository_url }}"
     enabled: yes
-    disable_gpg_check: false
-    runrefresh: "{{ update_cache }}"
-  when: repository_url|length == 0 and rudder_rpm_key_url|length > 0
-
-- name: Adding Rudder Repo (from repository_url parameter) without GPG key
-  zypper_repository:
-    name: Rudder
-    description: Rudder
-    state: present
-    repo: "{{ repository_url }}/"
-    enabled: yes
-    disable_gpg_check: true
-    runrefresh: "{{ update_cache }}"
-  when: repository_url|length > 0 and rudder_rpm_key_url|length == 0
-
-- name: Adding Rudder Repo (from repository_url parameter)
-  zypper_repository:
-    name: Rudder
-    description: Rudder
-    state: present
-    repo: "{{ repository_url }}/"
-    enabled: yes
-    disable_gpg_check: false
-    runrefresh: "{{ update_cache }}"
-  when: repository_url|length > 0 and rudder_rpm_key_url|length > 0
+    runrefresh: "{{ rudder_update_cache }}"
 
 - name: Ensure repository username
   community.general.ini_file:
     path: /root/.zypp/credentials.cat
-    section: "{{ sles_repo_url }}"
+    section: "{{ repository_url }}"
     option: "username"
     value: "{{ repository_username }}"
   when: repository_username | length > 0
@@ -63,7 +29,7 @@
 - name: Ensure repository password
   community.general.ini_file:
     path: /root/.zypp/credentials.cat
-    section: "{{ sles_repo_url }}"
+    section: "{{ repository_url }}"
     option: "password"
     value: "{{ repository_password }}"
   when: repository_username | length > 0

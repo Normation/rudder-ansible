@@ -1,28 +1,24 @@
----
-- name: Print key
-  debug:
-    msg: "{{ rudder_apt_key_url }}"
 - name: Adding Rudder Repo Key
   apt_key:
-    url: "{{ rudder_apt_key_url }}"
+    url: "{{ apt_key_url }}"
     state: present
   become: true
-  when: rudder_apt_key_url|length > 0
+  when: apt_key_url|length > 0
+
+
+- name: Compute Rudder repo
+  ansible.builtin.set_fact:
+    repository_url: "{{ rudder_repository_repo_url }}/apt/{{ rudder_version|string }}/"
+  when: repository_url|length == 0
+
+- name: Print repo
+  debug:
+    msg: "deb {{ repository_url }} {{ ansible_distribution_release }} main"
 
 - name: Adding Rudder Repo
-  apt_repository:
-    repo: "deb {{ repository_url }}/apt/{{ rudder_version|string }} {{ ansible_distribution_release }} main"
-    state: present
-    update_cache: "{{ rudder_update_cache }}"
-    validate_certs: yes
-  when: repository_url|length == 0
-  become: true
-
-- name: Adding Rudder Repo (from repository_url parameter)
   apt_repository:
     repo: "deb {{ repository_url }} {{ ansible_distribution_release }} main"
     state: present
     update_cache: "{{ rudder_update_cache }}"
     validate_certs: yes
-  when: repository_url|length > 0
   become: true
