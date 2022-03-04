@@ -7,5 +7,5 @@ repository_username: ""
 repository_password: ""
 rudder_update_cache: yes
 
-rudder_apt_key_url: "https://repository.rudder.io/apt/rudder_apt_key.pub"
-rudder_rpm_key_url: "https://repository.rudder.io/rpm/rudder_rpm_key.pub"
+apt_key_url: "https://repository.rudder.io/apt/rudder_apt_key.pub"
+rpm_key_url: "https://repository.rudder.io/rpm/rudder_rpm_key.pub"

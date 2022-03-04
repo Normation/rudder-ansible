@@ -9,4 +9,5 @@
         repository: "download.rudder.io"
         repository_username: "my_user"
         repository_password: "my_password"
-        update_cache: no
+        rudder_update_cache: no
+        rudder_version: 6.2

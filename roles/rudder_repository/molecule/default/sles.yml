@@ -11,7 +11,7 @@
     name: Rudder
     description: Rudder
     state: present
-    repo: "https://repository.rudder.io/rpm/6.2/SLES_{{ ansible_distribution_major_version }}/"
+    repo: "https://repository.rudder.io/rpm/7.0/SLES_{{ ansible_distribution_major_version }}/"
     enabled: yes
     disable_gpg_check: false
   register: repo_config
