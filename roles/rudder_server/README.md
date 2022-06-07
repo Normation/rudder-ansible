@@ -24,3 +24,33 @@
           vars:
             server_version: 7.0
 ```
+
+#### Example playbook: server and agents connect to that server
+
+From: https://github.com/safespring-community/terraform-modules/tree/main/examples/v2-rudder-minimal-poc
+```yaml
+
+- name: Install Rudder Server
+  hosts: server
+  become: yes
+  collections:
+    - rudder.rudder
+  tasks:
+    - import_role:
+        name: rudder.rudder.rudder_server
+      vars:
+        server_version: 7.0
+
+- name: Install Rudder agents
+  hosts: agents_host_group
+  become: yes
+  collections:
+    - rudder.rudder
+  tasks:
+    - import_role:
+        name: rudder.rudder.rudder_agent
+      vars:
+        agent_version: 7.0
+        policy_server: "{{hostvars['hostname_of_server']['ansible_default_ipv4']['address']}}"
+
+```
