@@ -1,6 +1,6 @@
 - name: Install Rudder Agent
   yum:
     name: rudder-agent
-    state: present
+    state: latest
   notify:
     - Send inventory
