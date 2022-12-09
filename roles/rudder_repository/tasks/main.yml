@@ -10,4 +10,6 @@
 
 - include_tasks: redhat.yml
   when: (ansible_distribution == "CentOS" and ansible_distribution != "Fedora") or
+        (ansible_distribution == "Rocky" and ansible_distribution != "Fedora") or
+        (ansible_distribution == "AlmaLinux" and ansible_distribution != "Fedora") or
         (ansible_distribution == "Red Hat Enterprise Linux" and ansible_distribution != "Fedora")
