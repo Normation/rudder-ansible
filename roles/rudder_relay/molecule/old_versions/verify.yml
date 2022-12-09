@@ -28,4 +28,3 @@
       when: ansible_os_family == "Debian"
     - include_tasks: sles.yml
       when: ansible_os_family == "Suse"
-
