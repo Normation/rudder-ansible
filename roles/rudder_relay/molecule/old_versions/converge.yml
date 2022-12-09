@@ -1,0 +1,9 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include rudder_relay"
+      include_role:
+        name: "rudder_relay"
+      vars:
+        relay_version: 7.1

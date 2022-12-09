@@ -1,0 +1,6 @@
+- name: Install Rudder Relay
+  apt:
+    name: rudder-relay
+    state: present
+  register: relay_installed
+  failed_when: (relay_installed is changed) or (relay_installed is failed)

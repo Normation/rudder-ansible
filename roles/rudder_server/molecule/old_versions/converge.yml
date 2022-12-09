@@ -1,0 +1,8 @@
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include rudder_server"
+      include_role:
+        name: "rudder_server"
+      vars:
+        server_version: 7.1

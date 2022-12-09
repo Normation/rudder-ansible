@@ -2,7 +2,7 @@
 
 #### Role variables
 
-- `server_version`: Rudder version(default: `7.0`)
+- `server_version`: Rudder version(default: `7.2`)
 - `rudder_repository`: Rudder repository domain (default: `repository.rudder.io`)
 - `rudder_repository_url`: Complete Rudder repository URL (default: `empty`), used only when not empty, replace the server_version and rudder_repository when used.
 - `rudder_repository_username`: Optional username to pass to repository if using credentials

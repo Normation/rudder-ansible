@@ -4,9 +4,12 @@ driver:
   name: docker
 platforms:
   - name: instance
-    image: geerlingguy/docker-centos8-ansible
-    pre_build_image: true
-    command: "yum update --disablerepo=appstream"
+    image: quay.io/centos/centos:stream8
+    command: /sbin/init
+    capabilities:
+      - SYS_ADMIN
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
 provisioner:
   name: ansible
 verifier:
