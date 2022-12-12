@@ -8,19 +8,10 @@
       command: which rudder
       register: rudder_path
 
-    - name: Get rudder policy server
-      command: cat /var/rudder/cfengine-community/policy_server.dat
-      register: current_policy_server
-
     - name: Rudder-agent must be installed
       assert:
         that:
           - rudder_path.stdout == "/usr/bin/rudder"
-
-    - name: Policy server must be configured
-      assert:
-        that:
-          - current_policy_server.stdout == "rudder.server"
 
     - include_tasks: redhat.yml
       when: ansible_os_family == "RedHat"

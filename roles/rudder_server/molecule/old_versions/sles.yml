@@ -1,6 +1,6 @@
-- name: Install Rudder Server
-  apt:
-    name: rudder-server
-    state: present
+- name: Install Rudder Agent
+  zypper:
+    name: rudder-server-root
+    state: latest
   register: server_installed
   failed_when: (server_installed is changed) or (server_installed is failed)

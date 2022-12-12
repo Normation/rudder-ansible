@@ -1,6 +1,6 @@
 - name: Install Rudder Relay
   apt:
-    name: rudder-server-relay
+    name: "{{ rudder_relay_package_name }}"
     state: latest
   notify:
     - Send inventory

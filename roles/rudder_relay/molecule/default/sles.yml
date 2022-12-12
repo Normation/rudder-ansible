@@ -1,0 +1,6 @@
+- name: Install Rudder Relay
+  zypper:
+    name: rudder-relay
+    state: latest
+  register: relay_installed
+  failed_when: (relay_installed is changed) or (relay_installed is failed)

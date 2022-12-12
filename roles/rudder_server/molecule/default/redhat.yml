@@ -1,6 +1,6 @@
-- name: Install Rudder Agent
+- name: Install Rudder Server
   yum:
-    name: rudder-server-root
+    name: rudder-server
     state: present
   register: server_installed
   failed_when: (server_installed is changed) or (server_installed is failed)
