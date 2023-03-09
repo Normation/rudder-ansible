@@ -39,7 +39,7 @@ From: https://github.com/safespring-community/terraform-modules/tree/main/exampl
     - import_role:
         name: rudder.rudder.rudder_server
       vars:
-        server_version: 7.0
+        server_version: 7.2
 
 - name: Install Rudder agents
   hosts: agents_host_group
@@ -50,7 +50,7 @@ From: https://github.com/safespring-community/terraform-modules/tree/main/exampl
     - import_role:
         name: rudder.rudder.rudder_agent
       vars:
-        agent_version: 7.0
+        agent_version: 7.2
         policy_server: "{{hostvars['hostname_of_server']['ansible_default_ipv4']['address']}}"
 
 ```
