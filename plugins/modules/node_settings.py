@@ -265,10 +265,11 @@ class RudderNodeSettingsInterface(object):
             'Content-Type': 'application/json',
         }
 
-        raw_settings_to_set = {}
-        for param in nodeSettingsParams:
-            if param in module.params:
-                raw_settings_to_set.update({param: module.params[param]})
+        raw_settings_to_set = {
+            param: module.params[param]
+            for param in nodeSettingsParams
+            if param in module.params
+        }
         self.settings_to_set = self._translate_settings(raw_settings_to_set)
 
     def _value_to_test(self, value):
@@ -327,12 +328,12 @@ class RudderNodeSettingsInterface(object):
         api_formatted_settings = {}
         for key, value in settings_dict.items():
             if key == 'policy_mode' and value is not None:
-                api_formatted_settings.update({'policyMode': value})
+                api_formatted_settings['policyMode'] = value
             elif key == 'agent_key' and value is not None:
                 key_data = {'status': value['status']}
                 if 'value' in value:
-                    key_data.update({'value': value['value']})
-                api_formatted_settings.update({'agentKey': key_data})
+                    key_data['value'] = value['value']
+                api_formatted_settings['agentKey'] = key_data
             elif value is not None:
                 api_formatted_settings.update({key: value})
         return api_formatted_settings
@@ -347,13 +348,10 @@ class RudderNodeSettingsInterface(object):
 
     def set_node_settings(self, node_id):
         current_node_settings = self.get_node_settings(node_id)
-        update = False
-        for i_settings in self.settings_to_set:
-            if (
-                current_node_settings[i_settings]
-                != self.settings_to_set[i_settings]
-            ):
-                update = True
+        update = any(
+            (current_node_settings[i_settings] != self.settings_to_set[i_settings])
+            for i_settings in self.settings_to_set
+        )
         if update:
             self._send_request(
                 path='/api/latest/nodes/{node_id}'.format(node_id=node_id),
@@ -381,7 +379,7 @@ class RudderNodeSettingsInterface(object):
 
         nodes = self._send_request(
             method='GET',
-            path='/api/latest/nodes' + url_query,
+            path=f'/api/latest/nodes{url_query}',
             data={},
             headers=self.headers,
         )['data']['nodes']
