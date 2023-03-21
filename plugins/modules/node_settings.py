@@ -379,7 +379,7 @@ class RudderNodeSettingsInterface(object):
 
         nodes = self._send_request(
             method='GET',
-            path=f'/api/latest/nodes{url_query}',
+            path='/api/latest/nodes{}'.format(url_query),
             data={},
             headers=self.headers,
         )['data']['nodes']
