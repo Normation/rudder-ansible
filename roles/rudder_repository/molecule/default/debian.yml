@@ -9,7 +9,7 @@
 - name: Repository must be correct
   ansible.builtin.apt_repository:
     state: present
-    repo: "deb https://repository.rudder.io/apt/7.0/ {{ ansible_distribution_release }} main"
+    repo: "deb https://repository.rudder.io/apt/8.0/ {{ ansible_distribution_release }} main"
     update_cache: no
     validate_certs: yes
   register: repo_config

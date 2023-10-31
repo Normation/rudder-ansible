@@ -2,7 +2,7 @@
 
 #### Role variables
 
-- `server_version`: Rudder version(default: `7.2`)
+- `server_version`: Rudder version(default: `8.0`)
 - `rudder_repository`: Rudder repository domain (default: `repository.rudder.io`)
 - `rudder_repository_url`: Complete Rudder repository URL (default: `empty`), used only when not empty, replace the server_version and rudder_repository when used.
 - `rudder_repository_username`: Optional username to pass to repository if using credentials
@@ -22,7 +22,7 @@
       roles:
         - role: rudder.rudder.rudder_server
           vars:
-            server_version: 7.0
+            server_version: 8.0
 ```
 
 #### Example playbook: server and agents connect to that server
@@ -39,7 +39,7 @@ From: https://github.com/safespring-community/terraform-modules/tree/main/exampl
     - import_role:
         name: rudder.rudder.rudder_server
       vars:
-        server_version: 7.2
+        server_version: 8.0
 
 - name: Install Rudder agents
   hosts: agents_host_group
@@ -50,7 +50,7 @@ From: https://github.com/safespring-community/terraform-modules/tree/main/exampl
     - import_role:
         name: rudder.rudder.rudder_agent
       vars:
-        agent_version: 7.2
+        agent_version: 8.0
         policy_server: "{{hostvars['hostname_of_server']['ansible_default_ipv4']['address']}}"
 
 ```
