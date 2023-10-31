@@ -6,7 +6,7 @@ This role does not auto accept the node. It only configures the repository
 and installs the packages.
 
 - `policy_server`: Rudder policy server (default: `rudder.server`)
-- `agent_version`: Rudder version(default: `7.2`)
+- `agent_version`: Rudder version(default: `8.0`)
 - `rudder_repository`: Rudder repository domain (default: `repository.rudder.io`)
 - `rudder_repository_url`: Complete Rudder repository URL (default: `empty`), used only when not empty, replace the server_version and rudder_repository when used.
 - `rudder_repository_username`: Optional username to pass to repository if using credentials
@@ -26,5 +26,5 @@ and installs the packages.
       roles:
         - role: rudder.rudder.rudder_agent
           vars:
-            agent_version: 7.2
+            agent_version: 8.0
 ```

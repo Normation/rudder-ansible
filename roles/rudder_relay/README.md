@@ -5,7 +5,7 @@ and installs the packages.
 
 #### Role variables
 
-- `relay_version`: Rudder version(default: `7.0`)
+- `relay_version`: Rudder version(default: `8.0`)
 - `rudder_repository`: Rudder repository domain (default: `repository.rudder.io`)
 - `rudder_repository_url`: Complete Rudder repository URL (default: `empty`), used only when not empty, replace the server_version and rudder_repository when used.
 - `rudder_repository_username`: Optional username to pass to repository if using credentials
@@ -25,5 +25,5 @@ and installs the packages.
       roles:
         - role: rudder.rudder.rudder_relay
           vars:
-            relay_version: 7.0
+            relay_version: 8.0
 ```
