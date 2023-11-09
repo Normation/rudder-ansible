@@ -68,7 +68,7 @@ EXAMPLES = r"""
 import json
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.urls import basic_auth_header, fetch_url
+from ansible.module_utils.urls import basic_auth_header, fetch_url, open_url
 
 __metaclass__ = type
 
@@ -119,7 +119,7 @@ class RudderSettingsInterface(object):
             headers = []
 
         full_url = '{rudder_url}{path}'.format(
-            rudder_url=self.rudder_url, path=path
+            rudder_url=self.rudder_url, path=url
         )
 
         try:
