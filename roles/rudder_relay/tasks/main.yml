@@ -11,6 +11,6 @@
   when: ansible_os_family == "Debian"
 
 - include_tasks: redhat.yml
-  when: ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux" or ansible_distribution == "Rocky" or ansible_distribution == "AlmaLinux" and ansible_distribution != "Fedora"
+  when: ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux" or ansible_distribution == "RedHat" or ansible_distribution == "Rocky" or ansible_distribution == "AlmaLinux" and ansible_distribution != "Fedora"
 
 - include_tasks: configure.yml
