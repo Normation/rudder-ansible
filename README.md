@@ -373,8 +373,8 @@ blue tests/unit/plugins/modules/test_node_settings_parameter_overloard.py
 
 To push the collection, you must have a [GitHub](https://github.com/) account.
 
-* Log in to Galaxy with the account that will perform the buid and publication. 
-* Generate Galaxy API key, more informations [here](https://docs.ansible.com/ansible/latest/cli/ansible-galaxy.html#synopsis).
+* Log in to Galaxy with the account that will perform the build and publication. 
+* Generate Galaxy API key, more information [here](https://docs.ansible.com/ansible/latest/cli/ansible-galaxy.html#synopsis).
 * Modify the content of the `galaxy.yml` file before publishing.
 * Build the collection locally with `ansible-galaxy collection build`.
 * Then *publish* the collection with the following command `ansible-galaxy collection publish ./rudder-ansible-1.0.0.tar.gz --api-key you_galaxy_api_key`
