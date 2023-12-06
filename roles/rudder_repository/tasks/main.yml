@@ -5,12 +5,7 @@
   when: ansible_os_family == "Suse"
 
 - include_tasks: debian.yml
-  when: (ansible_distribution == "Debian") or
-        (ansible_distribution == "Ubuntu")
+  when: ansible_os_family == "Debian"
 
 - include_tasks: redhat.yml
-  when: (ansible_distribution == "CentOS" and ansible_distribution != "Fedora") or
-        (ansible_distribution == "Rocky" and ansible_distribution != "Fedora") or
-        (ansible_distribution == "AlmaLinux" and ansible_distribution != "Fedora") or
-        (ansible_distribution == "RedHat" and ansible_distribution != "Fedora") or
-        (ansible_distribution == "Red Hat Enterprise Linux" and ansible_distribution != "Fedora")
+  when: ansible_os_family == "RedHat"

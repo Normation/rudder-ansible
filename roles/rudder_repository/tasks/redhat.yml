@@ -8,7 +8,12 @@
 - name: Compute Rudder repo
   ansible.builtin.set_fact:
     repository_url: "{{ rudder_repository_repo_url }}/rpm/{{ rudder_version|string }}/RHEL_{{ ansible_distribution_major_version }}/"
-  when: repository_url|length == 0
+  when: repository_url|length == 0 and ansible_distribution != "Amazon" and ansible_distribution_major_version != "2023"
+
+- name: Compute Rudder repo
+  ansible.builtin.set_fact:
+    repository_url: "{{ rudder_repository_repo_url }}/rpm/{{ rudder_version|string }}/AL_2023/"
+  when: repository_url|length == 0 and ansible_distribution == "Amazon" and ansible_distribution_major_version == "2023"
 
 - name: Print repo
   debug:
