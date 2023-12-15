@@ -40,7 +40,7 @@ options:
     description:
       - The value defined to modify a given parameter name.
     required: true
-    type: str
+    type: raw
 
   validate_certs:
     description:
@@ -66,9 +66,12 @@ EXAMPLES = r"""
 """
 
 import json
+import traceback
+from urllib.error import HTTPError
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.urls import basic_auth_header, fetch_url, open_url
+from ansible.module_utils.common.text.converters import to_native
 
 __metaclass__ = type
 
@@ -80,6 +83,10 @@ class RudderSettingsInterface(object):
     def __init__(self, module):
         self._module = module
         self.validate_certs = True
+        self.variables = {
+            'raw_value': [],
+            'requests': []
+        }
 
         self.rudder_url = module.params['rudder_url']
         self.validate_certs = module.params['validate_certs']
@@ -88,10 +95,10 @@ class RudderSettingsInterface(object):
             try:
                 with open('/var/rudder/run/api-token') as system_token:
                     token = system_token.read()
-            except FileNotFoundError:
-                self._module.fail_json(
-                    failed=True,
+            except Exception as e:
+                self.fail(
                     msg="No token found in parameters, could not find the default system token under '/var/rudder/run/api-token'.",
+                    exception=str(e)
                 )
         else:
             token = module.params['rudder_token']
@@ -111,51 +118,99 @@ class RudderSettingsInterface(object):
         elif value == 'validate_certs':
             return self.validate_certs
 
-    def _send_request(self, url, data=None, headers=None, method='GET'):
-        if data is not None:
-            data = json.dumps(data, sort_keys=True)
+    def fail(self, msg, exception):
+        self._module.fail_json(
+            changed=False,
+            failed=True,
+            msg=msg,
+            exception=exception,
+            variables=self.variables
+        )
 
+    def success(self, msg, changed):
+        self._module.exit_json(
+            failed=False,
+            changed=changed,
+            message=msg,
+            variables=self.variables
+        )
+
+    def _send_request(self, url, data=None, headers=None, method='GET'):
         if not headers:
             headers = []
+        printable_headers = headers.copy()
+        if 'X-API-Token' in printable_headers:
+            printable_headers.update({'X-API-Token': '*****'})
 
         full_url = '{rudder_url}{path}'.format(
             rudder_url=self.rudder_url, path=url
         )
-
+        self.variables['requests'].append({
+            'req': {
+                'url': full_url,
+                'headers': printable_headers,
+                'method': method,
+                'validate_certs': self.validate_certs,
+                'data': data
+            },
+            'resp': {}
+        })
         try:
-            resp = (
-                open_url(
-                    full_url,
-                    headers=headers,
-                    validate_certs=self.validate_certs,
-                    method=method,
-                    data=data,
-                )
-                .read()
-                .decode('utf8')
-            )
-            return self._module.from_json(resp)
+            r = open_url(
+                full_url,
+                headers=headers,
+                validate_certs=self.validate_certs,
+                method=method,
+                data=json.dumps(data, sort_keys=True)
+            ).read().decode('utf-8')
+            resp = json.loads(r)
+            self.variables['requests'][-1]['resp'] = resp
+            return resp
+        except HTTPError as e:
+            self.variables['requests'][-1]['resp'] = self._module.from_json(e.read().decode('utf-8'))
+            self.fail(exception=None, msg="The API call returned an unexpected HTTP error code: {code}".format(code=e.code))
         except Exception as e:
-            self._module.fail_json(
-                failed=True, msg='Rudder API call failed!', reason=str(e)
+            self.fail(
+                msg='Rudder API call failed',
+                exception=str(e)
             )
+
+    def compare_settings_value(self, left, right):
+        if isinstance(left, list):
+            return sorted(left) == sorted(right)
+        elif isinstance(left, str) or isinstance(left, bool) or isinstance(left, int):
+            return left == right
+        else:
+            self.fail(
+                msg='Unsupported settings value type: {v_type}'.format(v_type=str(type(left))),
+                exception=None
+            )
+
+    def log_variable(self, name, value):
+        self.variables[name] = value
 
     def get_SettingValue(self, name):
-        url = '/api/latest/settings/{name}'.format(name=name)
-        response = self._send_request(url, headers=self.headers, method='GET')
-        return response['data']['settings'][name]
+        try:
+            url = '/api/latest/settings/{name}'.format(name=name)
+            raw_value = self._send_request(url, headers=self.headers, method='GET')
+            self.log_variable('raw_value', raw_value)
+            if 'allowed_networks' in name:
+                return raw_value['data']['allowed_networks']
+            else:
+                return raw_value['data']['settings'][name]
+        except Exception as e:
+            self.fail(
+                msg="Could not read settings value from the API",
+                exception=str(e)
+            )
 
     def set_SettingValue(self, name, value):
-        url = '/api/latest/settings/{name}'.format(name=name)
-        current_server_settings = self.get_SettingValue(name)
-        data = value
-
-        update = current_server_settings != self.get_SettingValue(name)
-
-        if update:
-            self._send_request(
-                url, headers=self.headers, method='POST', data=data
-            )
+        self._send_request(
+            url='/api/latest/settings/{name}'.format(name=name),
+            headers=self.headers,
+            method='POST',
+            data={'allowed_networks': value} if 'allowed_networks' in name else {'value': value}
+        )
 
 
 def main():
@@ -168,7 +223,7 @@ def main():
             },
             'rudder_token': {'type': 'str', 'required': False},
             'name': {'type': 'str', 'required': True},
-            'value': {'type': 'str', 'required': True},
+            'value': {'type': 'raw', 'required': True},
             'validate_certs': {'type': 'bool', 'default': True},
         },
         supports_check_mode=False,
@@ -178,32 +233,34 @@ def main():
     rudder_token = module.params['rudder_token']
     name = module.params['name']
     value = module.params['value']
-    validate_certs = module.params['validate_certs']
+    if isinstance(value, str):
+        value = module.from_json(module.params['value'])
 
     rudder_server_iface = RudderSettingsInterface(module)
 
-    VALUE = rudder_server_iface.get_SettingValue(name)
+    OLD_VALUE = rudder_server_iface.get_SettingValue(name)
+    rudder_server_iface.log_variable('old_value', OLD_VALUE)
 
-    changed = False
+    # For common settings
+    if rudder_server_iface.compare_settings_value(value, OLD_VALUE):
+        rudder_server_iface.success(
+            changed=False,
+            msg='Already correct'
+        )
 
-    if str(VALUE) != value:
-        rudder_server_iface.set_SettingValue(name, value)
-        changed = True
-        module.exit_json(
-            failed=False,
-            changed=changed,
-            meta=module.params,
-            new_value=str(VALUE),
-            message='changed successfully',
+    rudder_server_iface.set_SettingValue(name, value)
+    NEW_VALUE = rudder_server_iface.get_SettingValue(name)
+    rudder_server_iface.log_variable('new_value', NEW_VALUE)
+
+    if rudder_server_iface.compare_settings_value(value, NEW_VALUE):
+        rudder_server_iface.success(
+            changed=True,
+            msg='Settings successfully updated'
         )
     else:
-        rudder_server_iface.get_SettingValue(name)
-        changed = False
-        module.exit_json(
-            failed=False,
-            changed=False,
-            meta=module.params,
-            message='Already correct',
+        rudder_server_iface.fail(
+            msg='Could not apply the expected settings',
+            exception=None
         )
 
 
