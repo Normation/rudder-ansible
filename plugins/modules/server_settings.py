@@ -234,7 +234,10 @@ def main():
     name = module.params['name']
     value = module.params['value']
     if isinstance(value, str):
-        value = module.from_json(module.params['value'])
+        try:
+            value = module.from_json(module.params['value'])
+        except:
+            value = value
 
     rudder_server_iface = RudderSettingsInterface(module)
 
