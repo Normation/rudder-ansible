@@ -236,7 +236,7 @@ def main():
     if isinstance(value, str):
         try:
             value = module.from_json(module.params['value'])
-        except:
+        except Exception:
             value = value
 
     rudder_server_iface = RudderSettingsInterface(module)

@@ -78,7 +78,7 @@ options:
       value:
         description: property value
         required: yes
-        type: str
+        type: raw
 
   agent_key:
     description:
@@ -174,6 +174,7 @@ EXAMPLES = r"""
 """
 
 import json
+import copy
 from ansible.module_utils.urls import open_url
 from ansible.module_utils.basic import AnsibleModule
 
@@ -242,6 +243,7 @@ class RudderNodeSettingsInterface(object):
     def __init__(self, module):
         self._module = module
         self.validate_certs = True
+        self.modified_settings = []
         for param in allParams:
             if param in module.params:
                 setattr(self, param, module.params[param])
@@ -339,19 +341,49 @@ class RudderNodeSettingsInterface(object):
         return api_formatted_settings
 
     def get_node_settings(self, node_id):
-        return self._send_request(
+        s = self._send_request(
             method='GET',
             path='/api/latest/nodes/{node_id}'.format(node_id=node_id),
             data={},
             headers=self.headers,
         )['data']['nodes'][0]
+        self.retrieved_settings = s
+        return s
+
+    def properties_require_update(self, node_id, current_node_properties):
+        if 'properties' not in self.settings_to_set:
+            return True
+        for p in self.settings_to_set['properties']:
+            key = p['name']
+            value = p['value']
+            current_value = next((x['value'] for x in current_node_properties if x['name'] == key), None)
+            if current_value != value:
+                self.modified_settings.append({
+                    node_id: {
+                        "properties": {
+                            "name": key,
+                            "value": value
+                        }
+                    }
+                })
+                return True
+        return False
 
     def set_node_settings(self, node_id):
         current_node_settings = self.get_node_settings(node_id)
-        update = any(
-            (current_node_settings[i_settings] != self.settings_to_set[i_settings])
-            for i_settings in self.settings_to_set
-        )
+        to_audit = copy.deepcopy(self.settings_to_set)
+        update = self.properties_require_update(node_id, current_node_settings['properties'])
+        if 'properties' in to_audit.keys():
+            to_audit.pop('properties', None)
+        for i_settings in to_audit:
+            if current_node_settings[i_settings] != to_audit[i_settings]:
+                self.modified_settings.append({
+                    node_id: {
+                        i_settings: to_audit[i_settings]
+                    }
+                })
+                update = True
+                break
         if update:
             self._send_request(
                 path='/api/latest/nodes/{node_id}'.format(node_id=node_id),
@@ -411,7 +443,7 @@ def main():
                 elements='dict',
                 options=dict(
                     name=dict(type='str', required=True),
-                    value=dict(type='str', required=True),
+                    value=dict(type='raw', required=True),
                 ),
             ),
             agent_key=dict(
@@ -493,7 +525,8 @@ def main():
         failed=failed,
         changed=changed,
         meta=module.params,
-        audited_settings=rudder_node_iface.settings_to_set,
+        expected_settings=rudder_node_iface.settings_to_set,
+        modified_settings=rudder_node_iface.modified_settings,
         nodes=impacted_nodes,
         query=query,
         errors=errors,
