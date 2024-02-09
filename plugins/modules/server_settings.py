@@ -63,6 +63,14 @@ EXAMPLES = r"""
       name: "modified_file_ttl"
       value: "22"
       validate_certs: False
+
+- name: Allowed Networks
+  server_settings:
+      rudder_url: "https://my.rudder.server/rudder"
+      rudder_token: "<rudder_server_token>"
+      name: "allowed_networks/root"
+      value:
+        - "192.168.0.0/16"
 """
 
 import json
