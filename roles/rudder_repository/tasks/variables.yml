@@ -1,12 +1,7 @@
 - name: Define repository url with creds
   set_fact:
     rudder_repository_repo_url: "https://{{ repository_username }}:{{ repository_password }}@{{ repository }}"
-  when: (repository_username | length > 0) and (ansible_os_family != "Suse")
-
-- name: Define repository url with creds for Suse
-  set_fact:
-    rudder_repository_repo_url: "https://{{ repository_username }}@{{ repository }}"
-  when: (repository_username | length > 0) and (ansible_os_family == "Suse")
+  when: (repository_username | length > 0)
 
 - name: Define repository url without creds
   set_fact:
