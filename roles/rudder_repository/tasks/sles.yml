@@ -17,19 +17,3 @@
     repo: "{{ repository_url }}"
     enabled: yes
     runrefresh: "{{ rudder_update_cache }}"
-
-- name: Ensure repository username
-  community.general.ini_file:
-    path: /root/.zypp/credentials.cat
-    section: "{{ repository_url }}"
-    option: "username"
-    value: "{{ repository_username }}"
-  when: repository_username | length > 0
-
-- name: Ensure repository password
-  community.general.ini_file:
-    path: /root/.zypp/credentials.cat
-    section: "{{ repository_url }}"
-    option: "password"
-    value: "{{ repository_password }}"
-  when: repository_username | length > 0
