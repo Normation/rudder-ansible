@@ -1,0 +1,26 @@
+- name: Install Rudder Agent
+  yum:
+    name: rudder-server-root
+    state: present
+  register: server_installed
+  failed_when: (server_installed is changed) or (server_installed is failed)
+
+- name: Retrieve repo content
+  command: cat /etc/yum.repos.d/Rudder.repo
+  register: repo_content
+
+- debug:
+    msg: "{{ repo_content.stdout }}"
+
+- name: Repository must be correct
+  ansible.builtin.yum_repository:
+    name: Rudder
+    description: Rudder
+    state: present
+    baseurl: "https://repository.rudder.io/rpm/7.0/RHEL_{{ ansible_distribution_major_version }}/"
+    enabled: yes
+    gpgcheck: true
+    sslverify: yes
+    gpgkey: "https://repository.rudder.io/rpm/rudder_rpm_key.pub"
+  register: repo_config
+  failed_when: (repo_config is changed) or (repo_config is failed)
