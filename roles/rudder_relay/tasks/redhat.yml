@@ -1,6 +1,6 @@
 - name: Install Rudder Relay
   yum:
-    name: "{{ rudder_relay_package_name }}"
+    name: "rudder-relay"
     state: latest
   notify:
     - Send inventory

@@ -3,7 +3,5 @@ rudder_repository_username: ""
 rudder_repository_password: ""
 rudder_repository: repository.rudder.io
 rudder_repository_url: ""
-agent_version: 8.0
+agent_version: 8.2
 update_cache: yes
-rudder_apt_key_url: "https://repository.rudder.io/apt/rudder_apt_key.pub"
-rudder_rpm_key_url: "https://repository.rudder.io/rpm/rudder_rpm_key.pub"

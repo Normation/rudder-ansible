@@ -1,9 +1,3 @@
-- include_vars: "before_7.2.yml"
-  when: server_version is version('7.2', '<')
-
-- include_vars: "after_7.2.yml"
-  when: server_version is version('7.2', '>=')
-
 - include_tasks: sles.yml
   when: ansible_os_family == "Suse"
 

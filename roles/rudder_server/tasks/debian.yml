@@ -1,4 +1,4 @@
 - name: Install Rudder Server
   apt:
-    name: "{{ rudder_server_package_name }}"
+    name: "rudder-server"
     state: latest

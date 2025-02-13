@@ -1,9 +1,7 @@
 policy_server: rudder.server
-relay_version: 8.0
+relay_version: 8.2
 rudder_repository_username: ""
 rudder_repository_password: ""
 rudder_repository: repository.rudder.io
 rudder_repository_url: ""
 update_cache: yes
-apt_key_url: "https://repository.rudder.io/apt/rudder_apt_key.pub"
-rpm_key_url: "https://repository.rudder.io/rpm/rudder_rpm_key.pub"
