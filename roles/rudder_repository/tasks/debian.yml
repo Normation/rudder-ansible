@@ -1,10 +1,8 @@
 - name: Adding Rudder Repo Key
   apt_key:
-    url: "{{ apt_key_url }}"
+    url: "{{ rudder_apt_key_url }}"
     state: present
   become: true
-  when: apt_key_url|length > 0
-
 
 - name: Compute Rudder repo
   ansible.builtin.set_fact:

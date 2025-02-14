@@ -1,8 +1,7 @@
 - name: Adding Rudder Repo Key
   rpm_key:
-    key: "{{ rpm_key_url }}"
+    key: "{{ effective_rpm_key_url }}"
     state: present
-  when: rpm_key_url|length > 0
 
 - name: Compute Rudder repo
   ansible.builtin.set_fact:
