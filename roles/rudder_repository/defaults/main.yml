@@ -10,7 +10,7 @@ rudder_update_cache: yes
 rudder_apt_key_url: "https://repository.rudder.io/apt/rudder_apt_key.pub"
 effective_rpm_key_url: >-
   {{ rudder_rpm_key_url | default(
-    'https://repository.rudder.io/rudder_release_key.pub' if server_version is version_compare('8.3', '>=')
+    'https://repository.rudder.io/rudder_release_key.pub' if rudder_version is version_compare('8.3', '>=')
     else 'https://repository.rudder.io/rpm/rudder_rpm_key.pub',
     true
   ) }}
