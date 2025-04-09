@@ -1,6 +1,5 @@
 def collection_path = 'ansible_collections/rudder/rudder'
 // uid of the jenkins user of the docker runners
-def user_id = "1007"
 
 pipeline {
   agent none
@@ -8,8 +7,10 @@ pipeline {
     stage ('typos') {
         agent {
             dockerfile {
+                label 'generic-docker'
                 filename 'ci/typos.Dockerfile'
                 additionalBuildArgs  '--build-arg VERSION=1.0'
+                args '-u 0:0'
             }
         }
         steps {
@@ -19,8 +20,9 @@ pipeline {
     stage ('ansible sanity tests') {
         agent {
             dockerfile {
+                label 'generic-docker'
                 filename 'ci/ansible-test.Dockerfile'
-                additionalBuildArgs  '--build-arg USER_ID='+user_id
+                args '-u 0:0'
             }
         }
         steps {
