@@ -1,5 +1,5 @@
 ---
-server_version: 8.2
+server_version: 8.3
 rudder_repository_username: ""
 rudder_repository_password: ""
 rudder_repository: repository.rudder.io
