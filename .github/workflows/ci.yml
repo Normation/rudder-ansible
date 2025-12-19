@@ -4,11 +4,13 @@ on: [push, pull_request]
 
 jobs:
   unit-tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       - run: pip install -r ci/requirements.txt
+      - run: pip install -r utils/python/requirements/base-requirements.txt
+      - run: pip install -r utils/python/requirements/roles-requirements.txt
       - run: python -m unittest discover -s tests/unit/plugins/modules
