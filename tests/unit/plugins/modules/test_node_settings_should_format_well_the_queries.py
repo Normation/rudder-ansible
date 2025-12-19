@@ -41,7 +41,11 @@ class TestStringMethods(unittest.TestCase):
                         'value': '1',
                     },
                 ],
-                'where=[{"objectType":"node","attribute":"OS","comparator":"eq","value":"Linux"},{"objectType":"node","attribute":"osFullName","comparator":"regex","value":".*Linux.*"},{"objectType":"memoryPhysicalElement","attribute":"quantity","comparator":"gteq","value":"1"}]',
+                'where=[' +
+                '{"objectType":"node","attribute":"OS","comparator":"eq","value":"Linux"},' +
+                '{"objectType":"node","attribute":"osFullName","comparator":"regex","value":".*Linux.*"},' +
+                '{"objectType":"memoryPhysicalElement","attribute":"quantity","comparator":"gteq","value":"1"}' +
+                ']'
             ],
         ]
     )

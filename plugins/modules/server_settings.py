@@ -74,12 +74,10 @@ EXAMPLES = r"""
 """
 
 import json
-import traceback
 from urllib.error import HTTPError
+from ansible.module_utils.urls import open_url
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.urls import basic_auth_header, fetch_url, open_url
-from ansible.module_utils.common.text.converters import to_native
 
 __metaclass__ = type
 
@@ -229,7 +227,7 @@ def main():
                 'required': False,
                 'default': 'https://localhost/rudder',
             },
-            'rudder_token': {'type': 'str', 'required': False},
+            'rudder_token': {'type': 'str', 'required': False, "no_log": True},
             'name': {'type': 'str', 'required': True},
             'value': {'type': 'raw', 'required': True},
             'validate_certs': {'type': 'bool', 'default': True},
@@ -245,7 +243,8 @@ def main():
         try:
             value = module.from_json(module.params['value'])
         except Exception:
-            value = value
+            # value = value
+            pass
 
     rudder_server_iface = RudderSettingsInterface(module)
 

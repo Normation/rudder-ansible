@@ -435,7 +435,7 @@ def main():
     module = AnsibleModule(
         argument_spec=dict(
             rudder_url=dict(type='str', required=False),
-            rudder_token=dict(type='str', required=False),
+            rudder_token=dict(type='str', required=False, no_log=True),
             node_id=dict(type='str', required=False),
             properties=dict(
                 type='list',
@@ -449,6 +449,7 @@ def main():
             agent_key=dict(
                 type='dict',
                 required=False,
+                no_log=True,
                 options=dict(
                     value=dict(required=False, type='str'),
                     status=dict(
