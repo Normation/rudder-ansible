@@ -1,6 +1,6 @@
 - name: Adding Rudder Repo Key
   apt_key:
-    url: "{{ rudder_apt_key_url }}"
+    url: "{{ effective_rudder_apt_key_url }}"
     state: present
   become: true
 

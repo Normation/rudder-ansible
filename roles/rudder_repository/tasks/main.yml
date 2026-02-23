@@ -4,8 +4,11 @@
 - include_tasks: sles.yml
   when: ansible_facts['os_family'] == "Suse"
 
-- include_tasks: debian.yml
-  when: ansible_facts['os_family'] == "Debian"
+- include_tasks: modern_debian.yml
+  when: _rudder_modern_debian | bool
+
+- include_tasks: old_debian.yml
+  when: not _rudder_modern_debian | bool
 
 - include_tasks: redhat.yml
   when: ansible_facts['os_family'] == "RedHat"

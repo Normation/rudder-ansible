@@ -1,0 +1,22 @@
+- name: Adding Rudder Repo Key
+  ansible.builtin.get_url:
+    url: "{{ effective_rudder_apt_key_url }}"
+    dest: /etc/apt/keyrings/rudder.gpg
+    checksum: sha256:9c40903c51221075e589e062d88fd91a5d567f6e9e233e0fe9303b3d411dcfda
+
+- name: Compute Rudder repo
+  ansible.builtin.set_fact:
+    repository_url: "{{ rudder_repository_repo_url }}/apt/{{ rudder_version|string }}/"
+  when: repository_url|length == 0
+
+- name: Print repo
+  debug:
+    msg: "deb {{ repository_url }} {{ ansible_distribution_release }} main"
+
+- name: Adding Rudder Repo
+  apt_repository:
+    repo: "deb [signed-by=/etc/apt/keyrings/rudder.gpg] {{ repository_url }} {{ ansible_facts['distribution_release'] }} main"
+    state: present
+    update_cache: "{{ rudder_update_cache }}"
+    validate_certs: yes
+  become: true
