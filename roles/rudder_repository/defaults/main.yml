@@ -22,7 +22,8 @@ effective_rudder_apt_key_url: >-
       or
       (ansible_facts['distribution'] == 'Debian' and ansible_facts['distribution_major_version'] | int >= 13)
     )
-    else 'https://repository.rudder.io/apt/rudder_apt_key.pub'
+    else 'https://repository.rudder.io/apt/rudder_apt_key.pub',
+    true
   ) }}
 
 effective_rpm_key_url: >-
