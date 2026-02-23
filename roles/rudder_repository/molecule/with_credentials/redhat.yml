@@ -12,7 +12,7 @@
     description: Rudder
     state: present
     enabled: yes
-    baseurl: "https://my_user:my_password@download.rudder.io/rpm/6.2/RHEL_{{ ansible_distribution_major_version }}/"
+    baseurl: "https://my_user:my_password@download.rudder.io/rpm/6.2/RHEL_{{ ansible_facts.distribution_major_version }}/"
     gpgcheck: true
     gpgkey: "{{ rpm_key_url }}"
     sslverify: yes

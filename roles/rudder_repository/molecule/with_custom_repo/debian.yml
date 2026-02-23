@@ -9,7 +9,7 @@
 - name: Repository must be correct
   ansible.builtin.apt_repository:
     state: present
-    repo: "deb https://my_private_repo/apt/6.2 {{ ansible_distribution_release }} main"
+    repo: "deb https://my_private_repo/apt/6.2 {{ ansible_facts.distribution_release }} main"
     update_cache: no
     validate_certs: yes
   register: repo_config

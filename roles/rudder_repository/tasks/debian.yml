@@ -11,11 +11,11 @@
 
 - name: Print repo
   debug:
-    msg: "deb {{ repository_url }} {{ ansible_distribution_release }} main"
+    msg: "deb {{ repository_url }} {{ ansible_facts.distribution_release }} main"
 
 - name: Adding Rudder Repo
   apt_repository:
-    repo: "deb {{ repository_url }} {{ ansible_distribution_release }} main"
+    repo: "deb {{ repository_url }} {{ ansible_facts.distribution_release }} main"
     state: present
     update_cache: "{{ rudder_update_cache }}"
     validate_certs: yes
