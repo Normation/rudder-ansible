@@ -2,6 +2,9 @@
   rpm_key:
     key: "{{ effective_rpm_key_url }}"
     state: present
+  when:
+    - effective_rpm_key_url is defined
+    - effective_rpm_key_url | length > 0
 
 - name: Compute Rudder repo
   ansible.builtin.set_fact:

@@ -2,6 +2,9 @@
   apt_key:
     url: "{{ effective_rudder_apt_key_url }}"
     state: present
+  when: 
+    - effective_rpm_key_url is defined
+    - effective_rpm_key_url | length > 0 
   become: true
 
 - name: Compute Rudder repo

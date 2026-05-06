@@ -3,6 +3,9 @@
     url: "{{ effective_rudder_apt_key_url }}"
     dest: /etc/apt/keyrings/rudder.gpg
     checksum: sha256:9c40903c51221075e589e062d88fd91a5d567f6e9e233e0fe9303b3d411dcfda
+  when: 
+    - effective_rpm_key_url is defined
+    - effective_rpm_key_url | length > 0
 
 - name: Compute Rudder repo
   ansible.builtin.set_fact:
