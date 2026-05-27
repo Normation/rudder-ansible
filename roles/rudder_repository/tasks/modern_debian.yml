@@ -9,8 +9,21 @@
 
 - name: Compute Rudder repo
   ansible.builtin.set_fact:
-    repository_url: "{{ rudder_repository_repo_url }}/apt/{{ rudder_version|string }}/"
-  when: repository_url|length == 0
+    repository_url: "{{ rudder_repository_repo_url }}/apt/{{ rudder_version }}/"
+  when: repository_url | length == 0
+
+- name: Compute Rudder definition
+  ansible.builtin.set_fact:
+    rudder_repo_definition: >-
+      deb
+      {{
+        '[signed-by=/etc/apt/keyrings/rudder.gpg]'
+        if effective_rudder_apt_key_url is defined and effective_rudder_apt_key_url | length > 0
+        else ''
+      }}
+      {{ repository_url }}
+      {{ ansible_facts['distribution_release'] }}
+      main
 
 - name: Print repo
   debug:
@@ -18,7 +31,7 @@
 
 - name: Adding Rudder Repo
   apt_repository:
-    repo: "deb [signed-by=/etc/apt/keyrings/rudder.gpg] {{ repository_url }} {{ ansible_facts['distribution_release'] }} main"
+    repo: "{{ rudder_repo_definition }}"
     state: present
     update_cache: "{{ rudder_update_cache }}"
     validate_certs: yes
