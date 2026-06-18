@@ -5,5 +5,5 @@ rudder_repository: repository.rudder.io
 rudder_repository_url: ""
 agent_version: 8.3
 update_cache: yes
-apt_key_url: ""
-rpm_key_url: ""
+apt_key_url: null
+rpm_key_url: null

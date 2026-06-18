@@ -5,5 +5,5 @@ rudder_repository_password: ""
 rudder_repository: repository.rudder.io
 rudder_repository_url: ""
 update_cache: yes
-apt_key_url: ""
-rpm_key_url: ""
+apt_key_url: null
+rpm_key_url: null

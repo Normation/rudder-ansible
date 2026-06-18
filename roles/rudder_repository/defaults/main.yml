@@ -15,18 +15,21 @@ _rudder_modern_debian: >-
   }}
 
 effective_rudder_apt_key_url: >-
-  {{ rudder_apt_key_url | default(
-    'https://repository.rudder.io/apt/rudder_apt_key.gpg'
-    if (
-      (ansible_facts['distribution'] == 'Ubuntu' and ansible_facts['distribution_major_version'] | int >= 24)
-      or
-      (ansible_facts['distribution'] == 'Debian' and ansible_facts['distribution_major_version'] | int >= 13)
-    )
-    else 'https://repository.rudder.io/apt/rudder_apt_key.pub'
-  ) }}
+  {% if rudder_apt_key_url is undefined or rudder_apt_key_url is none -%}
+    {{ 'https://repository.rudder.io/apt/rudder_apt_key.gpg'
+        if (
+          (ansible_facts['distribution'] == 'Ubuntu' and ansible_facts['distribution_major_version'] | int >= 24)
+          or
+          (ansible_facts['distribution'] == 'Debian' and ansible_facts['distribution_major_version'] | int >= 13)
+        )
+        else 'https://repository.rudder.io/apt/rudder_apt_key.pub' }}
+  {%- else -%}
+    {{ rudder_apt_key_url }}
+  {%- endif %}
 
 effective_rpm_key_url: >-
-  {{ rudder_rpm_key_url | default(
-    'https://repository.rudder.io/rudder_release_key.pub' if rudder_version is version_compare('8.3', '>=')
-    else 'https://repository.rudder.io/rpm/rudder_rpm_key.pub'
-  ) }}
+  {% if rudder_rpm_key_url is undefined or rudder_rpm_key_url is none -%}
+    {{ (rudder_version is version_compare('8.3', '>=')) | ternary('https://repository.rudder.io/rudder_release_key.pub', 'https://repository.rudder.io/rpm/rudder_rpm_key.pub') }}
+  {%- else -%}
+    {{ rudder_rpm_key_url }}
+  {%- endif %}
